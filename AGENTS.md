@@ -18,10 +18,20 @@ bun run preview    # Preview production build locally
 
 ## Architecture
 
-The app uses **React Router** with a simple two-page structure:
+The app uses **React Router** with `BrowserRouter` and a GitHub Pages basename of
+`/personal_website/`. Routes are nested under `Layout`, which renders the shared
+site header, navigation, and page outlet.
 
-- **Background** (`/`) - Home page with professional experience timeline
-- **Journey** (`/journey`) - Tabbed page with content sections (Triton & JAX, AI Performance Engineer, Important Papers)
+- **Background** (`/`) - Home page with an animated pixel journey scene,
+  professional summary, and experience timeline
+- **Reading List** (`/reading-list`, `/books`) - Book list page with an animated
+  pixel bookshelf scene
+- **Study Plans** (`/study-plans`) - Index page for learning plans, with plan
+  cards and an animated pixel study scene
+- **Study Plan Detail** (`/study-plans/:planId`) - Detail pages for structured
+  study plans and markdown-backed notes
+- **Journey redirect** (`/journey`) - Legacy route that redirects to
+  `/study-plans`
 
 ### Directory Structure
 
@@ -29,12 +39,19 @@ The app uses **React Router** with a simple two-page structure:
 src/
 ├── App.tsx              # Router setup with BrowserRouter (base: /personal_website/)
 ├── main.tsx             # Entry point
+├── index.css            # Tailwind import, theme tokens, global styles, pixel-scene CSS
+├── assets/
+│   ├── avatars/         # Header avatar image assets
+│   └── study-plans/     # Study plan card/detail images
 ├── components/
 │   ├── Layout.tsx       # Main layout wrapper
-│   └── journey/        # Content components for Journey page tabs
+│   └── MarkdownDocument.tsx # Lightweight markdown renderer with KaTeX support
+├── content/
+│   └── study-plans/     # Markdown content for study plan notes
 └── pages/
     ├── Background.tsx   # Home page
-    └── Journey.tsx      # Tabbed content page
+    ├── Books.tsx        # Reading list page
+    └── StudyPlans.tsx   # Study plan index and detail pages
 ```
 
 ### Styling
