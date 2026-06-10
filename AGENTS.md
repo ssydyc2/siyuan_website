@@ -90,6 +90,18 @@ Body:
 - Another concrete change made.
 ```
 
+When the user asks for the PR body as a standalone Markdown file/body, print
+only this body content:
+
+```markdown
+### Context
+- Concise explanation of why this PR exists.
+
+### Changes
+- Concrete change made.
+- Another concrete change made.
+```
+
 If a branch has already been pushed, include the PR URL separately after the
 copyable title/body. Do not let a missing PR URL block providing the copyable
 text.
