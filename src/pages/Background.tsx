@@ -45,6 +45,13 @@ const timelineData: TimelineItem[] = [
     tags: ["Optimization", "Mathematical Modeling", "Research"]
   },
   {
+    period: "2013 - 2018",
+    title: "M.S. in Computer Science",
+    company: "University of Southern California",
+    description: "",
+    tags: ["Computer Science", "Graduate Study"]
+  },
+  {
     period: "2010 - 2013",
     title: "M.A. in Mathematics",
     company: "Indiana University Bloomington",
