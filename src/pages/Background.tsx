@@ -39,17 +39,10 @@ const timelineData: TimelineItem[] = [
   },
   {
     period: "2013 - 2018",
-    title: "Ph.D. in Operations Research",
+    title: "Ph.D. in Operations Research\nM.S. in Computer Science",
     company: "University of Southern California",
     description: "Focused on theoretical optimization and algorithmic research",
     tags: ["Optimization", "Mathematical Modeling", "Research"]
-  },
-  {
-    period: "2013 - 2018",
-    title: "M.S. in Computer Science",
-    company: "University of Southern California",
-    description: "",
-    tags: ["Computer Science", "Graduate Study"]
   },
   {
     period: "2010 - 2013",
@@ -115,7 +108,7 @@ function TimelineCard({ item, index, isVisible }: { item: TimelineItem; index: n
             </div>
 
             {/* Title & Company */}
-            <h3 className="mb-0.5 text-base font-semibold text-[#20231f]">{item.title}</h3>
+            <h3 className="mb-0.5 whitespace-pre-line text-base font-semibold text-[#20231f]">{item.title}</h3>
             {item.company && (
               <p className="mb-1 font-mono text-xs text-[#0f766e]">{item.company}</p>
             )}
