@@ -84,6 +84,9 @@ export default function Books() {
       <header>
         <PixelReadingScene />
         <h1 className="font-serif text-3xl font-normal text-[#20231f]">Reading List</h1>
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-[#61685f]">
+          A personal shelf for career growth, self-improvement, wealth, and happiness.
+        </p>
       </header>
 
       <div className="space-y-4">
