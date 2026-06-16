@@ -1231,14 +1231,18 @@ export default function StudyPlans() {
 
   if (activePlan) {
     return (
-      <div className="space-y-8">
-        <Link
-          to="/study-plans"
-          className="font-mono text-xs uppercase tracking-[0.16em] text-[#8a9188] transition-colors hover:text-[#0f766e]"
-        >
-          Back to study plans
-        </Link>
-        <StudyPlanDetail plan={activePlan} />
+      <div className="min-h-screen text-[#20231f]">
+        <main className="mx-auto max-w-5xl px-6 py-12">
+          <div className="space-y-8">
+            <Link
+              to="/study-plans"
+              className="font-mono text-xs uppercase tracking-[0.16em] text-[#8a9188] transition-colors hover:text-[#0f766e]"
+            >
+              Back to study plans
+            </Link>
+            <StudyPlanDetail plan={activePlan} />
+          </div>
+        </main>
       </div>
     );
   }
