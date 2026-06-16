@@ -1,6 +1,6 @@
-# Journey to Performance Engineer
+# Siyuan's Personal Website
 
-A personal website documenting my journey to becoming a performance engineer.
+A personal website built with Vite, React, TypeScript, and Tailwind CSS. It shares my background, reading list, and study plans.
 
 **Live site:** [ssydyc2.github.io/personal_website](https://ssydyc2.github.io/personal_website)
 
