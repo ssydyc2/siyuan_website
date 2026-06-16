@@ -972,8 +972,7 @@ function AIPerformanceBookDetail({ plan }: { plan: StudyPlan }) {
 
       <section className="grid gap-8 border-y border-[#958979] bg-[#fffdf7]/60 py-8 md:grid-cols-[minmax(0,1fr)_16rem]">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#8a9188]">Book note</p>
-          <h2 className="mt-3 font-serif text-3xl font-normal leading-tight text-[#20231f]">
+          <h2 className="font-serif text-3xl font-normal leading-tight text-[#20231f]">
             {aiPerformanceBook.title}
           </h2>
           <p className="mt-2 font-mono text-sm text-[#61685f]">by {aiPerformanceBook.author}</p>
@@ -1055,8 +1054,7 @@ function KernelBasicsDetail({ plan }: { plan: StudyPlan }) {
       </header>
 
       <section className="border-y border-[#958979] py-8">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#8a9188]">Learning map</p>
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3">
           {kernelLearningMap.map((track) => (
             <a
               key={track.title}
