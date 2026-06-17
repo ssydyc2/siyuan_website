@@ -69,6 +69,11 @@ manually in GitHub. Do not run `gh pr create`, call the GitHub API, or drive a
 browser to submit the PR unless the user explicitly asks for that after seeing
 the copyable text.
 
+Before printing PR text, re-read the final diff or commit summary and make sure
+the title, Context, and Changes describe the latest branch contents. If more
+changes are added after PR text has already been drafted, regenerate the PR
+title and body instead of reusing the earlier version.
+
 Use this classification prefix system for PR titles:
 
 - **[Feature]** - Adding or updating functionality
