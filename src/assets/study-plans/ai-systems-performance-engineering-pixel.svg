@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Pixel art AI performance engineering desk</title>
+  <desc id="desc">A pixel style profiler desk with GPU hardware, charts, and server blocks.</desc>
+  <rect width="960" height="540" fill="#f7f3ea"/>
+  <rect y="360" width="960" height="180" fill="#eee7da"/>
+  <rect width="960" height="360" fill="#dcebe6"/>
+  <g fill="#fffdf7" opacity=".7">
+    <rect x="84" y="64" width="56" height="24"/>
+    <rect x="140" y="88" width="40" height="24"/>
+    <rect x="748" y="56" width="72" height="24"/>
+    <rect x="820" y="80" width="40" height="24"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linejoin="miter" stroke-linecap="square">
+    <rect x="232" y="132" width="336" height="216" fill="#fffdf7"/>
+    <rect x="264" y="164" width="272" height="128" fill="#20231f"/>
+    <path d="M312 316h176M368 348h64M320 372h160" fill="none"/>
+  </g>
+  <g fill="#0f766e">
+    <rect x="296" y="248" width="28" height="28"/>
+    <rect x="340" y="220" width="28" height="56"/>
+    <rect x="384" y="188" width="28" height="88"/>
+    <rect x="428" y="236" width="28" height="40"/>
+    <rect x="472" y="204" width="28" height="72"/>
+  </g>
+  <g fill="#b7791f">
+    <rect x="296" y="188" width="96" height="12"/>
+    <rect x="296" y="212" width="64" height="12"/>
+    <rect x="296" y="236" width="132" height="12"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linejoin="miter" stroke-linecap="square">
+    <rect x="620" y="168" width="144" height="144" fill="#8a9188"/>
+    <rect x="652" y="200" width="80" height="80" fill="#dcebe6"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="604" y="200" width="16" height="16"/>
+    <rect x="604" y="232" width="16" height="16"/>
+    <rect x="604" y="264" width="16" height="16"/>
+    <rect x="764" y="200" width="16" height="16"/>
+    <rect x="764" y="232" width="16" height="16"/>
+    <rect x="764" y="264" width="16" height="16"/>
+    <rect x="652" y="152" width="16" height="16"/>
+    <rect x="684" y="152" width="16" height="16"/>
+    <rect x="716" y="152" width="16" height="16"/>
+    <rect x="652" y="312" width="16" height="16"/>
+    <rect x="684" y="312" width="16" height="16"/>
+    <rect x="716" y="312" width="16" height="16"/>
+  </g>
+  <g fill="#0f766e">
+    <rect x="676" y="224" width="32" height="32"/>
+    <rect x="660" y="208" width="16" height="16"/>
+    <rect x="708" y="256" width="16" height="16"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <rect x="120" y="256" width="84" height="112" fill="#fffdf7"/>
+    <path d="M144 288h36M144 316h20M144 344h44" fill="none"/>
+    <rect x="736" y="356" width="92" height="68" fill="#b7791f"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="752" y="376" width="60" height="8"/>
+    <rect x="752" y="396" width="60" height="8"/>
+  </g>
+  <rect x="96" y="420" width="768" height="28" fill="#8f5e19"/>
+  <rect x="144" y="448" width="48" height="60" fill="#8f5e19"/>
+  <rect x="768" y="448" width="48" height="60" fill="#8f5e19"/>
+</svg>
