@@ -60,19 +60,20 @@ Tailwind CSS v4 is used for styling. The config uses `@tailwindcss/postcss` and 
 
 ## Pull Request Conventions
 
-When asked to create or prepare a pull request, do not try to open the PR on
-GitHub by default. GitHub CLI, browser login, and API setup are often
-environment-specific and error-prone.
+When asked to create or prepare a pull request, try to create it with
+`gh pr create` by default after the branch has been committed and pushed.
+Do not use the GitHub API directly or drive a browser to submit the PR unless
+the user explicitly asks for that.
 
-Instead, print a ready-to-copy PR title and body so the user can create the PR
-manually in GitHub. Do not run `gh pr create`, call the GitHub API, or drive a
-browser to submit the PR unless the user explicitly asks for that after seeing
-the copyable text.
+Before submitting or printing PR text, re-read the final diff or commit summary
+and make sure the title, Context, and Changes describe the latest branch
+contents. If more changes are added after PR text has already been drafted,
+regenerate the PR title and body instead of reusing the earlier version.
 
-Before printing PR text, re-read the final diff or commit summary and make sure
-the title, Context, and Changes describe the latest branch contents. If more
-changes are added after PR text has already been drafted, regenerate the PR
-title and body instead of reusing the earlier version.
+If `gh pr create` fails because GitHub CLI is unavailable, authentication is
+missing, network access fails, or another environment issue blocks submission,
+then print a ready-to-copy PR title and body so the user can create the PR
+manually in GitHub.
 
 Use this classification prefix system for PR titles:
 
@@ -81,8 +82,9 @@ Use this classification prefix system for PR titles:
 - **[Refactoring]** - Code restructuring without changing functionality
 - **[Documentation]** - Updates to docs, comments, or README
 
-Print PR text in this exact shape, with the body always provided as a fenced
-Markdown block so it can be copied directly into GitHub:
+When falling back to manual PR creation, print PR text in this exact shape, with
+the body always provided as a fenced Markdown block so it can be copied directly
+into GitHub:
 
 ````markdown
 Title: [Feature] Short imperative title
