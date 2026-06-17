@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Pixel art mechanical gears for LLM kernel and runtime basics</title>
+  <desc id="desc">A pixel style mechanical engine room with many gears working together.</desc>
+  <rect width="960" height="540" fill="#f7f3ea"/>
+  <rect y="364" width="960" height="176" fill="#eee7da"/>
+  <rect width="960" height="364" fill="#dcebe6"/>
+  <g fill="#fffdf7" opacity=".68">
+    <rect x="72" y="56" width="80" height="24"/>
+    <rect x="152" y="80" width="48" height="24"/>
+    <rect x="740" y="56" width="96" height="24"/>
+    <rect x="836" y="80" width="48" height="24"/>
+  </g>
+  <g fill="#8f5e19">
+    <rect x="116" y="424" width="728" height="24"/>
+    <rect x="156" y="448" width="48" height="60"/>
+    <rect x="756" y="448" width="48" height="60"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <rect x="188" y="128" width="584" height="280" fill="#fffdf7"/>
+    <path d="M220 380h520" fill="none"/>
+    <path d="M244 156h472" fill="none" opacity=".5"/>
+  </g>
+
+  <g fill="#b7791f">
+    <rect x="392" y="116" width="48" height="48"/>
+    <rect x="520" y="116" width="48" height="48"/>
+    <rect x="344" y="164" width="48" height="48"/>
+    <rect x="440" y="164" width="80" height="80"/>
+    <rect x="568" y="164" width="48" height="48"/>
+    <rect x="392" y="244" width="48" height="48"/>
+    <rect x="520" y="244" width="48" height="48"/>
+    <rect x="344" y="292" width="48" height="48"/>
+    <rect x="440" y="292" width="80" height="80"/>
+    <rect x="568" y="292" width="48" height="48"/>
+    <rect x="392" y="340" width="48" height="48"/>
+    <rect x="520" y="340" width="48" height="48"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="456" y="180" width="48" height="48"/>
+    <rect x="456" y="308" width="48" height="48"/>
+  </g>
+
+  <g fill="#0f766e">
+    <rect x="204" y="176" width="40" height="40"/>
+    <rect x="244" y="136" width="40" height="40"/>
+    <rect x="284" y="176" width="40" height="40"/>
+    <rect x="244" y="216" width="40" height="40"/>
+    <rect x="224" y="156" width="80" height="80"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="256" y="188" width="16" height="16"/>
+  </g>
+
+  <g fill="#8a9188">
+    <rect x="636" y="176" width="40" height="40"/>
+    <rect x="676" y="136" width="40" height="40"/>
+    <rect x="716" y="176" width="40" height="40"/>
+    <rect x="676" y="216" width="40" height="40"/>
+    <rect x="656" y="156" width="80" height="80"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="688" y="188" width="16" height="16"/>
+  </g>
+
+  <g fill="#0f766e">
+    <rect x="236" y="304" width="32" height="32"/>
+    <rect x="268" y="272" width="32" height="32"/>
+    <rect x="300" y="304" width="32" height="32"/>
+    <rect x="268" y="336" width="32" height="32"/>
+    <rect x="252" y="288" width="64" height="64"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="276" y="312" width="16" height="16"/>
+  </g>
+
+  <g fill="#b7791f">
+    <rect x="656" y="304" width="32" height="32"/>
+    <rect x="688" y="272" width="32" height="32"/>
+    <rect x="720" y="304" width="32" height="32"/>
+    <rect x="688" y="336" width="32" height="32"/>
+    <rect x="672" y="288" width="64" height="64"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="696" y="312" width="16" height="16"/>
+  </g>
+
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" fill="none">
+    <path d="M324 196h56M580 196h56M316 320h64M580 320h76"/>
+    <path d="M480 244v48M284 256v32M696 256v32"/>
+    <path d="M380 196l24 24M556 220l24-24M380 320l24-24M556 296l24 24"/>
+  </g>
+  <g fill="#20231f" opacity=".22">
+    <rect x="240" y="392" width="36" height="8"/>
+    <rect x="320" y="392" width="36" height="8"/>
+    <rect x="400" y="392" width="36" height="8"/>
+    <rect x="480" y="392" width="36" height="8"/>
+    <rect x="560" y="392" width="36" height="8"/>
+    <rect x="640" y="392" width="36" height="8"/>
+  </g>
+</svg>

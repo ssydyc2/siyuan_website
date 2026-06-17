@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
-import aiPerformanceImage from '../assets/study-plans/ai-systems-performance-engineering.webp';
-import rlForLlmsImage from '../assets/study-plans/efficient-rl-for-llms.webp';
-import kernelRuntimeImage from '../assets/study-plans/llm-kernel-runtime-basics.webp';
+import aiPerformanceImage from '../assets/study-plans/ai-systems-performance-engineering-pixel.svg';
+import rlForLlmsImage from '../assets/study-plans/efficient-rl-for-llms-pixel.svg';
+import kernelRuntimeImage from '../assets/study-plans/llm-kernel-runtime-basics-pixel.svg';
 import MarkdownDocument from '../components/MarkdownDocument';
 import efficientRlMarkdown from '../content/study-plans/efficient-rl-for-llms.md?raw';
 
@@ -709,23 +709,23 @@ const studyPlans: StudyPlan[] = [
 const planImages: Record<string, { src: string; alt: string }> = {
   'efficient-rl-for-llms': {
     src: rlForLlmsImage,
-    alt: 'Editorial illustration of an RL pipeline for LLM training systems',
+    alt: 'Pixel art RL pipeline for LLM training systems',
   },
   'ai-performance-engineer': {
     src: aiPerformanceImage,
-    alt: 'Open technical book with AI performance charts, GPU hardware, and profiling notes',
+    alt: 'Pixel art AI performance engineering desk with GPU hardware and charts',
   },
   'llm-kernel-runtime-basics': {
     src: kernelRuntimeImage,
-    alt: 'Technical illustration of GPU kernels, attention tiles, and LLM runtime cache pages',
+    alt: 'Pixel art GPU kernels, attention tiles, and LLM runtime cache pages',
   },
 };
 
 function PlanVisual({ planId, compact = false }: { planId: string; compact?: boolean }) {
   const image = planImages[planId] ?? planImages['efficient-rl-for-llms'];
   const className = compact
-    ? 'h-28 w-full border border-[#d8cec0] bg-[#eee7da] object-cover'
-    : 'aspect-[16/9] w-full border border-[#d8cec0] bg-[#eee7da] object-cover';
+    ? 'h-28 w-full border border-[#d8cec0] bg-[#eee7da] object-cover [image-rendering:pixelated]'
+    : 'aspect-[16/9] w-full border border-[#d8cec0] bg-[#eee7da] object-cover [image-rendering:pixelated]';
 
   return (
     <img
@@ -907,21 +907,19 @@ function EfficientRlDetail({ plan }: { plan: StudyPlan }) {
 function StructuredStudyPlanDetail({ plan }: { plan: StudyPlan }) {
   return (
     <article className="mx-auto max-w-3xl space-y-12">
-      <header className="grid gap-8 border-b border-[#958979] pb-8 md:grid-cols-[minmax(0,1fr)_16rem] md:items-start">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#8a9188]">{plan.eyebrow}</p>
-          <h1 className="mt-3 font-serif text-4xl font-normal leading-tight text-[#20231f]">{plan.title}</h1>
-          <p className="mt-4 text-lg leading-8 text-[#61685f]">{plan.summary}</p>
+      <PlanVisual planId={plan.id} />
+      <header className="border-b border-[#958979] pb-8">
+        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#8a9188]">{plan.eyebrow}</p>
+        <h1 className="mt-3 font-serif text-4xl font-normal leading-tight text-[#20231f]">{plan.title}</h1>
+        <p className="mt-4 text-lg leading-8 text-[#61685f]">{plan.summary}</p>
 
-          <nav aria-label="Study plan phases" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-[#8a9188]">
-            {plan.phases.map((phase, index) => (
-              <a key={phase.title} href={`#phase-${index + 1}`} className="transition-colors hover:text-[#0f766e]">
-                {phase.title}
-              </a>
-            ))}
-          </nav>
-        </div>
-        <PlanVisual planId={plan.id} compact />
+        <nav aria-label="Study plan phases" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-[#8a9188]">
+          {plan.phases.map((phase, index) => (
+            <a key={phase.title} href={`#phase-${index + 1}`} className="transition-colors hover:text-[#0f766e]">
+              {phase.title}
+            </a>
+          ))}
+        </nav>
       </header>
 
       {plan.readingChecklist.length > 0 && (
@@ -961,12 +959,10 @@ function StructuredStudyPlanDetail({ plan }: { plan: StudyPlan }) {
 function AIPerformanceBookDetail({ plan }: { plan: StudyPlan }) {
   return (
     <article className="mx-auto max-w-4xl space-y-12">
-      <header className="grid gap-8 md:grid-cols-[minmax(0,1fr)_18rem] md:items-start">
-        <div className="max-w-3xl">
-          <h1 className="font-serif text-4xl font-normal leading-tight text-[#20231f]">{plan.title}</h1>
-          <p className="mt-4 text-lg leading-8 text-[#61685f]">{plan.summary}</p>
-        </div>
-        <PlanVisual planId={plan.id} />
+      <PlanVisual planId={plan.id} />
+      <header className="max-w-3xl">
+        <h1 className="font-serif text-4xl font-normal leading-tight text-[#20231f]">{plan.title}</h1>
+        <p className="mt-4 text-lg leading-8 text-[#61685f]">{plan.summary}</p>
       </header>
 
       <section className="grid gap-8 border-y border-[#958979] bg-[#fffdf7]/60 py-8 md:grid-cols-[minmax(0,1fr)_16rem]">
@@ -1044,12 +1040,10 @@ function AIPerformanceBookDetail({ plan }: { plan: StudyPlan }) {
 function KernelBasicsDetail({ plan }: { plan: StudyPlan }) {
   return (
     <article className="mx-auto max-w-4xl space-y-12">
-      <header className="grid gap-8 md:grid-cols-[minmax(0,1fr)_18rem] md:items-start">
-        <div className="max-w-3xl">
-          <h1 className="font-serif text-4xl font-normal leading-tight text-[#20231f]">{plan.title}</h1>
-          <p className="mt-4 text-lg leading-8 text-[#61685f]">{plan.summary}</p>
-        </div>
-        <PlanVisual planId={plan.id} />
+      <PlanVisual planId={plan.id} />
+      <header className="max-w-3xl">
+        <h1 className="font-serif text-4xl font-normal leading-tight text-[#20231f]">{plan.title}</h1>
+        <p className="mt-4 text-lg leading-8 text-[#61685f]">{plan.summary}</p>
       </header>
 
       <section className="border-y border-[#958979] py-8">

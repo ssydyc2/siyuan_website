@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Pixel art robot learning reinforcement learning</title>
+  <desc id="desc">A small pixel robot studies examples, receives rewards, and learns in a warm classroom-like lab.</desc>
+  <rect width="960" height="540" fill="#f7f3ea"/>
+  <rect y="372" width="960" height="168" fill="#eee7da"/>
+  <rect width="960" height="372" fill="#dcebe6"/>
+  <g fill="#fffdf7" opacity=".7">
+    <rect x="80" y="60" width="56" height="24"/>
+    <rect x="136" y="84" width="40" height="24"/>
+    <rect x="724" y="64" width="80" height="24"/>
+    <rect x="804" y="88" width="48" height="24"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <rect x="360" y="156" width="216" height="156" fill="#fffdf7"/>
+    <rect x="392" y="196" width="48" height="48" fill="#0f766e"/>
+    <rect x="496" y="196" width="48" height="48" fill="#0f766e"/>
+    <path d="M444 268h48" fill="none"/>
+    <path d="M428 156v-40M508 156v-40" fill="none"/>
+  </g>
+  <g fill="#b7791f">
+    <rect x="416" y="104" width="24" height="24"/>
+    <rect x="496" y="104" width="24" height="24"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <rect x="388" y="312" width="160" height="96" fill="#8a9188"/>
+    <rect x="324" y="332" width="64" height="28" fill="#8a9188"/>
+    <rect x="548" y="332" width="64" height="28" fill="#8a9188"/>
+    <rect x="408" y="408" width="32" height="64" fill="#8a9188"/>
+    <rect x="496" y="408" width="32" height="64" fill="#8a9188"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <rect x="112" y="184" width="168" height="132" fill="#fffdf7"/>
+    <rect x="680" y="184" width="168" height="132" fill="#fffdf7"/>
+  </g>
+  <g fill="#0f766e">
+    <rect x="144" y="220" width="36" height="36"/>
+    <rect x="196" y="220" width="36" height="36"/>
+    <rect x="170" y="268" width="36" height="24"/>
+    <rect x="724" y="216" width="80" height="20"/>
+    <rect x="724" y="252" width="48" height="20"/>
+    <rect x="724" y="288" width="96" height="20"/>
+  </g>
+  <g fill="#b7791f">
+    <rect x="148" y="128" width="40" height="40"/>
+    <rect x="724" y="128" width="40" height="40"/>
+    <rect x="780" y="128" width="40" height="40"/>
+  </g>
+  <g stroke="#20231f" stroke-width="8" stroke-linecap="square" fill="none">
+    <path d="M280 248h72M608 248h72"/>
+    <path d="M320 236l32 12-32 12M640 236l-32 12 32 12"/>
+    <path d="M468 116V84h120v56"/>
+  </g>
+  <g fill="#0f766e">
+    <rect x="588" y="132" width="28" height="28"/>
+    <rect x="616" y="160" width="28" height="28"/>
+    <rect x="644" y="188" width="28" height="28"/>
+  </g>
+  <g fill="#20231f">
+    <rect x="388" y="476" width="64" height="16"/>
+    <rect x="484" y="476" width="64" height="16"/>
+  </g>
+  <rect x="96" y="448" width="768" height="24" fill="#8f5e19"/>
+</svg>
