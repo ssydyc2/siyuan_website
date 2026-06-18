@@ -1139,7 +1139,7 @@ function StudyHeroScene() {
   return (
     <HeroScene
       src={studyHeroImage}
-      alt="Anime-style LLM systems study scene with GPU kernels, attention tiles, and runtime diagrams"
+      alt="Anime-style nighttime study scene with a back-facing person working on a laptop"
       variant="study"
     />
   );
