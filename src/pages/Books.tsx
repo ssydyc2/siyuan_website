@@ -1,3 +1,5 @@
+import readingLibrary from '../assets/reading-list/reading-library.svg';
+
 interface Book {
   id: string;
   title: string | string[];
@@ -34,46 +36,12 @@ const books: Book[] = [
   },
 ];
 
-function PixelReadingScene() {
-  const renderShelfItems = () => (
-    <>
-      <span className="pixel-books__book pixel-books__book--teal" />
-      <span className="pixel-books__book pixel-books__book--amber" />
-      <span className="pixel-books__book pixel-books__book--ink" />
-      <span className="pixel-books__book pixel-books__book--paper" />
-      <span className="pixel-books__book pixel-books__book--green" />
-      <span className="pixel-books__book pixel-books__book--thin" />
-      <span className="pixel-books__book pixel-books__book--amber pixel-books__book--wide" />
-      <span className="pixel-books__book pixel-books__book--teal pixel-books__book--short" />
-      <span className="pixel-books__book pixel-books__book--ink" />
-      <span className="pixel-books__book pixel-books__book--paper pixel-books__book--thin" />
-      <span className="pixel-books__book pixel-books__book--green pixel-books__book--wide" />
-      <span className="pixel-books__book pixel-books__book--amber pixel-books__book--thin" />
-      <span className="pixel-books__book pixel-books__book--ink pixel-books__book--short" />
-      <span className="pixel-books__book pixel-books__book--teal" />
-      <span className="pixel-books__book pixel-books__book--paper" />
-      <span className="pixel-books__book pixel-books__book--amber" />
-      <span className="pixel-books__book pixel-books__book--green pixel-books__book--short" />
-      <span className="pixel-books__book pixel-books__book--ink pixel-books__book--thin" />
-      <span className="pixel-books__book pixel-books__book--teal pixel-books__book--wide" />
-      <span className="pixel-books__book pixel-books__book--paper pixel-books__book--short" />
-      <span className="pixel-books__book pixel-books__book--amber pixel-books__book--wide" />
-      <span className="pixel-books__book pixel-books__book--green" />
-      <span className="pixel-books__book pixel-books__book--ink" />
-      <span className="pixel-books__book pixel-books__book--teal pixel-books__book--thin" />
-      <span className="pixel-books__featured-book">
-        <span className="pixel-books__featured-page" />
-      </span>
-    </>
-  );
-
+function ReadingHeroScene() {
   return (
-    <div className="pixel-scene pixel-books" aria-hidden="true">
-      <div className="pixel-books__shelves">
-        <div className="pixel-books__shelf-row">
-          <div className="pixel-books__shelf-strip">{renderShelfItems()}</div>
-        </div>
-      </div>
+    <div className="reading-hero-scene" aria-hidden="true">
+      <img src={readingLibrary} alt="" className="reading-hero-scene__image" draggable="false" />
+      <span className="reading-hero-scene__shine" />
+      <span className="reading-hero-scene__grain" />
     </div>
   );
 }
@@ -82,7 +50,7 @@ export default function Books() {
   return (
     <div className="space-y-8">
       <header>
-        <PixelReadingScene />
+        <ReadingHeroScene />
         <h1 className="font-serif text-3xl font-normal text-[#20231f]">Reading List</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[#61685f]">
           A personal shelf for career growth, self-improvement, wealth, and happiness.

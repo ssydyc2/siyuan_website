@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import aboutPerformanceJourney from '../assets/about/about-performance-journey.svg';
 
 interface TimelineItem {
   period: string;
@@ -136,26 +137,10 @@ function TimelineCard({ item, index, isVisible }: { item: TimelineItem; index: n
   );
 }
 
-function PixelJourney({ isVisible }: { isVisible: boolean }) {
-  const renderSceneryItems = () => (
-    <>
-      <span className="pixel-journey__house">
-        <span className="pixel-journey__roof" />
-        <span className="pixel-journey__chimney" />
-        <span className="pixel-journey__door" />
-        <span className="pixel-journey__window" />
-      </span>
-      <span className="pixel-journey__tree pixel-journey__tree--first" />
-      <span className="pixel-journey__tree pixel-journey__tree--second" />
-      <span className="pixel-journey__tree pixel-journey__tree--third" />
-      <span className="pixel-journey__shrub pixel-journey__shrub--first" />
-      <span className="pixel-journey__shrub pixel-journey__shrub--second" />
-    </>
-  );
-
+function AboutHeroScene({ isVisible }: { isVisible: boolean }) {
   return (
     <div
-      className="pixel-journey"
+      className="about-hero-scene"
       aria-hidden="true"
       style={{
         opacity: isVisible ? 1 : 0,
@@ -164,24 +149,14 @@ function PixelJourney({ isVisible }: { isVisible: boolean }) {
         transitionDelay: '0.05s'
       }}
     >
-      <div className="pixel-journey__backdrop">
-        <span className="pixel-journey__sun" />
-        <div className="pixel-journey__clouds" />
-        <div className="pixel-journey__hills" />
-        <div className="pixel-journey__scenery">
-          <div className="pixel-journey__scenery-strip">{renderSceneryItems()}</div>
-          <div className="pixel-journey__scenery-strip">{renderSceneryItems()}</div>
-        </div>
-      </div>
-      <div className="pixel-journey__track" />
-      <div className="pixel-journey__walker">
-        <span className="pixel-journey__head" />
-        <span className="pixel-journey__pack" />
-        <span className="pixel-journey__body" />
-        <span className="pixel-journey__arm" />
-        <span className="pixel-journey__leg pixel-journey__leg--front" />
-        <span className="pixel-journey__leg pixel-journey__leg--back" />
-      </div>
+      <img
+        src={aboutPerformanceJourney}
+        alt=""
+        className="about-hero-scene__image"
+        draggable="false"
+      />
+      <span className="about-hero-scene__shine" />
+      <span className="about-hero-scene__grain" />
     </div>
   );
 }
@@ -202,7 +177,7 @@ export default function Background() {
       <div className="relative space-y-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <PixelJourney isVisible={isVisible} />
+          <AboutHeroScene isVisible={isVisible} />
           <h1
             className="mb-2 font-serif text-3xl font-normal text-[#20231f]"
             style={{

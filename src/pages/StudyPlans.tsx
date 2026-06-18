@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
-import aiPerformanceImage from '../assets/study-plans/ai-systems-performance-engineering-pixel.svg';
-import rlForLlmsImage from '../assets/study-plans/efficient-rl-for-llms-pixel.svg';
-import kernelRuntimeImage from '../assets/study-plans/llm-kernel-runtime-basics-pixel.svg';
+import aiPerformanceImage from '../assets/study-plans/ai-systems-performance-engineering-2d-hd.webp';
+import rlForLlmsImage from '../assets/study-plans/efficient-rl-for-llms-2d-hd.webp';
+import kernelRuntimeImage from '../assets/study-plans/llm-kernel-runtime-basics-2d-hd.webp';
+import nightLaptopStudy from '../assets/study-plans/night-laptop-study.svg';
 import MarkdownDocument from '../components/MarkdownDocument';
 import efficientRlMarkdown from '../content/study-plans/efficient-rl-for-llms.md?raw';
 
@@ -709,23 +710,23 @@ const studyPlans: StudyPlan[] = [
 const planImages: Record<string, { src: string; alt: string }> = {
   'efficient-rl-for-llms': {
     src: rlForLlmsImage,
-    alt: 'Pixel art RL pipeline for LLM training systems',
+    alt: '2D illustration of an RL pipeline for LLM training systems',
   },
   'ai-performance-engineer': {
     src: aiPerformanceImage,
-    alt: 'Pixel art AI performance engineering desk with GPU hardware and charts',
+    alt: '2D illustration of an AI performance engineering desk with GPU hardware and charts',
   },
   'llm-kernel-runtime-basics': {
     src: kernelRuntimeImage,
-    alt: 'Pixel art GPU kernels, attention tiles, and LLM runtime cache pages',
+    alt: '2D illustration of GPU kernels, attention tiles, and LLM runtime cache pages',
   },
 };
 
 function PlanVisual({ planId, compact = false }: { planId: string; compact?: boolean }) {
   const image = planImages[planId] ?? planImages['efficient-rl-for-llms'];
   const className = compact
-    ? 'h-28 w-full border border-[#d8cec0] bg-[#eee7da] object-cover [image-rendering:pixelated]'
-    : 'aspect-[16/9] w-full border border-[#d8cec0] bg-[#eee7da] object-cover [image-rendering:pixelated]';
+    ? 'h-28 w-full border border-[#d8cec0] bg-[#eee7da] object-cover'
+    : 'aspect-[16/9] w-full border border-[#d8cec0] bg-[#eee7da] object-cover';
 
   return (
     <img
@@ -1133,46 +1134,12 @@ function StudyPlanDetail({ plan }: { plan: StudyPlan }) {
   return <StructuredStudyPlanDetail plan={plan} />;
 }
 
-function PixelStudyScene() {
-  const renderWindowLights = () => (
-    <>
-      <span className="pixel-study__window-light" />
-      <span className="pixel-study__window-light" />
-      <span className="pixel-study__window-light" />
-      <span className="pixel-study__window-light" />
-      <span className="pixel-study__window-light" />
-      <span className="pixel-study__window-light" />
-    </>
-  );
-
+function StudyHeroScene() {
   return (
-    <div className="pixel-scene pixel-study" aria-hidden="true">
-      <span className="pixel-study__moon" />
-      <span className="pixel-study__star pixel-study__star--first" />
-      <span className="pixel-study__star pixel-study__star--second" />
-      <span className="pixel-study__star pixel-study__star--third" />
-      <div className="pixel-study__window">
-        <div className="pixel-study__skyline">
-          <span className="pixel-study__building pixel-study__building--short">{renderWindowLights()}</span>
-          <span className="pixel-study__building pixel-study__building--tall">{renderWindowLights()}</span>
-          <span className="pixel-study__building pixel-study__building--mid">{renderWindowLights()}</span>
-          <span className="pixel-study__building pixel-study__building--wide">{renderWindowLights()}</span>
-        </div>
-      </div>
-      <span className="pixel-study__desk" />
-      <span className="pixel-study__mug" />
-      <div className="pixel-study__person">
-        <span className="pixel-study__head" />
-        <span className="pixel-study__hair" />
-        <span className="pixel-study__body" />
-        <span className="pixel-study__arm pixel-study__arm--left" />
-        <span className="pixel-study__arm pixel-study__arm--right" />
-      </div>
-      <div className="pixel-study__laptop">
-        <span className="pixel-study__screen" />
-        <span className="pixel-study__cursor" />
-        <span className="pixel-study__keyboard" />
-      </div>
+    <div className="study-hero-scene" aria-hidden="true">
+      <img src={nightLaptopStudy} alt="" className="study-hero-scene__image" draggable="false" />
+      <span className="study-hero-scene__shine" />
+      <span className="study-hero-scene__grain" />
     </div>
   );
 }
@@ -1181,7 +1148,7 @@ function StudyPlanIndex({ plans }: { plans: StudyPlan[] }) {
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <header>
-        <PixelStudyScene />
+        <StudyHeroScene />
         <h1 className="font-serif text-4xl font-normal leading-tight text-[#20231f]">Study Plans</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[#61685f]">
           Study Plans for interesting LLM topics

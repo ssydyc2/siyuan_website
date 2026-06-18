@@ -1,0 +1,214 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Walking journey illustration</title>
+  <desc id="desc">A warm HD 2D scene of a person walking along a path with trees, sky, hills, and houses.</desc>
+  <style>
+    .cloud {
+      animation: cloud-drift 20s ease-in-out infinite;
+    }
+
+    .cloud-b {
+      animation-delay: -8s;
+      animation-duration: 24s;
+    }
+
+    .walker {
+      animation: walker-bob 0.9s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center bottom;
+    }
+
+    .walker-arm {
+      animation: arm-swing 0.9s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center top;
+    }
+
+    .walker-leg-front {
+      animation: front-step 0.9s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center top;
+    }
+
+    .walker-leg-back {
+      animation: back-step 0.9s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center top;
+    }
+
+    .leaf {
+      animation: leaf-sway 4.8s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center bottom;
+    }
+
+    .leaf-b {
+      animation-delay: -2.1s;
+    }
+
+    .path-highlight {
+      stroke-dasharray: 28 54;
+      animation: path-flow 4.5s linear infinite;
+    }
+
+    @keyframes cloud-drift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(30px); }
+    }
+
+    @keyframes walker-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes arm-swing {
+      0%, 100% { transform: rotate(-8deg); }
+      50% { transform: rotate(12deg); }
+    }
+
+    @keyframes front-step {
+      0%, 100% { transform: rotate(-7deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    @keyframes back-step {
+      0%, 100% { transform: rotate(8deg); }
+      50% { transform: rotate(-12deg); }
+    }
+
+    @keyframes leaf-sway {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(2.5deg); }
+    }
+
+    @keyframes path-flow {
+      to { stroke-dashoffset: -82; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cloud,
+      .walker,
+      .walker-arm,
+      .walker-leg-front,
+      .walker-leg-back,
+      .leaf,
+      .path-highlight {
+        animation: none;
+      }
+    }
+  </style>
+
+  <defs>
+    <linearGradient id="sky" x1="800" y1="0" x2="800" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8E9C9"/>
+      <stop offset="0.47" stop-color="#DCEBE6"/>
+      <stop offset="1" stop-color="#EFE6D8"/>
+    </linearGradient>
+    <linearGradient id="path" x1="790" y1="323" x2="794" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D7B67B"/>
+      <stop offset="1" stop-color="#9D6530"/>
+    </linearGradient>
+    <linearGradient id="treeTop" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#78A899"/>
+      <stop offset="1" stop-color="#0F766E"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1235 135) rotate(90) scale(120)">
+      <stop stop-color="#F8D37E"/>
+      <stop offset="0.62" stop-color="#E5BD65" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#E5BD65" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#20231F" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="720" rx="34" fill="url(#sky)"/>
+  <circle cx="1235" cy="135" r="120" fill="url(#sun)"/>
+  <circle cx="1235" cy="135" r="42" fill="#E5BD65" opacity="0.88"/>
+
+  <g class="cloud" opacity="0.88">
+    <ellipse cx="250" cy="126" rx="78" ry="26" fill="#FFFDF7"/>
+    <ellipse cx="318" cy="106" rx="55" ry="34" fill="#FFFDF7"/>
+    <ellipse cx="392" cy="127" rx="83" ry="25" fill="#FFFDF7"/>
+  </g>
+  <g class="cloud cloud-b" opacity="0.72">
+    <ellipse cx="955" cy="171" rx="58" ry="20" fill="#FFFDF7"/>
+    <ellipse cx="1000" cy="154" rx="42" ry="27" fill="#FFFDF7"/>
+    <ellipse cx="1060" cy="173" rx="66" ry="20" fill="#FFFDF7"/>
+  </g>
+
+  <path d="M0 385C148 322 258 343 393 397C520 448 620 434 768 355C912 278 1032 299 1182 370C1298 425 1422 419 1600 350V720H0V385Z" fill="#DCEBE6"/>
+  <path d="M0 450C162 392 300 396 448 458C582 514 711 492 858 421C1004 350 1141 367 1260 444C1368 514 1468 505 1600 456V720H0V450Z" fill="#CFE3D9"/>
+  <path d="M0 525C190 478 356 489 538 538C724 588 882 570 1048 516C1230 457 1400 480 1600 542V720H0V525Z" fill="#E9DDC7"/>
+
+  <g opacity="0.95">
+    <g filter="url(#softShadow)">
+      <path d="M200 402H352V522H200V402Z" fill="#E8C98F"/>
+      <path d="M176 402L276 326L376 402H176Z" fill="#8F5E19"/>
+      <rect x="223" y="440" width="38" height="82" rx="7" fill="#0B5F59"/>
+      <rect x="288" y="429" width="42" height="38" rx="8" fill="#FFFDF7"/>
+      <path d="M295 429V467M288 448H330" stroke="#D8CEC0" stroke-width="5"/>
+      <rect x="186" y="521" width="178" height="16" rx="8" fill="#C99A4B"/>
+    </g>
+
+    <g filter="url(#softShadow)">
+      <path d="M1242 376H1424V522H1242V376Z" fill="#E5BD65"/>
+      <path d="M1216 376L1334 294L1451 376H1216Z" fill="#6F471F"/>
+      <rect x="1280" y="432" width="44" height="90" rx="8" fill="#0F766E"/>
+      <rect x="1356" y="421" width="48" height="42" rx="8" fill="#FFFDF7"/>
+      <path d="M1364 421V463M1356 442H1404" stroke="#D8CEC0" stroke-width="5"/>
+      <rect x="1228" y="521" width="210" height="18" rx="9" fill="#9D6530"/>
+    </g>
+  </g>
+
+  <g class="leaf" filter="url(#softShadow)">
+    <rect x="458" y="350" width="26" height="188" rx="13" fill="#6F471F"/>
+    <ellipse cx="471" cy="322" rx="82" ry="92" fill="url(#treeTop)"/>
+    <ellipse cx="406" cy="370" rx="74" ry="72" fill="#5D927E"/>
+    <ellipse cx="535" cy="374" rx="76" ry="70" fill="#0F766E"/>
+    <ellipse cx="470" cy="418" rx="92" ry="72" fill="#78A899"/>
+  </g>
+
+  <g class="leaf leaf-b" filter="url(#softShadow)">
+    <rect x="1088" y="350" width="28" height="190" rx="14" fill="#6F471F"/>
+    <ellipse cx="1102" cy="313" rx="90" ry="98" fill="url(#treeTop)"/>
+    <ellipse cx="1028" cy="368" rx="79" ry="75" fill="#5D927E"/>
+    <ellipse cx="1175" cy="367" rx="82" ry="73" fill="#0F766E"/>
+    <ellipse cx="1101" cy="419" rx="96" ry="75" fill="#78A899"/>
+  </g>
+
+  <g opacity="0.86">
+    <rect x="80" y="516" width="70" height="76" rx="35" fill="#0F766E"/>
+    <rect x="111" y="552" width="14" height="80" rx="7" fill="#6F471F"/>
+    <rect x="1454" y="500" width="82" height="92" rx="41" fill="#0F766E"/>
+    <rect x="1491" y="542" width="16" height="92" rx="8" fill="#6F471F"/>
+    <rect x="604" y="484" width="54" height="68" rx="27" fill="#78A899"/>
+    <rect x="628" y="520" width="12" height="60" rx="6" fill="#6F471F"/>
+  </g>
+
+  <path d="M732 332C682 390 622 460 556 544C522 588 494 631 470 720H1124C1104 640 1070 589 1016 536C932 454 859 391 805 332C787 313 750 313 732 332Z" fill="url(#path)"/>
+  <path d="M746 348C712 401 672 465 632 538C604 590 580 642 560 704" stroke="#E8C98F" stroke-width="8" stroke-linecap="round" opacity="0.45"/>
+  <path class="path-highlight" d="M812 346C843 402 878 462 918 532C948 587 972 642 992 704" stroke="#FFFDF7" stroke-width="8" stroke-linecap="round" opacity="0.42"/>
+
+  <g class="walker" filter="url(#softShadow)">
+    <ellipse cx="780" cy="646" rx="118" ry="24" fill="#20231F" opacity="0.16"/>
+    <g transform="translate(690 416)">
+      <path class="walker-leg-back" d="M104 178C132 205 156 231 179 263" stroke="#20231F" stroke-width="21" stroke-linecap="round"/>
+      <path class="walker-leg-front" d="M88 178C65 209 45 238 26 271" stroke="#20231F" stroke-width="21" stroke-linecap="round"/>
+      <path d="M16 274H56" stroke="#6F471F" stroke-width="15" stroke-linecap="round"/>
+      <path d="M174 266H217" stroke="#6F471F" stroke-width="15" stroke-linecap="round"/>
+      <path d="M71 70C50 100 45 137 56 181H117C131 135 123 96 96 70H71Z" fill="#0F766E"/>
+      <path d="M62 84C38 91 22 111 16 139C12 160 22 176 43 180L67 164C54 136 53 109 62 84Z" fill="#B7791F"/>
+      <path class="walker-arm" d="M104 86C132 105 151 127 166 154" stroke="#9D6530" stroke-width="17" stroke-linecap="round"/>
+      <path class="walker-arm" d="M70 91C48 113 35 136 30 160" stroke="#C78A45" stroke-width="16" stroke-linecap="round" opacity="0.92"/>
+      <path d="M68 72C82 91 102 101 129 103" stroke="#0B5F59" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+      <path d="M82 58C78 72 85 83 100 90" stroke="#C78A45" stroke-width="17" stroke-linecap="round"/>
+      <circle cx="93" cy="31" r="33" fill="#C78A45"/>
+      <path d="M116 30L143 38L118 47Z" fill="#C78A45"/>
+      <path d="M60 24C67 -2 90 -11 116 1C133 9 143 23 145 40C121 43 96 36 75 19C72 38 63 51 48 60C43 46 47 33 60 24Z" fill="#20231F"/>
+      <circle cx="116" cy="29" r="4.5" fill="#20231F"/>
+      <path d="M119 54C109 62 96 62 85 55" stroke="#8F5E19" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+    </g>
+  </g>
+
+  <rect x="0" y="0" width="1600" height="720" rx="34" stroke="#FFFDF7" stroke-opacity="0.5" stroke-width="2"/>
+</svg>

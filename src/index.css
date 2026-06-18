@@ -44,6 +44,99 @@ samp {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', ui-monospace, monospace;
 }
 
+.about-hero-scene,
+.reading-hero-scene,
+.study-hero-scene {
+  position: relative;
+  width: min(100%, 56rem);
+  aspect-ratio: 16 / 7;
+  min-height: 13rem;
+  margin: 0 auto 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(149, 137, 121, 0.38);
+  border-radius: 6px;
+  background: var(--paper-elevated);
+  box-shadow:
+    0 20px 48px rgba(32, 35, 31, 0.1),
+    3px 3px 0 rgba(216, 206, 192, 0.8);
+  isolation: isolate;
+}
+
+.about-hero-scene__image,
+.reading-hero-scene__image,
+.study-hero-scene__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.012);
+  transform-origin: center;
+  animation: about-image-drift 14s ease-in-out infinite;
+}
+
+.about-hero-scene__shine,
+.about-hero-scene__grain,
+.reading-hero-scene__shine,
+.reading-hero-scene__grain,
+.study-hero-scene__shine,
+.study-hero-scene__grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about-hero-scene__shine,
+.reading-hero-scene__shine,
+.study-hero-scene__shine {
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 74% 20%, rgba(229, 189, 101, 0.24), transparent 20%),
+    linear-gradient(110deg, transparent 0 34%, rgba(255, 253, 247, 0.2) 43%, transparent 52% 100%);
+  transform: translateX(-18%);
+  animation: about-shine-pass 7s ease-in-out infinite;
+}
+
+.about-hero-scene__grain,
+.reading-hero-scene__grain,
+.study-hero-scene__grain {
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(255, 253, 247, 0.38) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(32, 35, 31, 0.14) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.58), transparent 78%);
+}
+
+@keyframes about-image-drift {
+  0%,
+  100% {
+    transform: scale(1.012) translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: scale(1.03) translate3d(-0.65%, -0.8%, 0);
+  }
+}
+
+@keyframes about-shine-pass {
+  0%,
+  18% {
+    opacity: 0;
+    transform: translateX(-22%);
+  }
+
+  43% {
+    opacity: 0.88;
+  }
+
+  74%,
+  100% {
+    opacity: 0;
+    transform: translateX(24%);
+  }
+}
+
 .pixel-journey {
   --pixel: 4px;
   position: relative;
@@ -460,6 +553,19 @@ samp {
 }
 
 @media (max-width: 640px) {
+  .about-hero-scene,
+  .reading-hero-scene,
+  .study-hero-scene {
+    aspect-ratio: 4 / 3;
+    min-height: 14rem;
+  }
+
+  .about-hero-scene__image,
+  .reading-hero-scene__image,
+  .study-hero-scene__image {
+    object-position: 51% center;
+  }
+
   .pixel-journey {
     height: 8.75rem;
     margin-bottom: 1rem;
@@ -477,6 +583,15 @@ samp {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .about-hero-scene__image,
+  .about-hero-scene__shine,
+  .reading-hero-scene__image,
+  .reading-hero-scene__shine,
+  .study-hero-scene__image,
+  .study-hero-scene__shine {
+    animation: none;
+  }
+
   .pixel-journey__clouds,
   .pixel-journey__hills,
   .pixel-journey__scenery,
