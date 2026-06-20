@@ -1,16 +1,17 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import geekAvatar from '../assets/avatars/geek-avatar.png';
+import ThemeToggle from './ThemeToggle';
 
 export default function Layout() {
   return (
-    <div className="min-h-screen text-[#20231f]">
-      <header className="border-b border-[#958979] bg-[#fffdf7]/80">
+    <div className="min-h-screen text-[var(--ink)]">
+      <header className="border-b border-[var(--rule-strong)] bg-[var(--paper-elevated)]/80">
         <div className="mx-auto max-w-5xl px-6 py-8">
           <div className="mb-8 flex items-center gap-4 sm:gap-5">
             <Link
               to="/"
               aria-label="Go to homepage"
-              className="shrink-0 rounded-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0f766e]"
+              className="shrink-0 rounded-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
             >
               <img
                 src={geekAvatar}
@@ -19,12 +20,15 @@ export default function Layout() {
               />
             </Link>
             <div>
-              <h1 className="font-serif text-4xl font-normal tracking-tight text-[#20231f] sm:text-5xl">
-                Siyuan Song
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="font-serif text-4xl font-normal tracking-tight text-[var(--ink)] sm:text-5xl">
+                  Siyuan Song
+                </h1>
+                <ThemeToggle className="mt-1" />
+              </div>
               <div className="mt-3 flex items-center gap-4">
-                <div className="h-px w-12 bg-[#958979] sm:w-14"></div>
-                <span className="font-mono text-lg tracking-[0.24em] text-[#61685f] sm:text-xl">
+                <div className="h-px w-12 bg-[var(--rule-strong)] sm:w-14"></div>
+                <span className="font-mono text-lg tracking-[0.24em] text-[var(--ink-muted)] sm:text-xl">
                   宋思源
                 </span>
               </div>
@@ -36,8 +40,8 @@ export default function Layout() {
               className={({ isActive }) =>
                 `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
                   isActive
-                    ? 'text-[#0f766e]'
-                    : 'text-[#61685f] hover:text-[#20231f]'
+                    ? 'text-[var(--accent)]'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
                 }`
               }
             >
@@ -48,8 +52,8 @@ export default function Layout() {
               className={({ isActive }) =>
                 `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
                   isActive
-                    ? 'text-[#0f766e]'
-                    : 'text-[#61685f] hover:text-[#20231f]'
+                    ? 'text-[var(--accent)]'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
                 }`
               }
             >
@@ -60,8 +64,8 @@ export default function Layout() {
               className={({ isActive }) =>
                 `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
                   isActive
-                    ? 'text-[#0f766e]'
-                    : 'text-[#61685f] hover:text-[#20231f]'
+                    ? 'text-[var(--accent)]'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
                 }`
               }
             >

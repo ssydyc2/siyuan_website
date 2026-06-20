@@ -69,7 +69,7 @@ function TimelineCard({ item, index, isVisible }: { item: TimelineItem; index: n
     <div className={`relative flex items-center ${isLeft ? 'justify-start' : 'justify-end'} mb-3`}>
       {/* Node on center line */}
       <div
-        className="absolute left-1/2 top-1/2 z-10 h-3 w-3 -translate-x-1/2 rounded-full border-2 border-[#0f766e] bg-[#fffdf7]"
+        className="absolute left-1/2 top-1/2 z-10 h-3 w-3 -translate-x-1/2 rounded-full border-2 border-[var(--accent)] bg-[var(--paper-elevated)]"
         style={{
           opacity: isVisible ? 1 : 0,
           transform: isVisible ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0)',
@@ -77,12 +77,12 @@ function TimelineCard({ item, index, isVisible }: { item: TimelineItem; index: n
           transitionDelay: `${index * 0.15 + 0.3}s`
         }}
       >
-        <div className="absolute inset-0.5 rounded-full bg-[#b7791f]" />
+        <div className="absolute inset-0.5 rounded-full bg-[var(--amber)]" />
       </div>
 
       {/* Connector to center line */}
       <div
-        className={`absolute top-1/2 h-px w-6 bg-[#958979]
+        className={`absolute top-1/2 h-px w-6 bg-[var(--rule-strong)]
           ${isLeft ? 'right-1/2 mr-3' : 'left-1/2 ml-3'}`}
         style={{
           opacity: isVisible ? 1 : 0,
@@ -102,22 +102,22 @@ function TimelineCard({ item, index, isVisible }: { item: TimelineItem; index: n
         }}
       >
         <div className="relative group">
-          <div className="relative border border-[#d8cec0] bg-[#fffdf7] p-4 shadow-[3px_3px_0_#d8cec0] transition-colors duration-300 group-hover:border-[#958979]">
+          <div className="relative border border-[var(--rule)] bg-[var(--paper-elevated)] p-4 shadow-[3px_3px_0_var(--shadow-rule)] transition-colors duration-300 group-hover:border-[var(--rule-strong)]">
             {/* Period badge */}
-            <div className="mb-2 inline-flex items-center border border-[#d8cec0] bg-[#eee7da] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[#0f766e]">
-              <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[#b7791f]" />
+            <div className="mb-2 inline-flex items-center border border-[var(--rule)] bg-[var(--paper-muted)] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--accent)]">
+              <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--amber)]" />
               {item.period}
             </div>
 
             {/* Title & Company */}
-            <h3 className="mb-0.5 whitespace-pre-line text-base font-semibold text-[#20231f]">{item.title}</h3>
+            <h3 className="mb-0.5 whitespace-pre-line text-base font-semibold text-[var(--ink)]">{item.title}</h3>
             {item.company && (
-              <p className="mb-1 font-mono text-xs text-[#0f766e]">{item.company}</p>
+              <p className="mb-1 font-mono text-xs text-[var(--accent)]">{item.company}</p>
             )}
 
             {/* Description */}
             {item.description && (
-              <p className="mb-2 text-xs leading-relaxed text-[#61685f]">{item.description}</p>
+              <p className="mb-2 text-xs leading-relaxed text-[var(--ink-muted)]">{item.description}</p>
             )}
 
             {/* Tags */}
@@ -125,7 +125,7 @@ function TimelineCard({ item, index, isVisible }: { item: TimelineItem; index: n
               {item.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="border border-[#d8cec0] bg-[#f7f3ea] px-1.5 py-0.5 font-mono text-[0.68rem] text-[#61685f]"
+                  className="border border-[var(--rule)] bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[0.68rem] text-[var(--ink-muted)]"
                 >
                   {tag}
                 </span>
@@ -177,7 +177,7 @@ export default function Background() {
         <div className="text-center mb-8">
           <AboutHeroScene isVisible={isVisible} />
           <h1
-            className="mb-2 font-serif text-3xl font-normal text-[#20231f]"
+            className="mb-2 font-serif text-3xl font-normal text-[var(--ink)]"
             style={{
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'translateY(0)' : 'translateY(-20px)',
@@ -190,7 +190,7 @@ export default function Background() {
 
         {/* Summary */}
         <section
-          className="mx-auto mb-10 max-w-3xl border-y border-[#d8cec0] bg-[#fffdf7]/70 px-1 py-6"
+          className="mx-auto mb-10 max-w-3xl border-y border-[var(--rule)] bg-[var(--paper-elevated)] px-1 py-6"
           style={{
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
@@ -198,7 +198,7 @@ export default function Background() {
             transitionDelay: '0.15s'
           }}
         >
-          <p className="text-base leading-8 text-[#454b44]">
+          <p className="text-base leading-8 text-[var(--ink-soft)]">
             I earned my Ph.D. from the University of Southern California, where my research
             focused on theoretical optimization problems and algorithmic methods. I have 8
             years of industry experience spanning product-facing machine learning models and AI
@@ -206,11 +206,11 @@ export default function Background() {
             optimization, and recent work on LLM post-training, serving frameworks, and
             performance optimization.
           </p>
-          <p className="mt-4 font-mono text-sm text-[#61685f]">
+          <p className="mt-4 font-mono text-sm text-[var(--ink-muted)]">
             Contact:{' '}
             <a
               href="mailto:ssydyc@gmail.com"
-              className="font-medium text-[#0f766e] transition-colors hover:text-[#0b5f59]"
+              className="font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent-strong)]"
             >
               ssydyc@gmail.com
             </a>
@@ -221,7 +221,7 @@ export default function Background() {
         <div className="relative max-w-5xl mx-auto">
           {/* Center line */}
           <div
-            className="absolute bottom-0 left-1/2 top-0 w-px bg-[#958979]"
+            className="absolute bottom-0 left-1/2 top-0 w-px bg-[var(--rule-strong)]"
             style={{
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'scaleY(1)' : 'scaleY(0)',

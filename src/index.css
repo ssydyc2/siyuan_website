@@ -5,6 +5,7 @@
   --paper-elevated: #fffdf7;
   --paper-muted: #eee7da;
   --ink: #20231f;
+  --ink-soft: #454b44;
   --ink-muted: #61685f;
   --ink-faint: #8a9188;
   --rule: #d8cec0;
@@ -12,7 +13,28 @@
   --accent: #0f766e;
   --accent-strong: #0b5f59;
   --accent-soft: #dcebe6;
+  --accent-decoration: #9cc8bf;
   --amber: #b7791f;
+  --shadow-rule: #d8cec0;
+}
+
+:root.dark {
+  --paper: #141814;
+  --paper-elevated: #20261f;
+  --paper-muted: #2b332b;
+  --ink: #f3efe6;
+  --ink-soft: #d8d0c2;
+  --ink-muted: #bab2a4;
+  --ink-faint: #8f988b;
+  --rule: #3d473c;
+  --rule-strong: #6f7a6b;
+  --accent: #6fd0c7;
+  --accent-strong: #9ee7df;
+  --accent-soft: #173d3a;
+  --accent-decoration: #478e87;
+  --amber: #e2b55f;
+  --shadow-rule: #3d473c;
+  color-scheme: dark;
 }
 
 html {
@@ -23,13 +45,14 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(rgba(32, 35, 31, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(32, 35, 31, 0.025) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--ink) 3.5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 2.5%, transparent) 1px, transparent 1px),
     var(--paper);
   background-size: 28px 28px, 28px 28px, auto;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 ::selection {
@@ -60,8 +83,8 @@ samp {
   border-radius: 6px;
   background: var(--paper-elevated);
   box-shadow:
-    0 20px 48px rgba(32, 35, 31, 0.1),
-    3px 3px 0 rgba(216, 206, 192, 0.8);
+    0 20px 48px color-mix(in srgb, var(--ink) 12%, transparent),
+    3px 3px 0 color-mix(in srgb, var(--shadow-rule) 80%, transparent);
   isolation: isolate;
 }
 
@@ -81,8 +104,8 @@ samp {
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 253, 247, 0.04), rgba(32, 35, 31, 0.08)),
-    radial-gradient(circle at 50% 46%, transparent 54%, rgba(32, 35, 31, 0.16) 100%);
+    linear-gradient(180deg, color-mix(in srgb, var(--paper-elevated) 4%, transparent), color-mix(in srgb, var(--ink) 8%, transparent)),
+    radial-gradient(circle at 50% 46%, transparent 54%, color-mix(in srgb, var(--ink) 16%, transparent) 100%);
 }
 
 .pixel-journey {
