@@ -26,12 +26,12 @@ site header, navigation, and page outlet.
   professional summary, and experience timeline
 - **Reading List** (`/reading-list`, `/books`) - Book list page with an animated
   pixel bookshelf scene
-- **Study Plans** (`/study-plans`) - Index page for learning plans, with plan
-  cards and an animated pixel study scene
-- **Study Plan Detail** (`/study-plans/:planId`) - Detail pages for structured
-  study plans and markdown-backed notes
+- **Blog** (`/blog`) - Index page for blog posts, with post cards and an
+  animated pixel study scene
+- **Blog Post Detail** (`/blog/:postId`) - Detail pages for blog posts and
+  markdown-backed notes
 - **Journey redirect** (`/journey`) - Legacy route that redirects to
-  `/study-plans`
+  `/blog`
 
 ### Directory Structure
 
@@ -42,16 +42,16 @@ src/
 ├── index.css            # Tailwind import, theme tokens, global styles, pixel-scene CSS
 ├── assets/
 │   ├── avatars/         # Header avatar image assets
-│   └── study-plans/     # Study plan card/detail images
+│   └── blog/            # Blog post card/detail images
 ├── components/
 │   ├── Layout.tsx       # Main layout wrapper
 │   └── MarkdownDocument.tsx # Lightweight markdown renderer with KaTeX support
 ├── content/
-│   └── study-plans/     # Markdown content for study plan notes
+│   └── blog/            # Markdown content for blog posts
 └── pages/
     ├── Background.tsx   # Home page
     ├── Books.tsx        # Reading list page
-    └── StudyPlans.tsx   # Study plan index and detail pages
+    └── Blog.tsx         # Blog index and detail pages
 ```
 
 ### Styling

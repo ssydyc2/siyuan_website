@@ -1,12 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
-import aiPerformanceImage from '../assets/study-plans/ai-systems-performance-engineering-2d-hd.webp';
-import rlForLlmsImage from '../assets/study-plans/efficient-rl-for-llms-2d-hd.webp';
-import kernelRuntimeImage from '../assets/study-plans/llm-kernel-runtime-basics-2d-hd.webp';
-import studyHeroImage from '../assets/hero/study-systems-anime.webp';
+import aiPerformanceImage from '../assets/blog/ai-systems-performance-engineering-2d-hd.webp';
+import rlForLlmsImage from '../assets/blog/efficient-rl-for-llms-2d-hd.webp';
+import kernelRuntimeImage from '../assets/blog/llm-kernel-runtime-basics-2d-hd.webp';
+import blogHeroImage from '../assets/hero/study-systems-anime.webp';
 import HeroScene from '../components/HeroScene';
 import MarkdownDocument from '../components/MarkdownDocument';
 import ThemeToggle from '../components/ThemeToggle';
-import efficientRlMarkdown from '../content/study-plans/efficient-rl-for-llms.md?raw';
+import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
 
 interface Resource {
   title: string;
@@ -26,7 +26,7 @@ interface Phase {
   }[];
 }
 
-interface StudyPlan {
+interface BlogPost {
   id: string;
   title: string;
   eyebrow: string;
@@ -664,13 +664,13 @@ const kernelPracticeSequence = [
   'Read PagedAttention to connect kernel-level thinking with LLM serving runtime behavior.',
 ];
 
-const studyPlans: StudyPlan[] = [
+const blogPosts: BlogPost[] = [
   {
     id: 'efficient-rl-for-llms',
     title: 'Study Plan: Efficient RL for LLMs',
-    eyebrow: 'Two-week plan',
+    eyebrow: 'Two-week guide',
     summary:
-      'A structured plan for learning RLHF/RL systems and algorithms for LLM alignment, organized in 5 phases across ~2 weeks.',
+      'A structured guide for learning RLHF/RL systems and algorithms for LLM alignment, organized in 5 phases across ~2 weeks.',
     readingChecklist,
     phases,
     frameworkRows,
@@ -709,7 +709,7 @@ const studyPlans: StudyPlan[] = [
   },
 ];
 
-const planImages: Record<string, { src: string; alt: string }> = {
+const blogPostImages: Record<string, { src: string; alt: string }> = {
   'efficient-rl-for-llms': {
     src: rlForLlmsImage,
     alt: '2D illustration of an RL pipeline for LLM training systems',
@@ -724,8 +724,8 @@ const planImages: Record<string, { src: string; alt: string }> = {
   },
 };
 
-function PlanVisual({ planId, compact = false }: { planId: string; compact?: boolean }) {
-  const image = planImages[planId] ?? planImages['efficient-rl-for-llms'];
+function BlogPostVisual({ postId, compact = false }: { postId: string; compact?: boolean }) {
+  const image = blogPostImages[postId] ?? blogPostImages['efficient-rl-for-llms'];
   const className = compact
     ? 'h-28 w-full border border-[var(--rule)] bg-[var(--paper-muted)] object-cover'
     : 'aspect-[16/9] w-full border border-[var(--rule)] bg-[var(--paper-muted)] object-cover';
@@ -898,26 +898,26 @@ function KeyConcepts({ concepts }: { concepts: string }) {
   );
 }
 
-function EfficientRlDetail({ plan }: { plan: StudyPlan }) {
+function EfficientRlDetail({ post }: { post: BlogPost }) {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <PlanVisual planId={plan.id} />
+      <BlogPostVisual postId={post.id} />
       <MarkdownDocument markdown={efficientRlMarkdown} />
     </div>
   );
 }
 
-function StructuredStudyPlanDetail({ plan }: { plan: StudyPlan }) {
+function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
   return (
     <article className="mx-auto max-w-3xl space-y-12">
-      <PlanVisual planId={plan.id} />
+      <BlogPostVisual postId={post.id} />
       <header className="border-b border-[var(--rule-strong)] pb-8">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">{plan.eyebrow}</p>
-        <h1 className="mt-3 font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{plan.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{plan.summary}</p>
+        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">{post.eyebrow}</p>
+        <h1 className="mt-3 font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
+        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
 
-        <nav aria-label="Study plan phases" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-[var(--ink-faint)]">
-          {plan.phases.map((phase, index) => (
+        <nav aria-label="Blog post sections" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-[var(--ink-faint)]">
+          {post.phases.map((phase, index) => (
             <a key={phase.title} href={`#phase-${index + 1}`} className="transition-colors hover:text-[var(--accent)]">
               {phase.title}
             </a>
@@ -925,47 +925,47 @@ function StructuredStudyPlanDetail({ plan }: { plan: StudyPlan }) {
         </nav>
       </header>
 
-      {plan.readingChecklist.length > 0 && (
-        <ReadingChecklist items={plan.readingChecklist} />
+      {post.readingChecklist.length > 0 && (
+        <ReadingChecklist items={post.readingChecklist} />
       )}
 
-      {plan.phases.map((phase, index) => (
+      {post.phases.map((phase, index) => (
         <PhaseSection key={phase.title} phase={phase} index={index} />
       ))}
 
-      {plan.frameworkRows.length > 0 && (
-        <FrameworkComparison rows={plan.frameworkRows} />
+      {post.frameworkRows.length > 0 && (
+        <FrameworkComparison rows={post.frameworkRows} />
       )}
 
-      {(plan.practicePath.length > 0 || plan.minimalPath.length > 0) && (
+      {(post.practicePath.length > 0 || post.minimalPath.length > 0) && (
         <div className="grid gap-10 md:grid-cols-2">
-          {plan.practicePath.length > 0 && (
-            <NumberedList title="Suggested Practice Path" items={plan.practicePath} />
+          {post.practicePath.length > 0 && (
+            <NumberedList title="Suggested Practice Path" items={post.practicePath} />
           )}
-          {plan.minimalPath.length > 0 && (
-            <NumberedList title="Minimal Path" items={plan.minimalPath} />
+          {post.minimalPath.length > 0 && (
+            <NumberedList title="Minimal Path" items={post.minimalPath} />
           )}
         </div>
       )}
 
-      {plan.topThree.length > 0 && (
-        <TopThree items={plan.topThree} />
+      {post.topThree.length > 0 && (
+        <TopThree items={post.topThree} />
       )}
 
-      {plan.keyConcepts && (
-        <KeyConcepts concepts={plan.keyConcepts} />
+      {post.keyConcepts && (
+        <KeyConcepts concepts={post.keyConcepts} />
       )}
     </article>
   );
 }
 
-function AIPerformanceBookDetail({ plan }: { plan: StudyPlan }) {
+function AIPerformanceBookDetail({ post }: { post: BlogPost }) {
   return (
     <article className="mx-auto max-w-4xl space-y-12">
-      <PlanVisual planId={plan.id} />
+      <BlogPostVisual postId={post.id} />
       <header className="max-w-3xl">
-        <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{plan.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{plan.summary}</p>
+        <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
+        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
       </header>
 
       <section className="grid gap-8 border-y border-[var(--rule-strong)] bg-[var(--paper-elevated)] py-8 md:grid-cols-[minmax(0,1fr)_16rem]">
@@ -1040,13 +1040,13 @@ function AIPerformanceBookDetail({ plan }: { plan: StudyPlan }) {
   );
 }
 
-function KernelBasicsDetail({ plan }: { plan: StudyPlan }) {
+function KernelBasicsDetail({ post }: { post: BlogPost }) {
   return (
     <article className="mx-auto max-w-4xl space-y-12">
-      <PlanVisual planId={plan.id} />
+      <BlogPostVisual postId={post.id} />
       <header className="max-w-3xl">
-        <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{plan.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{plan.summary}</p>
+        <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
+        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
       </header>
 
       <section className="border-y border-[var(--rule-strong)] py-8">
@@ -1120,37 +1120,37 @@ function KernelBasicsDetail({ plan }: { plan: StudyPlan }) {
   );
 }
 
-function StudyPlanDetail({ plan }: { plan: StudyPlan }) {
-  if (plan.id === 'efficient-rl-for-llms') {
-    return <EfficientRlDetail plan={plan} />;
+function BlogPostDetail({ post }: { post: BlogPost }) {
+  if (post.id === 'efficient-rl-for-llms') {
+    return <EfficientRlDetail post={post} />;
   }
 
-  if (plan.id === 'ai-performance-engineer') {
-    return <AIPerformanceBookDetail plan={plan} />;
+  if (post.id === 'ai-performance-engineer') {
+    return <AIPerformanceBookDetail post={post} />;
   }
 
-  if (plan.id === 'llm-kernel-runtime-basics') {
-    return <KernelBasicsDetail plan={plan} />;
+  if (post.id === 'llm-kernel-runtime-basics') {
+    return <KernelBasicsDetail post={post} />;
   }
 
-  return <StructuredStudyPlanDetail plan={plan} />;
+  return <StructuredBlogPostDetail post={post} />;
 }
 
-function StudyHeroScene() {
+function BlogHeroScene() {
   return (
     <HeroScene
-      src={studyHeroImage}
+      src={blogHeroImage}
       alt="Anime-style nighttime study scene with a back-facing person working on a laptop"
       variant="study"
     />
   );
 }
 
-function StudyPlanIndex({ plans }: { plans: StudyPlan[] }) {
+function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <header>
-        <StudyHeroScene />
+        <BlogHeroScene />
         <div className="flex items-center gap-3">
           <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">Blog</h1>
           <ThemeToggle />
@@ -1169,19 +1169,19 @@ function StudyPlanIndex({ plans }: { plans: StudyPlan[] }) {
       </header>
 
       <div className="border-y border-[var(--rule-strong)]">
-        {plans.map((plan) => (
+        {posts.map((post) => (
           <Link
-            key={plan.id}
-            to={`/blog/${plan.id}`}
+            key={post.id}
+            to={`/blog/${post.id}`}
             className="group grid gap-5 border-b border-[var(--rule)] py-8 transition-colors last:border-b-0 hover:bg-[var(--paper-elevated)] sm:grid-cols-[9rem_minmax(0,1fr)_2rem] sm:items-center sm:px-4"
           >
-            <PlanVisual planId={plan.id} compact />
+            <BlogPostVisual postId={post.id} compact />
             <article className="min-w-0">
               <h2 className="font-serif text-2xl font-normal leading-snug text-[var(--ink)] transition-colors group-hover:text-[var(--accent)]">
-                {plan.title}
+                {post.title}
               </h2>
               <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--ink-muted)]">
-                {plan.summary}
+                {post.summary}
               </p>
             </article>
             <span
@@ -1197,11 +1197,11 @@ function StudyPlanIndex({ plans }: { plans: StudyPlan[] }) {
   );
 }
 
-export default function StudyPlans() {
-  const { planId } = useParams();
-  const activePlan = studyPlans.find((plan) => plan.id === planId);
+export default function Blog() {
+  const { postId } = useParams();
+  const activePost = blogPosts.find((post) => post.id === postId);
 
-  if (activePlan) {
+  if (activePost) {
     return (
       <div className="min-h-screen text-[var(--ink)]">
         <main className="mx-auto max-w-5xl px-6 py-12">
@@ -1212,7 +1212,7 @@ export default function StudyPlans() {
             >
               Back to blog
             </Link>
-            <StudyPlanDetail plan={activePlan} />
+            <BlogPostDetail post={activePost} />
           </div>
         </main>
       </div>
@@ -1222,7 +1222,7 @@ export default function StudyPlans() {
   return (
     <div className="min-h-screen text-[var(--ink)]">
       <main className="mx-auto max-w-5xl px-6 py-12">
-        <StudyPlanIndex plans={studyPlans} />
+        <BlogPostIndex posts={blogPosts} />
       </main>
     </div>
   );
