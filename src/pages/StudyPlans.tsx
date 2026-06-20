@@ -1156,7 +1156,15 @@ function StudyPlanIndex({ plans }: { plans: StudyPlan[] }) {
           <ThemeToggle />
         </div>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
-          Welcome 👋, this is my Blog 📝, a place to share and learn AI 🤖
+          Welcome 👋, this is my Blog 📝, a place to share and learn AI 🤖.
+        </p>
+        <p className="mt-2">
+          <Link
+            to="/"
+            className="font-mono text-sm uppercase tracking-[0.16em] text-[var(--accent)] underline decoration-[var(--accent-decoration)] decoration-1 underline-offset-4 transition-colors hover:text-[var(--accent-strong)]"
+          >
+            More about me
+          </Link>
         </p>
       </header>
 
