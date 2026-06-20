@@ -1208,6 +1208,10 @@ export default function StudyPlans() {
   }
 
   return (
-    <StudyPlanIndex plans={studyPlans} />
+    <div className="min-h-screen text-[#20231f]">
+      <main className="mx-auto max-w-5xl px-6 py-12">
+        <StudyPlanIndex plans={studyPlans} />
+      </main>
+    </div>
   );
 }
