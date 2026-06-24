@@ -5,8 +5,9 @@ A learning map for the core attention and serving papers behind modern LLM perfo
 ## Contents
 
 - [Reading Checklist](#reading-checklist) — use these questions while reading papers or docs.
-- [Phase 0: Core LLM Performance Papers](#phase-0-core-llm-performance-papers) — start with the workload and systems problems.
-- [Phase 1: Kernel Programming Tools](#phase-1-kernel-programming-tools) — move into Triton and JAX after the papers define what matters.
+- [Phase 1: Core LLM Performance Papers](#phase-1-core-llm-performance-papers) — start with the workload and systems problems.
+- [Phase 2: Kernel Programming Tools](#phase-2-kernel-programming-tools) — move into Triton and JAX after the papers define what matters.
+- [Phase 3: Implementation Practice](#phase-3-implementation-practice) — use my kernel implementations as the hands-on track.
 
 ---
 
@@ -22,7 +23,7 @@ For each paper or tool, track:
 
 ---
 
-## Phase 0: Core LLM Performance Papers
+## Phase 1: Core LLM Performance Papers
 
 Start with the papers so the kernel work has a concrete workload attached to it.
 
@@ -43,7 +44,7 @@ Start with the papers so the kernel work has a concrete workload attached to it.
 
 ---
 
-## Phase 1: Kernel Programming Tools
+## Phase 2: Kernel Programming Tools
 
 After the papers, use Triton and JAX to build the implementation vocabulary.
 
@@ -52,11 +53,17 @@ After the papers, use Triton and JAX to build the implementation vocabulary.
   - Focus on how programs map to tiles, memory movement, and parallel execution.
   - Use the tutorials as implementation checkpoints rather than passive reading.
 
-- **[My Triton Implementations](https://github.com/ssydyc2/learn_triton)** (Practice repository)
-  - Use this as the hands-on track for writing and comparing kernels.
-  - Keep implementations small enough that memory access patterns remain visible.
-
 - **[Learning JAX](https://jax.readthedocs.io/en/latest/tutorials.html)** (Official tutorials)
   - JAX combines NumPy-style code, automatic differentiation, and XLA compilation.
   - Read it as a way to understand compiled ML programs and accelerator portability.
   - Focus on how eager array code changes under `jit`.
+
+---
+
+## Phase 3: Implementation Practice
+
+Use small implementations to turn the paper and tooling concepts into concrete memory-access patterns.
+
+- **[My Triton Implementations](https://github.com/ssydyc2/learn_triton)** (Practice repository)
+  - Use this as the hands-on track for writing and comparing kernels.
+  - Keep implementations small enough that memory access patterns remain visible.
