@@ -1,14 +1,14 @@
 # Efficient RL for LLMs
 
-A structured plan for learning RLHF/RL systems and algorithms for LLM alignment, organized in 5 phases across ~2 weeks.
+A structured guide for learning RLHF/RL systems and algorithms for LLM alignment, organized as a set of phases readers can move through at their own pace.
 
 ## Contents
 
 - [Phase 0: RL Foundations](#phase-0-rl-foundations) — build the RL vocabulary and formulas used by PPO and GRPO.
-- [Phase 1: Algorithm Foundations](#phase-1-algorithm-foundations-days-13) — read PPO/RLHF, DPO, and GRPO before systems papers.
-- [Phase 2: RLHF Systems & Frameworks](#phase-2-rlhf-systems-frameworks-days-48) — compare colocated, async, disaggregated, and dynamic allocation designs.
-- [Phase 3: Library-Based Frameworks](#phase-3-library-based-frameworks-days-911) — inspect TRL, NeMo-Aligner, and torchtune as practical toolkits.
-- [Phase 4: Synthesis & Practice](#phase-4-synthesis-practice-days-1214) — turn the map into hands-on GRPO work, scaling notes, and code reading.
+- [Phase 1: Algorithm Foundations](#phase-1-algorithm-foundations) — read PPO/RLHF, DPO, and GRPO before systems papers.
+- [Phase 2: RLHF Systems & Frameworks](#phase-2-rlhf-systems-frameworks) — compare colocated, async, disaggregated, and dynamic allocation designs.
+- [Phase 3: Library-Based Frameworks](#phase-3-library-based-frameworks) — inspect TRL, NeMo-Aligner, and torchtune as practical toolkits.
+- [Phase 4: Synthesis & Practice](#phase-4-synthesis-practice) — turn the map into hands-on GRPO work, scaling notes, and code reading.
 - [Framework Comparison Table](#framework-comparison-table) — jump straight to the sync/async and placement matrix.
 
 ---
@@ -155,7 +155,7 @@ High-level meaning: GRPO removes the learned critic by using relative rewards wi
 
 ---
 
-## Phase 1: Algorithm Foundations (Days 1–3)
+## Phase 1: Algorithm Foundations
 
 Understand the core RL alignment algorithms before diving into systems.
 
@@ -176,7 +176,7 @@ Understand the core RL alignment algorithms before diving into systems.
 
 ---
 
-## Phase 2: RLHF Systems & Frameworks (Days 4–8)
+## Phase 2: RLHF Systems & Frameworks
 
 Read in this order: one flexible dataflow view, one async systems view, one practical distributed stack, then lineage.
 
@@ -217,7 +217,7 @@ Read in this order: one flexible dataflow view, one async systems view, one prac
 
 ---
 
-## Phase 3: Library-Based Frameworks (Days 9–11)
+## Phase 3: Library-Based Frameworks
 
 These are primarily libraries/toolkits — read docs and code, not papers.
 
@@ -239,7 +239,7 @@ These are primarily libraries/toolkits — read docs and code, not papers.
 
 ---
 
-## Phase 4: Synthesis & Practice (Days 12–14)
+## Phase 4: Synthesis & Practice
 
 ### 4A: Conceptual Overview & Landscape
 

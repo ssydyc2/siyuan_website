@@ -83,7 +83,7 @@ const phases: Phase[] = [
   },
   {
     title: 'Algorithm Foundations',
-    period: 'Days 1-3',
+    period: 'Core algorithms',
     summary: 'Understand the core RL alignment algorithms before diving into systems.',
     groups: [
       {
@@ -124,7 +124,7 @@ const phases: Phase[] = [
   },
   {
     title: 'RLHF Systems & Frameworks',
-    period: 'Days 4-8',
+    period: 'Systems papers',
     summary: 'Read one flexible dataflow view, one async systems view, one practical distributed stack, then lineage.',
     groups: [
       {
@@ -176,7 +176,7 @@ const phases: Phase[] = [
   },
   {
     title: 'Library-Based Frameworks',
-    period: 'Days 9-11',
+    period: 'Tooling',
     summary: 'These are mostly toolkits. Read docs and code, then run at least one small example.',
     groups: [
       {
@@ -217,7 +217,7 @@ const phases: Phase[] = [
   },
   {
     title: 'Synthesis & Practice',
-    period: 'Days 12-14',
+    period: 'Practice',
     summary: 'Connect the conceptual landscape, hands-on training, scaling lessons, and code reading.',
     groups: [
       {
@@ -483,10 +483,10 @@ const aiPerformanceBook = {
 const blogPosts: BlogPost[] = [
   {
     id: 'efficient-rl-for-llms',
-    title: 'Study Plan: Efficient RL for LLMs',
-    eyebrow: 'Two-week guide',
+    title: 'Study Guide: Efficient RL for LLMs',
+    eyebrow: 'Learning guide',
     summary:
-      'A structured guide for learning RLHF/RL systems and algorithms for LLM alignment, organized in 5 phases across ~2 weeks.',
+      'A structured guide for learning RLHF/RL systems and algorithms for LLM alignment, organized as phases readers can move through at their own pace.',
     readingChecklist,
     phases,
     frameworkRows,
