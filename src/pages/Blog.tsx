@@ -577,11 +577,7 @@ const kernelBasicsConcepts = `LLM Kernel & Runtime Basics
     |-- Memory paging and batching`;
 
 const aiPerformanceBook = {
-  title: 'AI Systems Performance Engineering',
-  author: 'Chris Fregly',
   href: 'https://www.amazon.com/Systems-Performance-Engineering-Optimizing-Inference/dp/B0F47689K8',
-  description:
-    'This section is a reading log for one book. The goal is to turn each chapter into a practical systems-performance mental model for training and inference work.',
   chapters: [
     {
       number: '01',
@@ -961,28 +957,15 @@ function AIPerformanceBookDetail({ post }: { post: BlogPost }) {
       <header className="max-w-3xl">
         <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
         <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
+        <a
+          href={aiPerformanceBook.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex font-mono text-sm text-[var(--accent)] transition-colors hover:text-[var(--accent-strong)]"
+        >
+          View book &rarr;
+        </a>
       </header>
-
-      <section className="border-y border-[var(--rule-strong)] bg-[var(--paper-elevated)] py-8">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">Book note</p>
-          <h2 className="mt-3 font-serif text-3xl font-normal leading-tight text-[var(--ink)]">
-            {aiPerformanceBook.title}
-          </h2>
-          <p className="mt-2 font-mono text-sm text-[var(--ink-muted)]">by {aiPerformanceBook.author}</p>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--ink-muted)]">
-            {aiPerformanceBook.description}
-          </p>
-          <a
-            href={aiPerformanceBook.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex font-mono text-sm text-[var(--accent)] transition-colors hover:text-[var(--accent-strong)]"
-          >
-            View book &rarr;
-          </a>
-        </div>
-      </section>
 
       <section>
         <div className="flex flex-col gap-2 border-b border-[var(--rule-strong)] pb-4 sm:flex-row sm:items-end sm:justify-between">
