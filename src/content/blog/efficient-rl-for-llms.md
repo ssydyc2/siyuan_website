@@ -10,9 +10,6 @@ A structured plan for learning RLHF/RL systems and algorithms for LLM alignment,
 - [Phase 3: Library-Based Frameworks](#phase-3-library-based-frameworks-days-911) — inspect TRL, NeMo-Aligner, and torchtune as practical toolkits.
 - [Phase 4: Synthesis & Practice](#phase-4-synthesis-practice-days-1214) — turn the map into hands-on GRPO work, scaling notes, and code reading.
 - [Framework Comparison Table](#framework-comparison-table) — jump straight to the sync/async and placement matrix.
-- [Suggested Practice Path](#suggested-practice-path) — follow a short hands-on sequence.
-- [Top 3 If Short on Time](#top-3-if-short-on-time) — pick the highest-value reads.
-- [Recommended Reading Order](#recommended-reading-order-minimal-path) — use the compact paper path.
 
 ---
 
@@ -306,28 +303,3 @@ These are primarily libraries/toolkits — read docs and code, not papers.
 - **Read verl or OpenRLHF source code**
   - Trace one PPO or GRPO step end-to-end through the codebase
   - Understand: how rollouts are batched, how advantages are computed, how weight sync works
-
-### Suggested Practice Path
-
-1. **Raschka's overview** → understand the landscape before training anything
-2. **Unsloth GRPO tutorial** → first hands-on experiment (Colab, free tier works)
-3. **Pramodith's GRPO blog** → understand what the trainer actually does
-4. **Open-R1 Update #1** → scaling lessons before you move to multi-GPU
-5. **TinyZero on veRL** → reproduce R1-Zero, bridge to production frameworks
-
----
-
-## Top 3 If Short on Time
-
-1. **HybridFlow (verl)** — the design space of RLHF dataflow
-2. **DPO** — the major non-PPO alignment algorithm
-3. **AReaL** — the async systems perspective
-
-## Recommended Reading Order (Minimal Path)
-
-1. InstructGPT (PPO/RLHF background)
-2. DPO (non-RL alternative)
-3. HybridFlow (systems: colocated sync)
-4. AReaL (systems: async)
-5. OpenRLHF (systems: disaggregated, practical)
-6. GRPO / DeepSeekMath (modern reasoning RL)
