@@ -7,6 +7,7 @@ import HeroScene from '../components/HeroScene';
 import MarkdownDocument from '../components/MarkdownDocument';
 import ThemeToggle from '../components/ThemeToggle';
 import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
+import kernelBasicsMarkdown from '../content/blog/llm-kernel-runtime-basics.md?raw';
 
 interface Resource {
   title: string;
@@ -455,127 +456,6 @@ const aiPerformanceConcepts = `AI Performance Engineering
 |-- Method
     |-- Measure, classify bottleneck, optimize, re-measure`;
 
-const kernelBasicsReadingChecklist = [
-  'Programming model: blocks, warps, memory movement, and vectorized operations',
-  'Compiler stack: Triton, JAX, XLA, and generated kernels',
-  'Attention: IO-awareness, tiling, parallelism, and work partitioning',
-  'Serving memory: KV cache layout and paging for LLM inference',
-  'Practice: implement small kernels before reading production code',
-];
-
-const kernelBasicsPhases: Phase[] = [
-  {
-    title: 'Kernel Programming Tools',
-    period: 'Foundations',
-    summary:
-      'Start with Triton for explicit GPU kernel thinking, then use JAX to understand compiled array programs and XLA-oriented workflows.',
-    groups: [
-      {
-        resources: [
-          {
-            title: 'Learning Triton GPU Kernels',
-            href: 'https://triton-lang.org/main/getting-started/tutorials/',
-            meta: 'Official tutorials',
-            notes: [
-              'Triton is the most direct bridge from Python to custom GPU kernels for deep learning primitives.',
-              'Focus on how programs map to tiles, memory movement, and parallel execution.',
-              'Use the tutorials as implementation checkpoints rather than passive reading.',
-            ],
-          },
-          {
-            title: 'My Triton Implementations',
-            href: 'https://github.com/ssydyc2/learn_triton',
-            meta: 'Practice repository',
-            notes: [
-              'Use this as the hands-on track for writing and comparing kernels.',
-              'Keep implementations small enough that memory access patterns remain visible.',
-            ],
-          },
-          {
-            title: 'Learning JAX',
-            href: 'https://jax.readthedocs.io/en/latest/tutorials.html',
-            meta: 'Official tutorials',
-            notes: [
-              'JAX combines NumPy-style code, automatic differentiation, and XLA compilation.',
-              'Read it as a way to understand compiled ML programs and accelerator portability.',
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Attention & Serving Papers',
-    period: 'Core papers',
-    summary:
-      'Use these papers to connect kernel-level optimization to the LLM workloads that make those kernels matter.',
-    groups: [
-      {
-        resources: [
-          {
-            title: 'FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness',
-            href: 'https://arxiv.org/abs/2205.14135',
-            meta: 'Tri Dao et al., NeurIPS 2022',
-            notes: [
-              'Foundational paper for IO-aware exact attention.',
-              'Read for the tiling and memory movement argument, not just the benchmark results.',
-            ],
-          },
-          {
-            title: 'FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning',
-            href: 'https://arxiv.org/abs/2307.08691',
-            meta: 'Tri Dao, ICLR 2024',
-            notes: [
-              'Improves attention performance through better parallelism and work partitioning.',
-              'Use it to understand why the first fast kernel is rarely the final fast kernel.',
-            ],
-          },
-          {
-            title: 'Efficient Memory Management for Large Language Model Serving with PagedAttention',
-            href: 'https://arxiv.org/abs/2309.06180',
-            meta: 'vLLM, SOSP 2023',
-            notes: [
-              'Moves from kernels into serving memory management.',
-              'Explains why KV cache layout and allocation are first-order inference performance problems.',
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
-
-const kernelBasicsPracticePath = [
-  'Implement one Triton vector add or matmul-style kernel and inspect the memory pattern',
-  'Run a JAX tutorial and inspect how jit changes execution behavior',
-  'Read FlashAttention v1 for IO-awareness, then FlashAttention v2 for parallelism',
-  'Read PagedAttention to connect kernels with LLM serving memory pressure',
-];
-
-const kernelBasicsMinimalPath = [
-  'Triton tutorials',
-  'JAX jit and array programming basics',
-  'FlashAttention v1',
-  'PagedAttention',
-];
-
-const kernelBasicsTopThree = [
-  'Triton tutorials',
-  'FlashAttention v1',
-  'PagedAttention',
-];
-
-const kernelBasicsConcepts = `LLM Kernel & Runtime Basics
-|-- Kernel Tools
-|   |-- Triton: explicit custom GPU kernels
-|   |-- JAX/XLA: compiled array programs
-|-- Attention
-|   |-- IO-aware tiling
-|   |-- Parallelism and work partitioning
-|-- Serving Runtime
-    |-- KV cache layout
-    |-- Memory paging and batching`;
-
 const aiPerformanceBook = {
   href: 'https://www.amazon.com/Systems-Performance-Engineering-Optimizing-Inference/dp/B0F47689K8',
   chapters: [
@@ -599,61 +479,6 @@ const aiPerformanceBook = {
     },
   ],
 };
-
-const kernelLearningMap = [
-  {
-    title: 'Triton',
-    subtitle: 'Write kernels directly',
-    href: 'https://triton-lang.org/main/getting-started/tutorials/',
-    details:
-      'Use Triton to learn tiling, memory movement, parallel execution, and the shape of custom deep learning primitives.',
-    actions: ['Run official tutorials', 'Implement small kernels', 'Compare memory access patterns'],
-  },
-  {
-    title: 'JAX',
-    subtitle: 'Understand compiled array programs',
-    href: 'https://jax.readthedocs.io/en/latest/tutorials.html',
-    details:
-      'Use JAX to understand jit, automatic differentiation, XLA compilation, and accelerator-portable ML code.',
-    actions: ['Study jit behavior', 'Trace array programs', 'Connect code shape to compiler output'],
-  },
-  {
-    title: 'Core LLM Papers',
-    subtitle: 'Read why kernels matter',
-    href: 'https://arxiv.org/abs/2205.14135',
-    details:
-      'Use FlashAttention and PagedAttention to connect kernel work with attention IO, KV cache pressure, and serving throughput.',
-    actions: ['Read FlashAttention v1', 'Read FlashAttention v2', 'Read PagedAttention'],
-  },
-];
-
-const kernelPaperList = [
-  {
-    title: 'FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness',
-    href: 'https://arxiv.org/abs/2205.14135',
-    meta: 'NeurIPS 2022',
-    why: 'Start here for IO-aware attention and the core tiling argument.',
-  },
-  {
-    title: 'FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning',
-    href: 'https://arxiv.org/abs/2307.08691',
-    meta: 'ICLR 2024',
-    why: 'Read next to see how parallelism and work partitioning improve the first design.',
-  },
-  {
-    title: 'Efficient Memory Management for Large Language Model Serving with PagedAttention',
-    href: 'https://arxiv.org/abs/2309.06180',
-    meta: 'SOSP 2023',
-    why: 'Use this to move from kernels into KV cache layout and inference-serving memory management.',
-  },
-];
-
-const kernelPracticeSequence = [
-  'Implement one small Triton kernel so memory movement is visible.',
-  'Run a JAX jit example and observe how eager code changes under compilation.',
-  'Read FlashAttention v1 for IO-awareness, then FlashAttention v2 for work partitioning.',
-  'Read PagedAttention to connect kernel-level thinking with LLM serving runtime behavior.',
-];
 
 const blogPosts: BlogPost[] = [
   {
@@ -689,14 +514,14 @@ const blogPosts: BlogPost[] = [
     title: 'Study Plan: LLM Kernel & Runtime Basics',
     eyebrow: 'Learning map',
     summary:
-      'A learning map for Triton, JAX, and the core attention and serving papers behind modern LLM performance work.',
-    readingChecklist: kernelBasicsReadingChecklist,
-    phases: kernelBasicsPhases,
+      'A learning map for the core attention and serving papers behind modern LLM performance work, followed by Triton and JAX practice.',
+    readingChecklist: [],
+    phases: [],
     frameworkRows: [],
-    practicePath: kernelBasicsPracticePath,
-    minimalPath: kernelBasicsMinimalPath,
-    topThree: kernelBasicsTopThree,
-    keyConcepts: kernelBasicsConcepts,
+    practicePath: [],
+    minimalPath: [],
+    topThree: [],
+    keyConcepts: '',
   },
 ];
 
@@ -1007,81 +832,10 @@ function AIPerformanceBookDetail({ post }: { post: BlogPost }) {
 
 function KernelBasicsDetail({ post }: { post: BlogPost }) {
   return (
-    <article className="mx-auto max-w-4xl space-y-12">
+    <div className="mx-auto max-w-4xl space-y-8">
       <BlogPostVisual postId={post.id} />
-      <header className="max-w-3xl">
-        <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
-      </header>
-
-      <section className="border-y border-[var(--rule-strong)] py-8">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">Learning map</p>
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
-          {kernelLearningMap.map((track) => (
-            <a
-              key={track.title}
-              href={track.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex min-h-full flex-col border border-[var(--rule)] bg-[var(--paper-elevated)] p-5 shadow-[3px_3px_0_var(--shadow-rule)] transition-colors hover:border-[var(--rule-strong)]"
-            >
-              <p className="font-mono text-xs text-[var(--ink-faint)]">{track.subtitle}</p>
-              <h2 className="mt-2 font-serif text-2xl font-normal text-[var(--ink)] transition-colors group-hover:text-[var(--accent)]">
-                {track.title}
-              </h2>
-              <p className="mt-4 flex-1 text-sm leading-6 text-[var(--ink-muted)]">{track.details}</p>
-              <ul className="mt-5 space-y-2">
-                {track.actions.map((action) => (
-                  <li key={action} className="font-mono text-xs leading-5 text-[var(--ink-muted)]">
-                    {action}
-                  </li>
-                ))}
-              </ul>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className="grid gap-8 md:grid-cols-[16rem_minmax(0,1fr)]">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">Sequence</p>
-          <h2 className="mt-2 font-serif text-2xl font-normal text-[var(--ink)]">How to study it</h2>
-        </div>
-        <ol className="space-y-4">
-          {kernelPracticeSequence.map((item, index) => (
-            <li key={item} className="grid gap-4 border-b border-[var(--rule)] pb-4 last:border-b-0 sm:grid-cols-[3rem_minmax(0,1fr)]">
-              <span className="font-mono text-2xl font-light text-[var(--amber)]">0{index + 1}</span>
-              <p className="text-base leading-7 text-[var(--ink-muted)]">{item}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section>
-        <div className="border-b border-[var(--rule-strong)] pb-4">
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">Papers</p>
-          <h2 className="mt-2 font-serif text-2xl font-normal text-[var(--ink)]">Core LLM Performance Papers</h2>
-        </div>
-        <div className="divide-y divide-[var(--rule)]">
-          {kernelPaperList.map((paper) => (
-            <article key={paper.title} className="grid gap-4 py-6 md:grid-cols-[minmax(0,1fr)_8rem]">
-              <div>
-                <a
-                  href={paper.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xl font-light leading-snug text-[var(--ink)] transition-colors hover:text-[var(--accent)]"
-                >
-                  {paper.title}
-                </a>
-                <p className="mt-3 text-base leading-7 text-[var(--ink-muted)]">{paper.why}</p>
-              </div>
-              <p className="font-mono text-xs text-[var(--ink-faint)] md:text-right">{paper.meta}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </article>
+      <MarkdownDocument markdown={kernelBasicsMarkdown} />
+    </div>
   );
 }
 
