@@ -480,6 +480,30 @@ const aiPerformanceBook = {
   ],
 };
 
+const kernelRuntimePhases: Phase[] = [
+  {
+    title: 'Core LLM Performance Papers',
+    period: 'Phase 1',
+    label: 'Phase 1',
+    summary: 'Start with FlashAttention, FlashAttention-2, and PagedAttention to connect attention kernels with serving constraints.',
+    groups: [],
+  },
+  {
+    title: 'Kernel Programming Tools',
+    period: 'Phase 2',
+    label: 'Phase 2',
+    summary: 'Move into Triton and JAX after the papers define the memory movement and compiler/runtime problems that matter.',
+    groups: [],
+  },
+  {
+    title: 'Implementation Practice',
+    period: 'Phase 3',
+    label: 'Phase 3',
+    summary: 'Use small Triton implementations to turn paper concepts into concrete memory-access patterns.',
+    groups: [],
+  },
+];
+
 const blogPosts: BlogPost[] = [
   {
     id: 'efficient-rl-for-llms',
@@ -516,7 +540,7 @@ const blogPosts: BlogPost[] = [
     summary:
       'A learning map for the core attention and serving papers behind modern LLM performance work, followed by Triton and JAX practice.',
     readingChecklist: [],
-    phases: [],
+    phases: kernelRuntimePhases,
     frameworkRows: [],
     practicePath: [],
     minimalPath: [],
@@ -543,17 +567,88 @@ const blogPostImages: Record<string, { src: string; alt: string }> = {
 function BlogPostVisual({ postId, compact = false }: { postId: string; compact?: boolean }) {
   const image = blogPostImages[postId] ?? blogPostImages['efficient-rl-for-llms'];
   const className = compact
-    ? 'h-28 w-full border border-[var(--rule)] bg-[var(--paper-muted)] object-cover'
-    : 'aspect-[16/9] w-full border border-[var(--rule)] bg-[var(--paper-muted)] object-cover';
+    ? 'blog-post-visual blog-post-visual--compact h-28 w-full border border-[var(--rule)] bg-[var(--paper-muted)]'
+    : 'blog-post-visual aspect-[16/9] w-full border border-[var(--rule)] bg-[var(--paper-muted)]';
 
   return (
-    <img
-      src={image.src}
-      alt={image.alt}
-      className={className}
-      loading={compact ? 'lazy' : 'eager'}
-      decoding="async"
-    />
+    <span className={className}>
+      <img
+        src={image.src}
+        alt={image.alt}
+        className="blog-post-visual__image h-full w-full object-cover"
+        loading={compact ? 'lazy' : 'eager'}
+        decoding="async"
+      />
+    </span>
+  );
+}
+
+function getBlogPreviewItems(post: BlogPost): { label: string; title: string; summary: string }[] {
+  if (post.id === 'ai-performance-engineer') {
+    return aiPerformanceBook.chapters.map((chapter) => ({
+      label: `Chapter ${chapter.number}`,
+      title: chapter.title,
+      summary: '',
+    }));
+  }
+
+  if (post.phases.length > 0) {
+    return post.phases.map((phase, index) => ({
+      label: phase.label ?? phase.period ?? `Phase ${index + 1}`,
+      title: phase.title,
+      summary: phase.summary,
+    }));
+  }
+
+  if (post.topThree.length > 0) {
+    return post.topThree.slice(0, 3).map((item, index) => ({
+      label: `Note ${index + 1}`,
+      title: item,
+      summary: '',
+    }));
+  }
+
+  if (post.readingChecklist.length > 0) {
+    return post.readingChecklist.slice(0, 3).map((item, index) => ({
+      label: `Check ${index + 1}`,
+      title: item,
+      summary: '',
+    }));
+  }
+
+  return [{ label: 'Overview', title: post.summary, summary: '' }];
+}
+
+function BlogPostPreview({ post }: { post: BlogPost }) {
+  const previewItems = getBlogPreviewItems(post);
+
+  return (
+    <div className="blog-post-preview" aria-label={`${post.title} preview`}>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="border border-[var(--rule)] bg-[var(--paper)] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--accent)]">
+          {post.eyebrow}
+        </span>
+        <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+          Reading path
+        </span>
+      </div>
+      <ol className="blog-post-preview__list">
+        {previewItems.map((item) => (
+          <li key={`${item.label}-${item.title}`} className="blog-post-preview__item">
+            <span className="blog-post-preview__marker" aria-hidden="true" />
+            <div className="min-w-0">
+              <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+                {item.label}
+              </span>
+              <p className="mt-1 text-sm font-medium leading-5 text-[var(--ink)]">{item.title}</p>
+              {item.summary && (
+                <p className="mt-1 text-sm leading-6 text-[var(--ink-muted)]">{item.summary}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
 
@@ -887,12 +982,12 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
         </p>
       </header>
 
-      <div className="border-y border-[var(--rule-strong)]">
+      <div className="blog-post-list border-y border-[var(--rule-strong)]">
         {posts.map((post) => (
           <Link
             key={post.id}
             to={`/blog/${post.id}`}
-            className="group grid gap-5 border-b border-[var(--rule)] py-8 transition-colors last:border-b-0 hover:bg-[var(--paper-elevated)] sm:grid-cols-[9rem_minmax(0,1fr)_2rem] sm:items-center sm:px-4"
+            className="blog-post-list__item group grid gap-5 border-b border-[var(--rule)] py-8 transition-colors last:border-b-0 hover:bg-[var(--paper-elevated)] focus-visible:bg-[var(--paper-elevated)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] sm:grid-cols-[9rem_minmax(0,1fr)_2rem] sm:items-start sm:px-4"
           >
             <BlogPostVisual postId={post.id} compact />
             <article className="min-w-0">
@@ -902,6 +997,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
               <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--ink-muted)]">
                 {post.summary}
               </p>
+              <BlogPostPreview post={post} />
             </article>
             <span
               aria-hidden="true"
