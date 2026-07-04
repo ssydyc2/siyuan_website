@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-This is a personal website built with Vite + React 19 + TypeScript, documenting a journey to becoming a performance engineer. The site is deployed to GitHub Pages at ssydyc2.github.io/personal_website.
+This is a personal website built with Vite + React 19 + TypeScript, sharing professional background, reading notes, and blog posts. The site is deployed to GitHub Pages at ssydyc2.github.io/personal_website.
 
 ## Commands
 
