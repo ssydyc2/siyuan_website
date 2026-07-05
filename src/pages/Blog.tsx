@@ -583,6 +583,17 @@ function BlogPostVisual({ postId, compact = false }: { postId: string; compact?:
   );
 }
 
+function getPhaseNumber(phases: Phase[], index: number) {
+  const firstPhase = phases[0];
+  const startsAtZero = /\bphase\s*0\b/i.test(`${firstPhase?.label ?? ''} ${firstPhase?.period ?? ''}`);
+
+  return index + (startsAtZero ? 0 : 1);
+}
+
+function getPhaseDisplayLabel(phase: Phase, index: number, phases: Phase[]) {
+  return phase.label ?? `Phase ${getPhaseNumber(phases, index)}`;
+}
+
 function getBlogPreviewItems(post: BlogPost): { label: string; title: string; summary: string }[] {
   if (post.id === 'ai-performance-engineer') {
     return aiPerformanceBook.chapters.map((chapter) => ({
@@ -594,7 +605,7 @@ function getBlogPreviewItems(post: BlogPost): { label: string; title: string; su
 
   if (post.phases.length > 0) {
     return post.phases.map((phase, index) => ({
-      label: phase.label ?? phase.period ?? `Phase ${index + 1}`,
+      label: getPhaseDisplayLabel(phase, index, post.phases),
       title: phase.title,
       summary: phase.summary,
     }));
@@ -680,14 +691,16 @@ function ResourceCard({ resource }: { resource: Resource }) {
   );
 }
 
-function PhaseSection({ phase, index }: { phase: Phase; index: number }) {
+function PhaseSection({ phase, index, phases }: { phase: Phase; index: number; phases: Phase[] }) {
+  const phaseNumber = getPhaseNumber(phases, index);
+
   return (
-    <section id={`phase-${index + 1}`} className="scroll-mt-8 space-y-5">
+    <section id={`phase-${phaseNumber}`} className="scroll-mt-8 space-y-5">
       <div className="border-b border-[var(--rule-strong)] pb-5">
         <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">{phase.period}</p>
         <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">{phase.title}</h2>
-          <span className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--ink-faint)]">{phase.label ?? `Phase ${index + 1}`}</span>
+          <span className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--ink-faint)]">{getPhaseDisplayLabel(phase, index, phases)}</span>
         </div>
         <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--ink-muted)]">{phase.summary}</p>
       </div>
@@ -829,7 +842,7 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
 
         <nav aria-label="Blog post sections" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-[var(--ink-faint)]">
           {post.phases.map((phase, index) => (
-            <a key={phase.title} href={`#phase-${index + 1}`} className="transition-colors hover:text-[var(--accent)]">
+            <a key={phase.title} href={`#phase-${getPhaseNumber(post.phases, index)}`} className="transition-colors hover:text-[var(--accent)]">
               {phase.title}
             </a>
           ))}
@@ -841,7 +854,7 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
       )}
 
       {post.phases.map((phase, index) => (
-        <PhaseSection key={phase.title} phase={phase} index={index} />
+        <PhaseSection key={phase.title} phase={phase} index={index} phases={post.phases} />
       ))}
 
       {post.frameworkRows.length > 0 && (
