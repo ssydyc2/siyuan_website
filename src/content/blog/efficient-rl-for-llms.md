@@ -8,8 +8,7 @@ A structured guide for learning RLHF/RL systems and algorithms for LLM alignment
 - [Phase 1: Algorithm Foundations](#phase-1-algorithm-foundations) — read PPO/RLHF, DPO, and GRPO before systems papers.
 - [Phase 2: RLHF Systems & Frameworks](#phase-2-rlhf-systems-frameworks) — compare colocated, async, disaggregated, and dynamic allocation designs.
 - [Phase 3: Popular RLHF/RL Post-Training Frameworks](#phase-3-popular-rlhfrl-post-training-frameworks) — compare the top current frameworks by visibility and practical relevance.
-- [Phase 4: Synthesis & Practice](#phase-4-synthesis-practice) — turn the map into hands-on GRPO work, scaling notes, and code reading.
-- [Framework Comparison Table](#framework-comparison-table) — jump straight to the sync/async and placement matrix.
+- [Phase 4: Practice & Further Reading](#phase-4-practice-further-reading) — turn the map into starter exercises, advanced lessons, and further reading/code.
 
 ---
 
@@ -203,16 +202,6 @@ Read in this order: one flexible dataflow view, one async systems view, one prac
   - Key idea: dynamically reallocate model parameters across GPUs between generation and training phases
   - *Read for*: historical context and understanding the evolution toward AReaL
 
-### Framework Comparison Table
-
-| Framework | Canonical Paper | Sync/Async | Actor-Critic Placement | Read First |
-|-----------|----------------|------------|----------------------|------------|
-| verl | HybridFlow | Synchronous (colocated) | Colocated on same GPUs | HybridFlow paper |
-| TRL | (no system paper) | Single-node / small-cluster focused | Colocated | Docs + DPO/PPO/GRPO recipes |
-| OpenRLHF | OpenRLHF | Synchronous (disaggregated) | Separate GPU clusters | OpenRLHF paper |
-| slime | (no system paper) | Large-scale RL post-training | Megatron + SGLang | Docs + source |
-| AReaL | AReaL | Asynchronous | Disaggregated | AReaL paper |
-
 ---
 
 ## Phase 3: Popular RLHF/RL Post-Training Frameworks
@@ -249,29 +238,23 @@ This list is ranked by current visibility plus practical relevance: stars, activ
   - Best read as the async counterpart to synchronous colocated/disaggregated frameworks
   - *Action*: read the AReaL paper and inspect how it bounds staleness in async training
 
-Not in the current top list: **NeMo-Aligner** is archived and points users to NeMo RL, while **torchtune** development wound down in 2025. Both are useful historical/ecosystem references, but not good main recommendations for a current framework shortlist.
+### Framework Comparison Table
+
+| Framework | Canonical Paper | Sync/Async | Actor-Critic Placement | Read First |
+|-----------|----------------|------------|----------------------|------------|
+| verl | HybridFlow | Synchronous (colocated) | Colocated on same GPUs | HybridFlow paper |
+| TRL | (no system paper) | Single-node / small-cluster focused | Colocated | Docs + DPO/PPO/GRPO recipes |
+| OpenRLHF | OpenRLHF | Synchronous (disaggregated) | Separate GPU clusters | OpenRLHF paper |
+| slime | (no system paper) | Large-scale RL post-training | Megatron + SGLang | Docs + source |
+| AReaL | AReaL | Asynchronous | Disaggregated | AReaL paper |
 
 ---
 
-## Phase 4: Synthesis & Practice
+## Phase 4: Practice & Further Reading
 
-### 4A: Conceptual Overview & Landscape
+Use this section to move from reading papers to actually training, debugging, and reading real RL post-training systems.
 
-- **[Understanding Reasoning LLMs — Sebastian Raschka](https://magazine.sebastianraschka.com/p/understanding-reasoning-llms)**
-  - Taxonomy of four approaches: inference-time scaling, pure RL (R1-Zero), SFT+RL (R1), distillation
-  - Practical cost comparisons: Sky-T1 ~$450, TinyZero under $30
-  - *Read first to decide which approach fits your use case*
-
-- **[RLHF Book — Nathan Lambert](https://rlhfbook.com/)**
-  - Free online book covering the full RLHF pipeline end-to-end
-  - Companion course with 4 lectures — Lecture 4 on RL Implementation & Practice is especially useful
-  - *The single most comprehensive practitioner resource on RLHF*
-
-- **[Interconnects AI — RLHF tag](https://www.interconnects.ai/t/rlhf)** (Nathan Lambert's blog)
-  - Ongoing deep-dives: PPO vs DPO vs GRPO tradeoffs, DeepSeek R1 training recipe analysis, infra challenges
-  - Written from a builder's perspective (formerly HuggingFace, now AI2)
-
-### 4B: Hands-On GRPO Training
+### 4A: Hands-On Starter Exercises
 
 - **[Unsloth — Train Your Own R1 Reasoning Model with GRPO](https://unsloth.ai/blog/r1-reasoning)** ([step-by-step tutorial](https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide/tutorial-train-your-own-reasoning-model-with-grpo))
   - End-to-end GRPO on consumer hardware — Colab notebooks included
@@ -291,29 +274,42 @@ Not in the current top list: **NeMo-Aligner** is archived and points users to Ne
   - Non-obvious insight: why μ=1 gives zero policy loss but training still works via non-zero gradients
   - *Best resource for understanding what GRPOTrainer does under the hood*
 
-### 4C: Scaling & Engineering Lessons
+- **[DPO Alignment with TRL — Philipp Schmid](https://www.philschmid.de/dpo-align-llms-in-2024-with-trl)**
+  - End-to-end DPO walkthrough: dataset formatting, quantization, LoRA training, MT-Bench evaluation with GPT-4 as judge
+  - *Cleanest alignment tutorial — transferable evaluation methodology*
+
+### 4B: Advanced Lessons
 
 - **[HuggingFace Open-R1: Update #1](https://huggingface.co/blog/open-r1/update-1)**
   - Documents HuggingFace's attempt to replicate DeepSeek-R1 with GRPO via TRL
   - Hard-won infra lessons: scaling vLLM from 2→4 nodes of 8xH100s, GPU memory challenges with 6k–20k token reasoning outputs, batched vs streaming generation
   - *Gold-standard "lessons learned" post for GRPO at scale*
 
-- **[DPO Alignment with TRL — Philipp Schmid](https://www.philschmid.de/dpo-align-llms-in-2024-with-trl)**
-  - End-to-end DPO walkthrough: dataset formatting, quantization, LoRA training, MT-Bench evaluation with GPT-4 as judge
-  - *Cleanest alignment tutorial — transferable evaluation methodology*
-
 - **[Training for Reasoning with GRPO (Towards AI)](https://pub.towardsai.net/training-your-reasoning-model-with-grpo-a-practical-guide-for-vlms-post-training-with-trl-266411c0b844)** ([Part II](https://medium.com/@lucamassaron/training-for-reasoning-with-grpo-part-ii-a-step-by-step-explanation-f80c219e2059))
   - GRPO post-training guide with a focus on Vision-Language Models
   - Part II: step-by-step training loop explanation
   - *One of the few resources covering GRPO for multimodal models*
 
-### 4D: System Design Comparison & Code Reading
+- **[Understanding Reasoning LLMs — Sebastian Raschka](https://magazine.sebastianraschka.com/p/understanding-reasoning-llms)**
+  - Taxonomy of four approaches: inference-time scaling, pure RL (R1-Zero), SFT+RL (R1), distillation
+  - Practical cost comparisons: Sky-T1 ~$450, TinyZero under $30
+  - *Use it to place GRPO practice inside the broader reasoning-model landscape*
 
-- **Compare system designs**
-  - Map out: HybridFlow (colocated sync) vs AReaL (async) vs OpenRLHF (disaggregated sync) vs ReaLHF (dynamic realloc)
-  - Key axes: GPU utilization, bubble time, communication overhead, implementation complexity
-  - Write a 1-page comparison note
+### 4C: Further Reading & Code
 
-- **Read verl or OpenRLHF source code**
+- **[RLHF Book — Nathan Lambert](https://rlhfbook.com/)**
+  - Free online book covering the full RLHF pipeline end-to-end
+  - Companion course with 4 lectures — Lecture 4 on RL Implementation & Practice is especially useful
+  - *The single most comprehensive practitioner resource on RLHF*
+
+- **[Interconnects AI — RLHF tag](https://www.interconnects.ai/t/rlhf)** (Nathan Lambert's blog)
+  - Ongoing deep-dives: PPO vs DPO vs GRPO tradeoffs, DeepSeek R1 training recipe analysis, infra challenges
+  - Written from a builder's perspective (formerly HuggingFace, now AI2)
+
+- **[verl source code](https://github.com/verl-project/verl)**
   - Trace one PPO or GRPO step end-to-end through the codebase
-  - Understand: how rollouts are batched, how advantages are computed, how weight sync works
+  - Understand: how rollouts are batched, how advantages are computed, how colocated rollout/training works
+
+- **[OpenRLHF source code](https://github.com/OpenRLHF/OpenRLHF)**
+  - Trace one PPO or GRPO step end-to-end through the codebase
+  - Understand: how Ray/vLLM workers are organized, how model components are placed, and how weight sync works

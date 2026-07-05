@@ -234,61 +234,15 @@ const phases: Phase[] = [
           },
         ],
       },
-      {
-        title: 'Excluded from the current top list',
-        resources: [
-          {
-            title: 'NeMo-Aligner and torchtune',
-            href: 'https://github.com/NVIDIA/NeMo-Aligner',
-            meta: 'Historical references',
-            notes: [
-              'NeMo-Aligner is archived and points users to NeMo RL.',
-              'torchtune development wound down in 2025.',
-              'Useful ecosystem context, but not strong current main recommendations.',
-            ],
-          },
-        ],
-      },
     ],
   },
   {
-    title: 'Synthesis & Practice',
+    title: 'Practice & Further Reading',
     period: 'Practice',
-    summary: 'Connect the conceptual landscape, hands-on training, scaling lessons, and code reading.',
+    summary: 'Connect starter exercises, advanced lessons, and further reading with code.',
     groups: [
       {
-        title: 'Conceptual Overview & Landscape',
-        resources: [
-          {
-            title: 'Understanding Reasoning LLMs',
-            href: 'https://magazine.sebastianraschka.com/p/understanding-reasoning-llms',
-            meta: 'Sebastian Raschka',
-            notes: [
-              'Taxonomy of inference-time scaling, pure RL, SFT plus RL, and distillation.',
-              'Useful for deciding which reasoning approach fits a use case.',
-            ],
-          },
-          {
-            title: 'RLHF Book',
-            href: 'https://rlhfbook.com/',
-            meta: 'Nathan Lambert',
-            notes: [
-              'Free online book covering the RLHF pipeline end-to-end.',
-              'Lecture 4 on RL implementation and practice is especially useful.',
-            ],
-          },
-          {
-            title: 'Interconnects AI - RLHF tag',
-            href: 'https://www.interconnects.ai/t/rlhf',
-            meta: 'Nathan Lambert',
-            notes: [
-              'Builder-oriented writing on PPO, DPO, GRPO, DeepSeek-R1, and infrastructure challenges.',
-            ],
-          },
-        ],
-      },
-      {
-        title: 'Hands-On GRPO Training',
+        title: 'Hands-On Starter Exercises',
         resources: [
           {
             title: 'Unsloth - Train Your Own R1 Reasoning Model with GRPO',
@@ -318,10 +272,19 @@ const phases: Phase[] = [
               'Covers model architecture, rewards, group-relative advantages, and trainer behavior.',
             ],
           },
+          {
+            title: 'DPO Alignment with TRL',
+            href: 'https://www.philschmid.de/dpo-align-llms-in-2024-with-trl',
+            meta: 'Philipp Schmid',
+            notes: [
+              'End-to-end DPO walkthrough covering data, quantization, LoRA training, and evaluation.',
+              'Clean alignment tutorial with transferable evaluation methodology.',
+            ],
+          },
         ],
       },
       {
-        title: 'Scaling & Engineering Lessons',
+        title: 'Advanced Lessons',
         resources: [
           {
             title: 'HuggingFace Open-R1: Update #1',
@@ -333,21 +296,61 @@ const phases: Phase[] = [
             ],
           },
           {
-            title: 'DPO Alignment with TRL',
-            href: 'https://www.philschmid.de/dpo-align-llms-in-2024-with-trl',
-            meta: 'Philipp Schmid',
-            notes: [
-              'End-to-end DPO walkthrough covering data, quantization, LoRA training, and evaluation.',
-              'Clean alignment tutorial with transferable evaluation methodology.',
-            ],
-          },
-          {
             title: 'Training for Reasoning with GRPO',
             href: 'https://pub.towardsai.net/training-your-reasoning-model-with-grpo-a-practical-guide-for-vlms-post-training-with-trl-266411c0b844',
             meta: 'Towards AI',
             notes: [
               'GRPO post-training guide focused on vision-language models.',
               'One of the few resources covering multimodal GRPO practice.',
+            ],
+          },
+          {
+            title: 'Understanding Reasoning LLMs',
+            href: 'https://magazine.sebastianraschka.com/p/understanding-reasoning-llms',
+            meta: 'Sebastian Raschka',
+            notes: [
+              'Taxonomy of inference-time scaling, pure RL, SFT plus RL, and distillation.',
+              'Useful for placing GRPO practice inside the broader reasoning-model landscape.',
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Further Reading & Code',
+        resources: [
+          {
+            title: 'RLHF Book',
+            href: 'https://rlhfbook.com/',
+            meta: 'Nathan Lambert',
+            notes: [
+              'Free online book covering the RLHF pipeline end-to-end.',
+              'Lecture 4 on RL implementation and practice is especially useful.',
+            ],
+          },
+          {
+            title: 'Interconnects AI - RLHF tag',
+            href: 'https://www.interconnects.ai/t/rlhf',
+            meta: 'Nathan Lambert',
+            notes: [
+              'Builder-oriented writing on PPO, DPO, GRPO, DeepSeek-R1, and infrastructure challenges.',
+            ],
+          },
+          {
+            title: 'verl source code',
+            href: 'https://github.com/verl-project/verl',
+            meta: 'Code reading',
+            notes: [
+              'Trace one PPO or GRPO step end-to-end through the codebase.',
+              'Focus on rollout batching, advantage computation, and colocated rollout/training.',
+            ],
+          },
+          {
+            title: 'OpenRLHF source code',
+            href: 'https://github.com/OpenRLHF/OpenRLHF',
+            meta: 'Code reading',
+            notes: [
+              'Trace one PPO or GRPO step end-to-end through the codebase.',
+              'Focus on Ray/vLLM workers, model placement, and weight sync.',
             ],
           },
         ],
@@ -365,11 +368,12 @@ const frameworkRows = [
 ];
 
 const practicePath = [
-  "Raschka's overview - understand the landscape before training anything",
   'Unsloth GRPO tutorial - first hands-on experiment',
-  "Pramodith's GRPO blog - understand what the trainer does",
-  'Open-R1 Update #1 - learn scaling lessons before multi-GPU work',
   'TinyZero on veRL - reproduce R1-Zero and bridge to production frameworks',
+  "Pramodith's GRPO blog - understand what the trainer does",
+  'DPO Alignment with TRL - practice a clean non-RL alignment path',
+  'Open-R1 Update #1 - learn scaling lessons before multi-GPU work',
+  "Raschka's overview - place the exercises in the broader reasoning-model landscape",
 ];
 
 const minimalPath = [
@@ -888,12 +892,13 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
       )}
 
       {post.phases.map((phase, index) => (
-        <PhaseSection key={phase.title} phase={phase} index={index} phases={post.phases} />
+        <div key={phase.title} className="contents">
+          <PhaseSection phase={phase} index={index} phases={post.phases} />
+          {post.frameworkRows.length > 0 && phase.title === 'Popular RLHF/RL Post-Training Frameworks' && (
+            <FrameworkComparison rows={post.frameworkRows} />
+          )}
+        </div>
       ))}
-
-      {post.frameworkRows.length > 0 && (
-        <FrameworkComparison rows={post.frameworkRows} />
-      )}
 
       {(post.practicePath.length > 0 || post.minimalPath.length > 0) && (
         <div className="grid gap-10 md:grid-cols-2">
