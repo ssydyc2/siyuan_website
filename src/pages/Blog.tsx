@@ -1,5 +1,4 @@
 import { Link, useParams } from 'react-router-dom';
-import aiPerformanceImage from '../assets/blog/ai-systems-performance-engineering-2d-hd.webp';
 import rlForLlmsImage from '../assets/blog/efficient-rl-for-llms-2d-hd.webp';
 import kernelRuntimeImage from '../assets/blog/llm-kernel-runtime-basics-2d-hd.webp';
 import blogHeroImage from '../assets/hero/study-systems-anime.webp';
@@ -403,127 +402,12 @@ const keyConcepts = `Efficient RL for LLMs
 |-- Practical Stacks
     |-- verl, TRL, OpenRLHF, slime, AReaL`;
 
-const aiPerformanceReadingChecklist = [
-  'Role definition: what an AI systems performance engineer owns',
-  'Hardware: GPU architecture, memory hierarchy, tensor cores, and interconnects',
-  'Workloads: training vs inference performance bottlenecks',
-  'Tooling: profiler-driven optimization rather than intuition-driven tuning',
-  'Scale: single-node efficiency before distributed-system complexity',
-];
-
-const aiPerformancePhases: Phase[] = [
-  {
-    title: 'Book Spine',
-    period: 'Start here',
-    summary:
-      'Use the book as the organizing thread, then branch into profiling and systems work as the concepts become concrete.',
-    groups: [
-      {
-        resources: [
-          {
-            title: 'AI Systems Performance Engineering',
-            href: 'https://www.amazon.com/Systems-Performance-Engineering-Optimizing-Inference/dp/B0F47689K8',
-            meta: 'Chris Fregly',
-            notes: [
-              'A practical entry point for optimizing model training and inference workloads.',
-              'Use Chapter 1 to frame the AI systems engineer role and the shape of large-model infrastructure.',
-              'Use Chapter 2 to connect NVIDIA GPU architecture, systems topology, and workload behavior.',
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'System Mental Model',
-    period: 'Core notes',
-    summary:
-      'Turn the reading into a performance map: hardware limits, software stacks, and bottlenecks that can be measured.',
-    groups: [
-      {
-        resources: [
-          {
-            title: 'Chapter 1. Introduction and AI System Overview',
-            href: 'https://www.amazon.com/Systems-Performance-Engineering-Optimizing-Inference/dp/B0F47689K8',
-            meta: 'Reading note',
-            notes: [
-              'Clarifies why AI performance work sits between model development, infrastructure, and hardware.',
-              'Frames future systems around extremely large parameter counts and the infrastructure needed to serve them.',
-            ],
-          },
-          {
-            title: 'Chapter 2. AI System Hardware Overview',
-            href: 'https://www.amazon.com/Systems-Performance-Engineering-Optimizing-Inference/dp/B0F47689K8',
-            meta: 'Reading note',
-            notes: [
-              'Focuses on NVIDIA GPU generations and what changes from H100-class systems to B200/NVL72-style systems.',
-              'Connects accelerator architecture, memory capacity, bandwidth, and multi-GPU communication to model workloads.',
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
-
-const aiPerformancePracticePath = [
-  'Read Chapter 1 and write down what the performance engineer owns in the stack',
-  'Read Chapter 2 and build a hardware checklist for GPU, memory, and interconnect bottlenecks',
-  'Pick one small training or inference workload and profile before changing code',
-  'Separate bottlenecks into compute-bound, memory-bound, communication-bound, and scheduling-bound',
-];
-
-const aiPerformanceMinimalPath = [
-  'Chapter 1 for role and system overview',
-  'Chapter 2 for hardware architecture',
-  'One profiler pass on a real model workload',
-];
-
-const aiPerformanceTopThree = [
-  'Chapter 1 system overview',
-  'Chapter 2 hardware overview',
-  'Profiler-first bottleneck taxonomy',
-];
-
-const aiPerformanceConcepts = `AI Performance Engineering
-|-- Workloads
-|   |-- Training: throughput, memory pressure, communication
-|   |-- Inference: latency, batching, KV cache, serving utilization
-|-- Hardware
-|   |-- GPU architecture, tensor cores, HBM, interconnect
-|-- Method
-    |-- Measure, classify bottleneck, optimize, re-measure`;
-
-const aiPerformanceBook = {
-  href: 'https://www.amazon.com/Systems-Performance-Engineering-Optimizing-Inference/dp/B0F47689K8',
-  chapters: [
-    {
-      number: '01',
-      title: 'Introduction and AI System Overview',
-      status: 'Reading note',
-      notes: [
-        'Frames AI performance work as an engineering role between model development, infrastructure, and hardware.',
-        'Introduces the scale pressure behind modern AI systems, including infrastructure for much larger future models.',
-      ],
-    },
-    {
-      number: '02',
-      title: 'AI System Hardware Overview',
-      status: 'Reading note',
-      notes: [
-        'Connects NVIDIA GPU generations, memory capacity, bandwidth, and multi-GPU topology to real model workloads.',
-        'Useful for building a hardware checklist before profiling training or inference performance.',
-      ],
-    },
-  ],
-};
-
 const kernelRuntimePhases: Phase[] = [
   {
     title: 'Core LLM Performance Papers',
     period: 'Phase 1',
     label: 'Phase 1',
-    summary: 'Start with FlashAttention, FlashAttention-2, and PagedAttention to connect attention kernels with serving constraints.',
+    summary: 'Start with FlashAttention, PagedAttention, and SGLang to connect kernels with serving constraints.',
     groups: [],
   },
   {
@@ -534,10 +418,17 @@ const kernelRuntimePhases: Phase[] = [
     groups: [],
   },
   {
-    title: 'Implementation Practice',
+    title: 'Serving Frameworks',
     period: 'Phase 3',
     label: 'Phase 3',
-    summary: 'Use small Triton implementations to turn paper concepts into concrete memory-access patterns.',
+    summary: 'Study vLLM and SGLang to connect kernels, KV cache, scheduling, and structured serving.',
+    groups: [],
+  },
+  {
+    title: 'Practice & Further Reading',
+    period: 'Phase 4',
+    label: 'Phase 4',
+    summary: 'Implement core serving components, then read vLLM, SGLang, and LMSYS systems writing.',
     groups: [],
   },
 ];
@@ -558,25 +449,11 @@ const blogPosts: BlogPost[] = [
     keyConcepts,
   },
   {
-    id: 'ai-performance-engineer',
-    title: 'Book Reading Notes: AI Systems Performance Engineering',
-    eyebrow: 'Book notes',
-    summary:
-      "Reading notes for Chris Fregly's book, focused on the systems-performance mental model behind AI training and inference workloads.",
-    readingChecklist: aiPerformanceReadingChecklist,
-    phases: aiPerformancePhases,
-    frameworkRows: [],
-    practicePath: aiPerformancePracticePath,
-    minimalPath: aiPerformanceMinimalPath,
-    topThree: aiPerformanceTopThree,
-    keyConcepts: aiPerformanceConcepts,
-  },
-  {
     id: 'llm-kernel-runtime-basics',
     title: 'Study Plan: LLM Kernel & Runtime Basics',
     eyebrow: 'Learning map',
     summary:
-      'A learning map for the core attention and serving papers behind modern LLM performance work, followed by Triton and JAX practice.',
+      'A learning map that moves from attention and serving papers to kernel tools, serving frameworks, and practice.',
     readingChecklist: [],
     phases: kernelRuntimePhases,
     frameworkRows: [],
@@ -591,10 +468,6 @@ const blogPostImages: Record<string, { src: string; alt: string }> = {
   'efficient-rl-for-llms': {
     src: rlForLlmsImage,
     alt: '2D illustration of an RL pipeline for LLM training systems',
-  },
-  'ai-performance-engineer': {
-    src: aiPerformanceImage,
-    alt: '2D illustration of an AI performance engineering desk with GPU hardware and charts',
   },
   'llm-kernel-runtime-basics': {
     src: kernelRuntimeImage,
@@ -633,14 +506,6 @@ function getPhaseDisplayLabel(phase: Phase, index: number, phases: Phase[]) {
 }
 
 function getBlogPreviewItems(post: BlogPost): { label: string; title: string; summary: string }[] {
-  if (post.id === 'ai-performance-engineer') {
-    return aiPerformanceBook.chapters.map((chapter) => ({
-      label: `Chapter ${chapter.number}`,
-      title: chapter.title,
-      summary: '',
-    }));
-  }
-
   if (post.phases.length > 0) {
     return post.phases.map((phase, index) => ({
       label: getPhaseDisplayLabel(phase, index, post.phases),
@@ -922,61 +787,6 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
   );
 }
 
-function AIPerformanceBookDetail({ post }: { post: BlogPost }) {
-  return (
-    <article className="mx-auto max-w-4xl space-y-12">
-      <BlogPostVisual postId={post.id} />
-      <header className="max-w-3xl">
-        <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
-        <a
-          href={aiPerformanceBook.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-flex font-mono text-sm text-[var(--accent)] transition-colors hover:text-[var(--accent-strong)]"
-        >
-          View book &rarr;
-        </a>
-      </header>
-
-      <section>
-        <div className="flex flex-col gap-2 border-b border-[var(--rule-strong)] pb-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">Current notes</p>
-            <h2 className="mt-2 font-serif text-2xl font-normal text-[var(--ink)]">Chapter Notes</h2>
-          </div>
-          <span className="font-mono text-xs text-[var(--ink-faint)]">{aiPerformanceBook.chapters.length} chapters</span>
-        </div>
-
-        <div className="mt-6 grid gap-5 md:grid-cols-2">
-          {aiPerformanceBook.chapters.map((chapter) => (
-            <article key={chapter.number} className="border border-[var(--rule)] bg-[var(--paper-elevated)] p-5 shadow-[3px_3px_0_var(--shadow-rule)]">
-              <div className="flex items-start gap-4">
-                <span className="shrink-0 font-mono text-3xl font-light text-[var(--amber)]">
-                  {chapter.number}
-                </span>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">{chapter.status}</p>
-                  <h3 className="mt-2 text-lg font-medium leading-snug text-[var(--ink)]">
-                    {chapter.title}
-                  </h3>
-                </div>
-              </div>
-              <ul className="mt-5 space-y-3">
-                {chapter.notes.map((note) => (
-                  <li key={note} className="border-l border-[var(--rule)] pl-4 text-sm leading-6 text-[var(--ink-muted)]">
-                    {note}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-    </article>
-  );
-}
-
 function KernelBasicsDetail({ post }: { post: BlogPost }) {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -989,10 +799,6 @@ function KernelBasicsDetail({ post }: { post: BlogPost }) {
 function BlogPostDetail({ post }: { post: BlogPost }) {
   if (post.id === 'efficient-rl-for-llms') {
     return <EfficientRlDetail post={post} />;
-  }
-
-  if (post.id === 'ai-performance-engineer') {
-    return <AIPerformanceBookDetail post={post} />;
   }
 
   if (post.id === 'llm-kernel-runtime-basics') {
