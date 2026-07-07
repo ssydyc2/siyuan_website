@@ -103,7 +103,16 @@ r_t(\theta)
   \right)
 \right]
 
-\mathcal{L}_{\mathrm{RLHF}}(\theta)
+\hat{R}_t
+= \hat{A}_t + V_{\phi_{\mathrm{old}}}(s_t)
+
+\mathcal{L}^{\mathrm{value}}_{\mathrm{PPO}}(\phi)
+= \frac{1}{2}\mathbb{E}_t
+\left[
+  \left(V_\phi(s_t) - \hat{R}_t\right)^2
+\right]
+
+\mathcal{J}_{\mathrm{actor}}^{\mathrm{RLHF}}(\theta)
 \approx
 \mathcal{L}^{\mathrm{CLIP}}_{\mathrm{PPO}}(\theta)
 - \beta \,
@@ -112,9 +121,17 @@ D_{\mathrm{KL}}
   \pi_\theta(\cdot \mid x)
   \,\|\, \pi_{\mathrm{ref}}(\cdot \mid x)
 \right)
+
+\mathcal{L}_{\mathrm{actor}}^{\mathrm{min}}(\theta)
+= -\mathcal{L}^{\mathrm{CLIP}}_{\mathrm{PPO}}(\theta)
++ \beta D_{\mathrm{KL}}
+\left(
+  \pi_\theta(\cdot \mid x)
+  \,\|\, \pi_{\mathrm{ref}}(\cdot \mid x)
+\right)
 ```
 
-High-level meaning: PPO takes policy-gradient steps but clips the probability ratio so the new policy cannot move too far from the rollout policy; RLHF usually adds a KL penalty to stay near the reference model.
+High-level meaning: PPO takes policy-gradient steps but clips the probability ratio so the new policy cannot move too far from the rollout policy. The actor maximizes \(\mathcal{J}_{\mathrm{actor}}^{\mathrm{RLHF}}\), or equivalently minimizes \(\mathcal{L}_{\mathrm{actor}}^{\mathrm{min}}\) with the signs flipped. The critic/value model is a separate regression problem: it minimizes \(\mathcal{L}^{\mathrm{value}}_{\mathrm{PPO}}\) toward the estimated return target \(\hat{R}_t\), usually computed from GAE. If the actor and value model share parameters, implementations often combine these terms into one weighted training loss; if they are separate models, they can be optimized as separate losses.
 
 #### 4. GRPO
 
