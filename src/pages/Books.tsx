@@ -58,6 +58,47 @@ function ReadingHeroScene() {
   );
 }
 
+function TopicButton({
+  topic,
+  isActive,
+  onSelect,
+  variant = 'rail'
+}: {
+  topic: ReadingTopic;
+  isActive: boolean;
+  onSelect: (topic: ReadingTopic) => void;
+  variant?: 'rail' | 'chip';
+}) {
+  const baseClassName =
+    'font-mono text-xs uppercase tracking-[0.14em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]';
+  const variantClassName =
+    variant === 'chip'
+      ? 'inline-flex h-10 shrink-0 items-center border px-3'
+      : 'block w-full border-0 px-0 py-2 text-left';
+
+  return (
+    <motion.button
+      type="button"
+      className={`${baseClassName} ${variantClassName}`}
+      onClick={() => onSelect(topic)}
+      aria-pressed={isActive}
+      animate={{
+        color: isActive ? 'var(--accent)' : 'var(--ink-faint)',
+        opacity: isActive ? 1 : 0.52,
+        x: variant === 'rail' && isActive ? 2 : 0,
+        borderColor: isActive ? 'var(--accent)' : 'var(--rule)',
+        backgroundColor: isActive ? 'color-mix(in srgb, var(--accent-soft) 42%, transparent)' : 'transparent'
+      }}
+      transition={{ duration: 0.22, ease: 'easeOut' }}
+    >
+      <span className="inline-flex min-w-0 items-center gap-2">
+        <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-current" />
+        <span className="truncate">{topic}</span>
+      </span>
+    </motion.button>
+  );
+}
+
 function ReadingTopicsRail({
   activeTopics,
   onTopicSelect
@@ -66,39 +107,54 @@ function ReadingTopicsRail({
   onTopicSelect: (topic: ReadingTopic) => void;
 }) {
   return (
-    <aside className="reading-topics min-w-0 lg:sticky lg:top-8 lg:self-start" aria-label="Reading topics">
-      <div className="min-w-0 border-y border-[var(--rule)] py-4 lg:border-y-0 lg:border-l lg:py-1 lg:pl-5">
+    <aside className="reading-topics hidden min-w-0 lg:sticky lg:top-8 lg:block lg:self-start" aria-label="Reading topics">
+      <div className="max-h-[calc(100vh-5rem)] min-w-0 overflow-y-auto border-l border-[var(--rule)] py-1 pl-5">
         <p className="mb-3 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
           Topics
         </p>
-        <div className="flex max-w-full gap-2 overflow-x-auto pb-1 lg:block lg:space-y-2 lg:overflow-visible lg:pb-0">
+        <div className="space-y-2">
           {readingTopics.map((topic) => {
             const isActive = activeTopics.includes(topic);
 
             return (
-              <motion.button
+              <TopicButton
                 key={topic}
-                type="button"
-                className="block w-max shrink-0 border px-3 py-2 text-left font-mono text-xs uppercase tracking-[0.14em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] lg:w-full lg:border-0 lg:px-0"
-                onClick={() => onTopicSelect(topic)}
-                aria-pressed={isActive}
-                animate={{
-                  color: isActive ? 'var(--accent)' : 'var(--ink-faint)',
-                  opacity: isActive ? 1 : 0.42,
-                  x: isActive ? 2 : 0,
-                  borderColor: isActive ? 'var(--accent)' : 'var(--rule)',
-                  backgroundColor: isActive ? 'color-mix(in srgb, var(--accent-soft) 42%, transparent)' : 'transparent'
-                }}
-                transition={{ duration: 0.22, ease: 'easeOut' }}
-              >
-                <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-current align-middle" />
-                {topic}
-              </motion.button>
+                topic={topic}
+                isActive={isActive}
+                onSelect={onTopicSelect}
+              />
             );
           })}
         </div>
       </div>
     </aside>
+  );
+}
+
+function MobileTopicControls({
+  activeTopics,
+  onTopicSelect
+}: {
+  activeTopics: ReadingTopic[];
+  onTopicSelect: (topic: ReadingTopic) => void;
+}) {
+  return (
+    <div className="sticky top-0 z-20 -mx-6 border-y border-[var(--rule)] bg-[var(--paper)]/95 px-6 py-3 shadow-[0_8px_22px_color-mix(in_srgb,var(--paper)_72%,transparent)] backdrop-blur lg:hidden">
+      <p className="mb-2 min-w-0 truncate font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
+        Topics
+      </p>
+      <div className="reading-topic-strip flex max-w-full gap-2 overflow-x-auto pb-1">
+        {readingTopics.map((topic) => (
+          <TopicButton
+            key={topic}
+            topic={topic}
+            isActive={activeTopics.includes(topic)}
+            onSelect={onTopicSelect}
+            variant="chip"
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -192,8 +248,16 @@ export default function Books() {
         </p>
       </header>
 
+      <MobileTopicControls
+        activeTopics={activeTopics}
+        onTopicSelect={selectTopic}
+      />
+
       <div className="grid gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:items-start">
-        <ReadingTopicsRail activeTopics={activeTopics} onTopicSelect={selectTopic} />
+        <ReadingTopicsRail
+          activeTopics={activeTopics}
+          onTopicSelect={selectTopic}
+        />
         <div className="min-w-0 space-y-4">
           {books.map((book) => (
             <BookCard
