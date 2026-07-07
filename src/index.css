@@ -132,7 +132,7 @@ samp {
   opacity: 0;
 }
 
-.timeline-node--visible::after {
+.timeline-node--active::after {
   animation: timeline-node-pulse 2.8s ease-out infinite;
 }
 
@@ -692,35 +692,36 @@ samp {
   }
 
   .timeline-path {
-    padding-left: 0.625rem;
+    padding-left: 0;
   }
 
   .timeline-path .timeline-path__line,
   .timeline-item .timeline-node {
-    left: 0.5rem;
+    left: 1rem;
   }
 
   .timeline-item {
     justify-content: flex-start;
+    padding-left: 3rem;
   }
 
   .timeline-card-shell {
     width: 100%;
     padding-right: 0;
-    padding-left: 2rem;
+    padding-left: 0;
   }
 
   .timeline-connector {
     right: auto;
-    left: 0.5rem;
-    width: 1rem;
+    left: 1rem;
+    width: 1.25rem;
     margin-right: 0;
     margin-left: 0.75rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .timeline-node--visible::after {
+  .timeline-node--active::after {
     animation: none;
   }
 

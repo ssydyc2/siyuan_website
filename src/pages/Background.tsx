@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import aboutAnimeJourney from '../assets/hero/about-anime-journey.webp';
 import HeroScene from '../components/HeroScene';
 
@@ -64,60 +65,96 @@ const timelineData: TimelineItem[] = [
 
 function TimelineCard({
   item,
-  index,
-  isVisible,
+  isActive,
+  reduceMotion,
   cardRef
 }: {
   item: TimelineItem;
-  index: number;
-  isVisible: boolean;
+  isActive: boolean;
+  reduceMotion: boolean;
   cardRef: (node: HTMLDivElement | null) => void;
 }) {
-  const isLeft = index % 2 === 0;
+  const itemRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress: itemScrollProgress } = useScroll({
+    target: itemRef,
+    offset: ['start 92%', 'end 18%']
+  });
+  const scrollYDrift = useTransform(itemScrollProgress, [0, 0.5, 1], [24, 0, -14]);
+  const cardTransition = reduceMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 280, damping: 30, mass: 0.7 };
+  const accentTransition = reduceMotion ? { duration: 0 } : { duration: 0.22, ease: 'easeOut' as const };
+  const cardOpacity = isActive ? 1 : 0.42;
+  const cardFilter = isActive ? 'grayscale(0) saturate(1.08)' : 'grayscale(0.72) saturate(0.58)';
+  const nodeColor = isActive ? 'var(--amber)' : 'var(--rule-strong)';
 
   return (
-    <div
-      ref={cardRef}
-      className={`timeline-item relative mb-3 flex items-center ${isLeft ? 'justify-start' : 'justify-end'}`}
+    <motion.div
+      ref={(node) => {
+        itemRef.current = node;
+        cardRef(node);
+      }}
+      className="timeline-item relative mb-5 flex min-h-28 items-stretch pl-16"
+      style={{
+        y: reduceMotion ? 0 : scrollYDrift
+      }}
     >
       {/* Node on center line */}
-      <div
-        className={`timeline-node absolute left-1/2 top-1/2 z-10 h-3 w-3 -translate-x-1/2 rounded-full border-2 border-[var(--accent)] bg-[var(--paper-elevated)] ${
-          isVisible ? 'timeline-node--visible' : ''
+      <motion.div
+        className={`timeline-node absolute left-6 top-7 z-10 h-4 w-4 rounded-full border-2 bg-[var(--paper-elevated)] ${
+          isActive ? 'timeline-node--active' : ''
         }`}
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0)',
-          transition: 'all 0.4s ease-out',
-          transitionDelay: `${index * 0.15 + 0.3}s`
+        style={{ x: '-50%', y: '-50%' }}
+        animate={{
+          borderColor: isActive ? 'var(--accent)' : 'var(--rule)',
+          scale: isActive && !reduceMotion ? 1.28 : 0.86,
+          opacity: isActive ? 1 : 0.42
         }}
+        transition={cardTransition}
       >
-        <div className="absolute inset-0.5 rounded-full bg-[var(--amber)]" />
-      </div>
+        <motion.div
+          className="absolute inset-0.5 rounded-full"
+          animate={{
+            backgroundColor: nodeColor
+          }}
+          transition={accentTransition}
+        />
+      </motion.div>
 
       {/* Connector to center line */}
-      <div
-        className={`timeline-connector absolute top-1/2 h-px w-6 bg-[var(--rule-strong)]
-          ${isLeft ? 'right-1/2 mr-3' : 'left-1/2 ml-3'}`}
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transition: 'opacity 0.5s ease-out',
-          transitionDelay: `${index * 0.1}s`
+      <motion.div
+        className="timeline-connector absolute left-6 top-7 h-px w-6 origin-left bg-[var(--rule-strong)]"
+        animate={{
+          opacity: isActive ? 1 : 0.24,
+          scaleX: isActive && !reduceMotion ? 1 : 0.72,
+          backgroundColor: isActive ? 'var(--accent)' : 'var(--rule-strong)'
         }}
+        transition={cardTransition}
       />
 
       {/* Card */}
-      <div
-        className={`timeline-card-shell w-5/12 ${isLeft ? 'pr-8' : 'pl-8'}`}
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'all 0.6s ease-out',
-          transitionDelay: `${index * 0.15}s`
+      <motion.div
+        className="timeline-card-shell w-full"
+        animate={{
+          opacity: cardOpacity,
+          scale: isActive && !reduceMotion ? 1.012 : 1,
+          filter: cardFilter
         }}
+        transition={cardTransition}
       >
         <div className="relative group">
-          <div className="timeline-card-panel relative border border-[var(--rule)] bg-[var(--paper-elevated)] p-4 shadow-[3px_3px_0_var(--shadow-rule)] transition-colors duration-300 group-hover:border-[var(--rule-strong)]">
+          <motion.div
+            className="timeline-card-panel relative border p-4 transition-colors duration-300 group-hover:border-[var(--rule-strong)]"
+            animate={{
+              borderColor: isActive ? 'var(--accent)' : 'var(--rule)',
+              backgroundColor: isActive ? 'color-mix(in srgb, var(--paper-elevated) 88%, var(--accent-soft))' : 'var(--paper-elevated)',
+              boxShadow: isActive
+                ? '5px 6px 0 color-mix(in srgb, var(--shadow-rule) 95%, transparent), 0 12px 28px color-mix(in srgb, var(--accent) 14%, transparent)'
+                : '2px 2px 0 color-mix(in srgb, var(--shadow-rule) 56%, transparent)'
+            }}
+            transition={accentTransition}
+            whileHover={reduceMotion ? undefined : { y: -2 }}
+          >
             {/* Period badge */}
             <div className="mb-2 inline-flex items-center border border-[var(--rule)] bg-[var(--paper-muted)] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--accent)]">
               <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--amber)]" />
@@ -146,10 +183,10 @@ function TimelineCard({
                 </span>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -176,20 +213,11 @@ function AboutHeroScene({ isVisible }: { isVisible: boolean }) {
 
 export default function Background() {
   const [isVisible, setIsVisible] = useState(false);
-  const [visibleTimelineItems, setVisibleTimelineItems] = useState<Set<number>>(() => {
-    if (typeof window === 'undefined') {
-      return new Set();
-    }
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduceMotion || !('IntersectionObserver' in window)) {
-      return new Set(timelineData.map((_, index) => index));
-    }
-
-    return new Set();
-  });
+  const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const { scrollY } = useScroll();
   const timelineRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const timelinePathRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -199,107 +227,48 @@ export default function Background() {
     return () => window.cancelAnimationFrame(frameId);
   }, []);
 
-  useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduceMotion || !('IntersectionObserver' in window)) {
+  const updateActiveTimelineItem = useCallback(() => {
+    if (typeof window === 'undefined') {
       return;
     }
 
-    let frameId = 0;
-
-    const revealPassedItems = () => {
-      const triggerLine = window.innerHeight * 0.82;
-      const indexesToReveal = timelineRefs.current.reduce<number[]>((indexes, node, index) => {
-        if (node && node.getBoundingClientRect().top <= triggerLine) {
-          indexes.push(index);
-        }
-
-        return indexes;
-      }, []);
-
-      if (indexesToReveal.length === 0) {
-        return;
-      }
-
-      setVisibleTimelineItems((current) => {
-        let didChange = false;
-        const next = new Set(current);
-
-        indexesToReveal.forEach((index) => {
-          if (!next.has(index)) {
-            next.add(index);
-            didChange = true;
-          }
-        });
-
-        return didChange ? next : current;
-      });
-    };
-
-    const scheduleReveal = () => {
-      if (frameId) {
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(() => {
-        frameId = 0;
-        revealPassedItems();
-      });
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
-            return;
-          }
-
-          const index = Number((entry.target as HTMLElement).dataset.timelineIndex);
-
-          setVisibleTimelineItems((current) => {
-            if (current.has(index)) {
-              return current;
-            }
-
-            const next = new Set(current);
-            next.add(index);
-            return next;
-          });
-
-          observer.unobserve(entry.target);
-        });
-
-        scheduleReveal();
-      },
-      {
-        rootMargin: '0px 0px -12% 0px',
-        threshold: 0.22
-      }
-    );
+    const focalLine = window.innerHeight * 0.52;
+    let nextActiveIndex = 0;
+    let shortestDistance = Number.POSITIVE_INFINITY;
 
     timelineRefs.current.forEach((node, index) => {
       if (!node) {
         return;
       }
 
-      node.dataset.timelineIndex = String(index);
-      observer.observe(node);
+      const rect = node.getBoundingClientRect();
+      const nodeCenter = rect.top + rect.height / 2;
+      const distance = Math.abs(nodeCenter - focalLine);
+
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        nextActiveIndex = index;
+      }
     });
 
-    scheduleReveal();
-    window.addEventListener('scroll', scheduleReveal, { passive: true });
-    window.addEventListener('resize', scheduleReveal);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', scheduleReveal);
-      window.removeEventListener('resize', scheduleReveal);
-      window.cancelAnimationFrame(frameId);
-    };
+    setActiveTimelineIndex((current) => {
+      return current === nextActiveIndex ? current : nextActiveIndex;
+    });
   }, []);
 
-  const timelineProgress = visibleTimelineItems.size / timelineData.length;
+  useMotionValueEvent(scrollY, 'change', updateActiveTimelineItem);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(updateActiveTimelineItem);
+    window.addEventListener('resize', updateActiveTimelineItem);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', updateActiveTimelineItem);
+    };
+  }, [updateActiveTimelineItem]);
+
+  const prefersReducedMotion = reduceMotion ?? false;
 
   return (
     <div className="relative min-h-screen">
@@ -349,38 +318,30 @@ export default function Background() {
         </section>
 
         {/* Timeline */}
-        <div className="timeline-path relative max-w-5xl mx-auto">
+        <div ref={timelinePathRef} className="timeline-path relative mx-auto max-w-3xl">
           {/* Center path */}
           <div
-            className="timeline-path__line absolute bottom-0 left-1/2 top-0 w-px bg-[var(--rule)]"
+            className="timeline-path__line absolute bottom-3 left-6 top-3 w-[3px] rounded-full bg-[var(--rule)]"
             style={{
               opacity: isVisible ? 1 : 0,
               transition: 'opacity 0.5s ease-out'
             }}
-          >
-            <div
-              className="absolute inset-x-0 top-0 h-full bg-[var(--rule-strong)]"
-              style={{
-                transform: `scaleY(${timelineProgress})`,
-                transformOrigin: 'top',
-                transition: 'transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)'
-              }}
-            />
-          </div>
+          />
 
           {/* Cards */}
           {timelineData.map((item, index) => (
             <TimelineCard
               key={index}
               item={item}
-              index={index}
-              isVisible={visibleTimelineItems.has(index)}
+              isActive={activeTimelineIndex === index}
+              reduceMotion={prefersReducedMotion}
               cardRef={(node) => {
                 timelineRefs.current[index] = node;
               }}
             />
           ))}
         </div>
+        <div aria-hidden="true" className="h-[46vh]" />
       </div>
     </div>
   );
