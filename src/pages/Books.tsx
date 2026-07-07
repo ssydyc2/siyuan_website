@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import { useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import readingLibrary from '../assets/hero/reading-library-anime.webp';
 import HeroScene from '../components/HeroScene';
 
@@ -58,7 +58,13 @@ function ReadingHeroScene() {
   );
 }
 
-function ReadingTopicsRail({ activeTopics }: { activeTopics: ReadingTopic[] }) {
+function ReadingTopicsRail({
+  activeTopics,
+  onTopicSelect
+}: {
+  activeTopics: ReadingTopic[];
+  onTopicSelect: (topic: ReadingTopic) => void;
+}) {
   return (
     <aside className="reading-topics min-w-0 lg:sticky lg:top-8 lg:self-start" aria-label="Reading topics">
       <div className="min-w-0 border-y border-[var(--rule)] py-4 lg:border-y-0 lg:border-l lg:py-1 lg:pl-5">
@@ -70,9 +76,12 @@ function ReadingTopicsRail({ activeTopics }: { activeTopics: ReadingTopic[] }) {
             const isActive = activeTopics.includes(topic);
 
             return (
-              <motion.div
+              <motion.button
                 key={topic}
-                className="shrink-0 border px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] lg:border-0 lg:px-0"
+                type="button"
+                className="block w-max shrink-0 border px-3 py-2 text-left font-mono text-xs uppercase tracking-[0.14em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] lg:w-full lg:border-0 lg:px-0"
+                onClick={() => onTopicSelect(topic)}
+                aria-pressed={isActive}
                 animate={{
                   color: isActive ? 'var(--accent)' : 'var(--ink-faint)',
                   opacity: isActive ? 1 : 0.42,
@@ -84,7 +93,7 @@ function ReadingTopicsRail({ activeTopics }: { activeTopics: ReadingTopic[] }) {
               >
                 <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-current align-middle" />
                 {topic}
-              </motion.div>
+              </motion.button>
             );
           })}
         </div>
@@ -97,33 +106,23 @@ function BookCard({
   book,
   isActive,
   reduceMotion,
-  cardRef
+  onSelect
 }: {
   book: Book;
   isActive: boolean;
   reduceMotion: boolean;
-  cardRef: (node: HTMLElement | null) => void;
+  onSelect: () => void;
 }) {
-  const itemRef = useRef<HTMLElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: itemRef,
-    offset: ['start 88%', 'end 20%']
-  });
-  const scrollYDrift = useTransform(scrollYProgress, [0, 0.5, 1], [18, 0, -10]);
   const cardTransition = reduceMotion
     ? { duration: 0 }
     : { type: 'spring' as const, stiffness: 260, damping: 30, mass: 0.75 };
 
   return (
-    <motion.article
-      ref={(node) => {
-        itemRef.current = node;
-        cardRef(node);
-      }}
-      className="reading-book-card border p-6"
-      style={{
-        y: reduceMotion ? 0 : scrollYDrift
-      }}
+    <motion.button
+      type="button"
+      className="reading-book-card block w-full border p-6 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+      onClick={onSelect}
+      aria-pressed={isActive}
       animate={{
         opacity: isActive ? 1 : 0.44,
         scale: isActive && !reduceMotion ? 1.012 : 1,
@@ -135,6 +134,7 @@ function BookCard({
           : '2px 2px 0 color-mix(in srgb, var(--shadow-rule) 56%, transparent)'
       }}
       transition={cardTransition}
+      whileHover={reduceMotion ? undefined : { y: -2 }}
     >
       <h2 className="break-words text-xl font-medium leading-snug text-[var(--ink)]">
         {Array.isArray(book.title)
@@ -155,58 +155,32 @@ function BookCard({
         </p>
         <p className="leading-relaxed text-[var(--ink-muted)]">{book.comment}</p>
       </div>
-    </motion.article>
+    </motion.button>
   );
 }
 
 export default function Books() {
-  const [activeBookIndex, setActiveBookIndex] = useState(0);
+  const [selectedTopic, setSelectedTopic] = useState<ReadingTopic | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<string | null>(books[0].id);
   const reduceMotion = useReducedMotion();
-  const { scrollY } = useScroll();
-  const bookRefs = useRef<Array<HTMLElement | null>>([]);
   const prefersReducedMotion = reduceMotion ?? false;
-  const activeTopics = books[activeBookIndex]?.topics ?? [];
-
-  const updateActiveBook = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return;
+  const selectedBook = books.find((book) => book.id === selectedBookId) ?? books[0];
+  const activeTopics = selectedTopic ? [selectedTopic] : selectedBook.topics;
+  const selectTopic = (topic: ReadingTopic) => {
+    setSelectedTopic(topic);
+    setSelectedBookId(null);
+  };
+  const selectBook = (bookId: string) => {
+    setSelectedBookId(bookId);
+    setSelectedTopic(null);
+  };
+  const isBookActive = (book: Book) => {
+    if (selectedTopic) {
+      return book.topics.includes(selectedTopic);
     }
 
-    const focalLine = window.innerHeight * 0.5;
-    let nextActiveIndex = 0;
-    let shortestDistance = Number.POSITIVE_INFINITY;
-
-    bookRefs.current.forEach((node, index) => {
-      if (!node) {
-        return;
-      }
-
-      const rect = node.getBoundingClientRect();
-      const nodeCenter = rect.top + rect.height / 2;
-      const distance = Math.abs(nodeCenter - focalLine);
-
-      if (distance < shortestDistance) {
-        shortestDistance = distance;
-        nextActiveIndex = index;
-      }
-    });
-
-    setActiveBookIndex((current) => {
-      return current === nextActiveIndex ? current : nextActiveIndex;
-    });
-  }, []);
-
-  useMotionValueEvent(scrollY, 'change', updateActiveBook);
-
-  useEffect(() => {
-    const frameId = window.requestAnimationFrame(updateActiveBook);
-    window.addEventListener('resize', updateActiveBook);
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', updateActiveBook);
-    };
-  }, [updateActiveBook]);
+    return selectedBookId === book.id;
+  };
 
   return (
     <div className="space-y-8">
@@ -219,20 +193,17 @@ export default function Books() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:items-start">
-        <ReadingTopicsRail activeTopics={activeTopics} />
+        <ReadingTopicsRail activeTopics={activeTopics} onTopicSelect={selectTopic} />
         <div className="min-w-0 space-y-4">
-          {books.map((book, index) => (
+          {books.map((book) => (
             <BookCard
               key={book.id}
               book={book}
-              isActive={activeBookIndex === index}
+              isActive={isBookActive(book)}
               reduceMotion={prefersReducedMotion}
-              cardRef={(node) => {
-                bookRefs.current[index] = node;
-              }}
+              onSelect={() => selectBook(book.id)}
             />
           ))}
-          <div aria-hidden="true" className="h-[38vh]" />
         </div>
       </div>
     </div>
