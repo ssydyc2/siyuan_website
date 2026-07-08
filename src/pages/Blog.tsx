@@ -126,31 +126,12 @@ const phases: Phase[] = [
   {
     title: 'RLHF Systems & Frameworks',
     period: 'Systems papers',
-    summary: 'Read one flexible dataflow view, one async systems view, one practical distributed stack, then lineage.',
+    summary:
+      'Read one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, then one async systems view.',
     groups: [
       {
         title: 'Core Framework Papers',
         resources: [
-          {
-            title: 'HybridFlow: A Flexible and Efficient RLHF Framework',
-            href: 'https://arxiv.org/abs/2409.19256',
-            meta: 'verl, Sep 2024, EuroSys 2025',
-            notes: [
-              'Canonical paper behind the verl framework.',
-              'Mixes single-controller flexibility with multi-controller efficiency.',
-              'Introduces 3D-HybridEngine for colocating actor training and generation.',
-            ],
-          },
-          {
-            title: 'AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning',
-            href: 'https://arxiv.org/abs/2505.24298',
-            meta: 'May 2025, arXiv preprint',
-            notes: [
-              'Fully asynchronous RL system that decouples generation and training.',
-              'Targets the GPU utilization problem in synchronous rollout pipelines.',
-              'Read as the async alternative to HybridFlow-style colocation.',
-            ],
-          },
           {
             title: 'OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework',
             href: 'https://arxiv.org/abs/2405.11143',
@@ -162,6 +143,16 @@ const phases: Phase[] = [
             ],
           },
           {
+            title: 'HybridFlow: A Flexible and Efficient RLHF Framework',
+            href: 'https://arxiv.org/abs/2409.19256',
+            meta: 'verl, Sep 2024, EuroSys 2025',
+            notes: [
+              'Canonical paper behind the verl framework.',
+              'Mixes single-controller flexibility with multi-controller efficiency.',
+              'Introduces 3D-HybridEngine for colocating actor training and generation.',
+            ],
+          },
+          {
             title: 'ReaL: Efficient RLHF Training of Large Language Models with Parameter Reallocation',
             href: 'https://arxiv.org/abs/2406.14088',
             meta: 'Jun 2024, MLSys 2025',
@@ -169,6 +160,16 @@ const phases: Phase[] = [
               'Predecessor and lineage for AReaL.',
               'Dynamically reallocates model parameters across GPUs between generation and training.',
               'Useful historical context for the evolution toward AReaL.',
+            ],
+          },
+          {
+            title: 'AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning',
+            href: 'https://arxiv.org/abs/2505.24298',
+            meta: 'May 2025, arXiv preprint',
+            notes: [
+              'Fully asynchronous RL system that decouples generation and training.',
+              'Targets the GPU utilization problem in synchronous rollout pipelines.',
+              'Read as the async alternative to HybridFlow-style colocation.',
             ],
           },
         ],

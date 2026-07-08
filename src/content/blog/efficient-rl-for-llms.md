@@ -194,9 +194,14 @@ Understand the core RL alignment algorithms before diving into systems.
 
 ## Phase 2: RLHF Systems & Frameworks
 
-Read in this order: one flexible dataflow view, one async systems view, one practical distributed stack, then lineage.
+Read in this order: one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, then one async systems view.
 
 ### Core Framework Papers
+
+- **[OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework](https://arxiv.org/abs/2405.11143)** (May 2024, arXiv preprint)
+  - Ray + vLLM based distributed RLHF
+  - Disaggregated placement: separate GPU clusters for actor, critic, reward, reference
+  - *Read for*: practical open-source RLHF stack, good reference implementation
 
 - **[HybridFlow: A Flexible and Efficient RLHF Framework](https://arxiv.org/abs/2409.19256)** (verl, Sep 2024, EuroSys 2025)
   - Canonical paper behind the `verl` framework
@@ -204,20 +209,15 @@ Read in this order: one flexible dataflow view, one async systems view, one prac
   - Introduces 3D-HybridEngine for colocating actor training and generation on the same GPUs
   - *Read for*: understanding the design space of RLHF dataflow and resource allocation
 
-- **[AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning](https://arxiv.org/abs/2505.24298)** (May 2025, arXiv preprint)
-  - Fully asynchronous RL system — decouples generation and training
-  - Addresses the GPU utilization problem: sync systems waste compute waiting for slowest rollout
-  - *Read for*: the async alternative to HybridFlow's colocated approach
-
-- **[OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework](https://arxiv.org/abs/2405.11143)** (May 2024, arXiv preprint)
-  - Ray + vLLM based distributed RLHF
-  - Disaggregated placement: separate GPU clusters for actor, critic, reward, reference
-  - *Read for*: practical open-source RLHF stack, good reference implementation
-
 - **[ReaL: Efficient RLHF Training of Large Language Models with Parameter Reallocation](https://arxiv.org/abs/2406.14088)** (Jun 2024, MLSys 2025)
   - Predecessor/lineage to AReaL
   - Key idea: dynamically reallocate model parameters across GPUs between generation and training phases
   - *Read for*: historical context and understanding the evolution toward AReaL
+
+- **[AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning](https://arxiv.org/abs/2505.24298)** (May 2025, arXiv preprint)
+  - Fully asynchronous RL system — decouples generation and training
+  - Addresses the GPU utilization problem: sync systems waste compute waiting for slowest rollout
+  - *Read for*: the async alternative to HybridFlow's colocated approach
 
 ---
 
