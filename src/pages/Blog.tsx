@@ -124,13 +124,13 @@ const phases: Phase[] = [
     ],
   },
   {
-    title: 'RLHF Systems & Frameworks',
-    period: 'Systems papers/blogs',
+    title: 'RLHF Framework Theory & Systems Design',
+    period: 'Framework theory',
     summary:
       'Read one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, one async systems view, then the slime and Miles implementation blogs.',
     groups: [
       {
-        title: 'Core Framework Papers/Blogs',
+        title: 'Core Framework Theory Papers/Blogs',
         resources: [
           {
             title: 'OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework',

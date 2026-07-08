@@ -6,7 +6,7 @@ A structured guide for learning RLHF/RL systems and algorithms for LLM alignment
 
 - [Phase 0: RL Foundations](#phase-0-rl-foundations) — build the RL vocabulary and formulas used by PPO and GRPO.
 - [Phase 1: Algorithm Foundations](#phase-1-algorithm-foundations) — read PPO/RLHF, DPO, and GRPO before systems papers.
-- [Phase 2: RLHF Systems & Frameworks](#phase-2-rlhf-systems-frameworks) — compare colocated, async, disaggregated, and dynamic allocation designs.
+- [Phase 2: RLHF Framework Theory & Systems Design](#phase-2-rlhf-framework-theory-systems-design) — study RLHF framework theory and systems-design tradeoffs.
 - [Phase 3: Popular RLHF/RL Post-Training Frameworks](#phase-3-popular-rlhfrl-post-training-frameworks) — compare the top current frameworks by visibility and practical relevance.
 - [Phase 4: Practice & Further Reading](#phase-4-practice-further-reading) — turn the map into starter exercises, advanced lessons, and further reading/code.
 
@@ -192,11 +192,11 @@ Understand the core RL alignment algorithms before diving into systems.
 
 ---
 
-## Phase 2: RLHF Systems & Frameworks
+## Phase 2: RLHF Framework Theory & Systems Design
 
 Read in this order: one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, one async systems view, then the slime and Miles implementation blogs.
 
-### Core Framework Papers/Blogs
+### Core Framework Theory Papers/Blogs
 
 - **[OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework](https://arxiv.org/abs/2405.11143)** (May 2024, arXiv preprint)
   - Ray + vLLM based distributed RLHF
