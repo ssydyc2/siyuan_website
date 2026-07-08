@@ -175,17 +175,17 @@ High-level meaning: GRPO removes the learned critic by using relative rewards wi
 
 Understand the core RL alignment algorithms before diving into systems.
 
-- **[Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155)** (OpenAI, 2022)
+- **[Training language models to follow instructions with human feedback (InstructGPT)](https://arxiv.org/abs/2203.02155)** (OpenAI, Mar 2022, NeurIPS 2022)
   - The foundational PPO-based RLHF paper
   - Covers reward model training, PPO fine-tuning pipeline, and KL penalty
   - *Why first*: everything else builds on or departs from this setup
 
-- **[Direct Preference Optimization: Your Language Model is Secretly a Reward Model (DPO)](https://arxiv.org/abs/2305.18290)** (Rafailov et al., 2023)
+- **[Direct Preference Optimization: Your Language Model is Secretly a Reward Model (DPO)](https://arxiv.org/abs/2305.18290)** (Rafailov et al., May 2023, NeurIPS 2023)
   - Eliminates the reward model and RL loop entirely
   - Reparameterizes the RLHF objective as a classification loss on preference pairs
   - *Key insight*: the optimal policy under KL-constrained reward maximization has a closed-form relationship to the reward
 
-- **[DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/abs/2402.03300)** (DeepSeek, 2024)
+- **[DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/abs/2402.03300)** (DeepSeek, Feb 2024, arXiv preprint)
   - Introduces Group Relative Policy Optimization (GRPO)
   - Removes the critic model — estimates baselines from group scores instead
   - *Why it matters*: GRPO is the modern reasoning-RL method (used in DeepSeek-R1, Qwen, etc.)
@@ -198,23 +198,23 @@ Read in this order: one flexible dataflow view, one async systems view, one prac
 
 ### Core Framework Papers
 
-- **[HybridFlow: A Flexible and Efficient RLHF Framework](https://arxiv.org/abs/2409.19256)** (verl)
+- **[HybridFlow: A Flexible and Efficient RLHF Framework](https://arxiv.org/abs/2409.19256)** (verl, Sep 2024, EuroSys 2025)
   - Canonical paper behind the `verl` framework
   - Key contribution: hybrid programming model mixing single-controller (flexibility) and multi-controller (efficiency)
   - Introduces 3D-HybridEngine for colocating actor training and generation on the same GPUs
   - *Read for*: understanding the design space of RLHF dataflow and resource allocation
 
-- **[AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning](https://arxiv.org/abs/2504.02792)** (2025)
+- **[AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning](https://arxiv.org/abs/2505.24298)** (May 2025, arXiv preprint)
   - Fully asynchronous RL system — decouples generation and training
   - Addresses the GPU utilization problem: sync systems waste compute waiting for slowest rollout
   - *Read for*: the async alternative to HybridFlow's colocated approach
 
-- **[OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework](https://arxiv.org/abs/2405.11143)** (2024)
+- **[OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework](https://arxiv.org/abs/2405.11143)** (May 2024, arXiv preprint)
   - Ray + vLLM based distributed RLHF
   - Disaggregated placement: separate GPU clusters for actor, critic, reward, reference
   - *Read for*: practical open-source RLHF stack, good reference implementation
 
-- **[ReaLHF: Optimized RLHF Training for Large Language Models through Parameter Reallocation](https://arxiv.org/abs/2406.14088)** (2024)
+- **[ReaL: Efficient RLHF Training of Large Language Models with Parameter Reallocation](https://arxiv.org/abs/2406.14088)** (Jun 2024, MLSys 2025)
   - Predecessor/lineage to AReaL
   - Key idea: dynamically reallocate model parameters across GPUs between generation and training phases
   - *Read for*: historical context and understanding the evolution toward AReaL

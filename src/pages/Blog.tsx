@@ -92,7 +92,7 @@ const phases: Phase[] = [
           {
             title: 'Training language models to follow instructions with human feedback',
             href: 'https://arxiv.org/abs/2203.02155',
-            meta: 'InstructGPT, OpenAI, 2022',
+            meta: 'InstructGPT, OpenAI, Mar 2022, NeurIPS 2022',
             notes: [
               'Foundational PPO-based RLHF paper.',
               'Covers reward model training, PPO fine-tuning, and KL penalty.',
@@ -102,7 +102,7 @@ const phases: Phase[] = [
           {
             title: 'Direct Preference Optimization: Your Language Model is Secretly a Reward Model',
             href: 'https://arxiv.org/abs/2305.18290',
-            meta: 'DPO, Rafailov et al., 2023',
+            meta: 'DPO, Rafailov et al., May 2023, NeurIPS 2023',
             notes: [
               'Eliminates the reward model and RL loop.',
               'Reparameterizes RLHF as a classification loss on preference pairs.',
@@ -112,7 +112,7 @@ const phases: Phase[] = [
           {
             title: 'DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models',
             href: 'https://arxiv.org/abs/2402.03300',
-            meta: 'DeepSeek, 2024',
+            meta: 'DeepSeek, Feb 2024, arXiv preprint',
             notes: [
               'Introduces Group Relative Policy Optimization.',
               'Removes the critic model by estimating baselines from group scores.',
@@ -134,7 +134,7 @@ const phases: Phase[] = [
           {
             title: 'HybridFlow: A Flexible and Efficient RLHF Framework',
             href: 'https://arxiv.org/abs/2409.19256',
-            meta: 'verl',
+            meta: 'verl, Sep 2024, EuroSys 2025',
             notes: [
               'Canonical paper behind the verl framework.',
               'Mixes single-controller flexibility with multi-controller efficiency.',
@@ -143,8 +143,8 @@ const phases: Phase[] = [
           },
           {
             title: 'AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning',
-            href: 'https://arxiv.org/abs/2504.02792',
-            meta: '2025',
+            href: 'https://arxiv.org/abs/2505.24298',
+            meta: 'May 2025, arXiv preprint',
             notes: [
               'Fully asynchronous RL system that decouples generation and training.',
               'Targets the GPU utilization problem in synchronous rollout pipelines.',
@@ -154,7 +154,7 @@ const phases: Phase[] = [
           {
             title: 'OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework',
             href: 'https://arxiv.org/abs/2405.11143',
-            meta: '2024',
+            meta: 'May 2024, arXiv preprint',
             notes: [
               'Ray and vLLM based distributed RLHF framework.',
               'Uses disaggregated placement for actor, critic, reward, and reference models.',
@@ -162,9 +162,9 @@ const phases: Phase[] = [
             ],
           },
           {
-            title: 'ReaLHF: Optimized RLHF Training for Large Language Models through Parameter Reallocation',
+            title: 'ReaL: Efficient RLHF Training of Large Language Models with Parameter Reallocation',
             href: 'https://arxiv.org/abs/2406.14088',
-            meta: '2024',
+            meta: 'Jun 2024, MLSys 2025',
             notes: [
               'Predecessor and lineage for AReaL.',
               'Dynamically reallocates model parameters across GPUs between generation and training.',
