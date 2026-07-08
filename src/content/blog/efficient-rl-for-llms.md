@@ -194,9 +194,9 @@ Understand the core RL alignment algorithms before diving into systems.
 
 ## Phase 2: RLHF Systems & Frameworks
 
-Read in this order: one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, then one async systems view.
+Read in this order: one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, one async systems view, then the slime and Miles implementation blogs.
 
-### Core Framework Papers
+### Core Framework Papers/Blogs
 
 - **[OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework](https://arxiv.org/abs/2405.11143)** (May 2024, arXiv preprint)
   - Ray + vLLM based distributed RLHF
@@ -218,6 +218,16 @@ Read in this order: one practical distributed stack, one flexible dataflow view,
   - Fully asynchronous RL system — decouples generation and training
   - Addresses the GPU utilization problem: sync systems waste compute waiting for slowest rollout
   - *Read for*: the async alternative to HybridFlow's colocated approach
+
+- **[slime: An SGLang-Native Post-Training Framework for RL Scaling](https://www.lmsys.org/blog/2025-07-09-slime)** (slime Team, Jul 2025, LMSYS blog)
+  - SGLang-native post-training framework built around custom rollout interfaces and flexible training setups
+  - Integrates SGLang for inference, Megatron-LM for training, and Ray for colocated or decoupled GPU management
+  - *Read for*: how slime frames practical RL scaling around customizable rollouts and native SGLang/Megatron performance
+
+- **[Introducing Miles — RL Framework To Fire Up Large-Scale MoE Training](https://www.lmsys.org/blog/2025-11-19-miles)** (RadixArk Team, Nov 2025, LMSYS blog)
+  - Enterprise-grade RL framework built on slime for large-scale MoE training and production workloads
+  - Adds production-oriented reliability, true on-policy work, memory improvements, and online draft-model training for speculative decoding
+  - *Read for*: how slime evolves into a more production-oriented MoE RL stack
 
 ---
 

@@ -125,12 +125,12 @@ const phases: Phase[] = [
   },
   {
     title: 'RLHF Systems & Frameworks',
-    period: 'Systems papers',
+    period: 'Systems papers/blogs',
     summary:
-      'Read one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, then one async systems view.',
+      'Read one practical distributed stack, one flexible dataflow view, one dynamic reallocation lineage paper, one async systems view, then the slime and Miles implementation blogs.',
     groups: [
       {
-        title: 'Core Framework Papers',
+        title: 'Core Framework Papers/Blogs',
         resources: [
           {
             title: 'OpenRLHF: An Easy-to-use, Scalable and High-performance RLHF Framework',
@@ -170,6 +170,26 @@ const phases: Phase[] = [
               'Fully asynchronous RL system that decouples generation and training.',
               'Targets the GPU utilization problem in synchronous rollout pipelines.',
               'Read as the async alternative to HybridFlow-style colocation.',
+            ],
+          },
+          {
+            title: 'slime: An SGLang-Native Post-Training Framework for RL Scaling',
+            href: 'https://www.lmsys.org/blog/2025-07-09-slime',
+            meta: 'slime Team, Jul 2025, LMSYS blog',
+            notes: [
+              'SGLang-native post-training framework built around custom rollout interfaces and flexible training setups.',
+              'Integrates SGLang for inference, Megatron-LM for training, and Ray for GPU management.',
+              'Useful for understanding practical RL scaling around customizable rollouts and native backend performance.',
+            ],
+          },
+          {
+            title: 'Introducing Miles — RL Framework To Fire Up Large-Scale MoE Training',
+            href: 'https://www.lmsys.org/blog/2025-11-19-miles',
+            meta: 'RadixArk Team, Nov 2025, LMSYS blog',
+            notes: [
+              'Enterprise-grade RL framework built on slime for large-scale MoE training and production workloads.',
+              'Adds production-oriented reliability, true on-policy work, memory improvements, and online draft-model training.',
+              'Useful for seeing how slime evolves into a production-oriented MoE RL stack.',
             ],
           },
         ],
