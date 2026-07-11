@@ -5,7 +5,7 @@ import ThemeToggle from './ThemeToggle';
 export default function Layout() {
   return (
     <div className="min-h-screen text-[var(--ink)]">
-      <header className="border-b border-[var(--rule-strong)] bg-[var(--paper-elevated)]/80">
+      <header className="site-header border-b border-[var(--rule-strong)] bg-[var(--paper-elevated)]/80">
         <div className="mx-auto max-w-5xl px-6 py-8">
           <div className="mb-8 flex items-center gap-4 sm:gap-5">
             <Link
@@ -34,11 +34,11 @@ export default function Layout() {
               </div>
             </div>
           </div>
-          <nav className="flex flex-wrap gap-x-8 gap-y-3">
+          <nav className="rpg-nav flex flex-wrap gap-x-3 gap-y-3" aria-label="Primary navigation">
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
+                `rpg-nav__item font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
                   isActive
                     ? 'text-[var(--accent)]'
                     : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
@@ -50,7 +50,7 @@ export default function Layout() {
             <NavLink
               to="/reading-list"
               className={({ isActive }) =>
-                `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
+                `rpg-nav__item font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
                   isActive
                     ? 'text-[var(--accent)]'
                     : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
@@ -62,7 +62,7 @@ export default function Layout() {
             <NavLink
               to="/blog"
               className={({ isActive }) =>
-                `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
+                `rpg-nav__item font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
                   isActive
                     ? 'text-[var(--accent)]'
                     : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'

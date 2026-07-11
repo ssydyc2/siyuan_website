@@ -169,7 +169,7 @@ function BookCard({
   return (
     <motion.button
       type="button"
-      className="reading-book-card block w-full border p-6 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+      className="rpg-panel reading-book-card block w-full border p-6 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
       onClick={onSelect}
       aria-pressed={isActive}
       animate={{
@@ -235,7 +235,7 @@ export default function Books() {
     <div className="space-y-8">
       <header>
         <ReadingHeroScene />
-        <h1 className="font-serif text-3xl font-normal text-[var(--ink)]">Reading List</h1>
+        <h1 className="rpg-page-title font-serif text-3xl font-normal text-[var(--ink)]">Reading List</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
           A personal shelf for self-improvement, wealth, and happiness.
         </p>

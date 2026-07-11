@@ -848,7 +848,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
       <header>
         <BlogHeroScene />
         <div className="flex items-center gap-3">
-          <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)]">Blog</h1>
+          <h1 className="rpg-page-title font-serif text-4xl font-normal leading-tight text-[var(--ink)]">Blog</h1>
           <ThemeToggle />
         </div>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
@@ -864,7 +864,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
         </p>
       </header>
 
-      <div className="blog-post-list border-y border-[var(--rule-strong)]">
+      <div className="rpg-panel blog-post-list border border-[var(--rule-strong)]">
         {posts.map((post) => {
           const isActive = expandedPostId === post.id;
           const previewId = `blog-preview-${post.id}`;

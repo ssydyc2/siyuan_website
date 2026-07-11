@@ -152,7 +152,7 @@ function TimelineCard({
             onClick={onActivate}
           />
           <motion.div
-            className="timeline-card-panel relative border p-4 transition-colors duration-300 group-hover:border-[var(--rule-strong)]"
+            className="rpg-panel timeline-card-panel relative border p-4 transition-colors duration-300 group-hover:border-[var(--rule-strong)]"
             animate={{
               borderColor: isActive ? 'var(--accent)' : 'var(--rule)',
               backgroundColor: isActive ? 'color-mix(in srgb, var(--paper-elevated) 88%, var(--accent-soft))' : 'var(--paper-elevated)',
@@ -289,7 +289,7 @@ export default function Background() {
         <div className="text-center mb-8">
           <AboutHeroScene isVisible={isVisible} />
           <h1
-            className="mb-2 font-serif text-3xl font-normal text-[var(--ink)]"
+            className="rpg-page-title mb-2 font-serif text-3xl font-normal text-[var(--ink)]"
             style={{
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? 'translateY(0)' : 'translateY(-20px)',
@@ -302,7 +302,7 @@ export default function Background() {
 
         {/* Summary */}
         <section
-          className="mx-auto mb-10 max-w-3xl border-y border-[var(--rule)] bg-[var(--paper-elevated)] px-1 py-6"
+          className="rpg-panel mx-auto mb-10 max-w-3xl border border-[var(--rule)] bg-[var(--paper-elevated)] px-6 py-6"
           style={{
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? 'translateY(0)' : 'translateY(16px)',
