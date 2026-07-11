@@ -863,11 +863,15 @@ function KernelBasicsDetail({ post }: { post: BlogPost }) {
 
 function AbelRuffiniDetail({ post }: { post: BlogPost }) {
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-none space-y-8">
       <div className="mx-auto max-w-4xl">
         <BlogPostVisual postId={post.id} />
       </div>
-      <MarkdownDocument markdown={abelRuffiniMarkdown} leanSource={abelRuffiniLean} />
+      <MarkdownDocument
+        markdown={abelRuffiniMarkdown}
+        leanSource={abelRuffiniLean}
+        navigation={{ excludeHeadings: ['contents', 'tldr'] }}
+      />
     </div>
   );
 }
@@ -993,9 +997,13 @@ export default function Blog() {
   const activePost = blogPosts.find((post) => post.id === postId);
 
   if (activePost) {
+    const usesLongFormNavigation = activePost.id === 'abel-ruffini-backwards';
+
     return (
       <div className="min-h-screen text-[var(--ink)]">
-        <main className="mx-auto max-w-5xl px-6 py-12">
+        <main
+          className={`mx-auto px-6 py-12 ${usesLongFormNavigation ? 'max-w-7xl' : 'max-w-5xl'}`}
+        >
           <div className="space-y-8">
             <Link
               to="/blog"

@@ -1,5 +1,14 @@
-import type { ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import katex from 'katex';
+import { useReducedMotion } from 'motion/react';
 import 'katex/dist/katex.min.css';
 
 type InlineNode =
@@ -11,7 +20,7 @@ type InlineNode =
   | { type: 'link'; href: string; children: InlineNode[] };
 
 type Block =
-  | { type: 'heading'; level: number; text: string }
+  | { type: 'heading'; level: number; text: string; id?: string }
   | { type: 'paragraph'; text: string }
   | { type: 'hr' }
   | { type: 'code'; language: string; value: string }
@@ -29,6 +38,16 @@ interface ListMatch {
   indent: number;
   marker: string;
   content: string;
+}
+
+interface NavigationOptions {
+  excludeHeadings?: string[];
+}
+
+interface NavigationSection {
+  id: string;
+  title: string;
+  children: { id: string; title: string }[];
 }
 
 function parseInline(text: string): InlineNode[] {
@@ -143,6 +162,62 @@ function slugifyHeading(text: string) {
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-');
+}
+
+function assignHeadingIds(blocks: Block[], counts = new Map<string, number>()): Block[] {
+  return blocks.map((block) => {
+    if (block.type === 'heading') {
+      const baseId = slugifyHeading(block.text) || 'section';
+      const count = (counts.get(baseId) ?? 0) + 1;
+      counts.set(baseId, count);
+
+      return {
+        ...block,
+        id: count === 1 ? baseId : `${baseId}-${count}`,
+      };
+    }
+
+    if (block.type === 'proofPair') {
+      return {
+        ...block,
+        proof: assignHeadingIds(block.proof, counts),
+      };
+    }
+
+    return block;
+  });
+}
+
+function buildNavigationSections(
+  blocks: Block[],
+  excludedHeadings: string[],
+): NavigationSection[] {
+  const excluded = new Set(excludedHeadings.map((value) => value.toLowerCase()));
+  const sections: NavigationSection[] = [];
+  let currentSection: NavigationSection | null = null;
+
+  for (const block of blocks) {
+    if (block.type !== 'heading' || !block.id) {
+      continue;
+    }
+
+    if (block.level === 2) {
+      if (excluded.has(block.id.toLowerCase()) || excluded.has(block.text.toLowerCase())) {
+        currentSection = null;
+        continue;
+      }
+
+      currentSection = { id: block.id, title: block.text, children: [] };
+      sections.push(currentSection);
+      continue;
+    }
+
+    if (block.level === 3 && currentSection) {
+      currentSection.children.push({ id: block.id, title: block.text });
+    }
+  }
+
+  return sections;
 }
 
 function parseMarkdown(markdown: string): Block[] {
@@ -476,7 +551,7 @@ function MathBlock({ value }: { value: string }) {
 function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<string, string> }) {
   if (block.type === 'heading') {
     const content = renderInline(parseInline(block.text));
-    const headingId = slugifyHeading(block.text);
+    const headingId = block.id ?? slugifyHeading(block.text);
 
     if (block.level === 1) {
       return (
@@ -588,6 +663,271 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
   );
 }
 
+function useReadingPosition(
+  sections: NavigationSection[],
+  articleRef: RefObject<HTMLElement | null>,
+) {
+  const flattenedHeadings = useMemo(
+    () => sections.flatMap((section) => [
+      { id: section.id, sectionId: section.id, subsectionId: null },
+      ...section.children.map((child) => ({
+        id: child.id,
+        sectionId: section.id,
+        subsectionId: child.id,
+      })),
+    ]),
+    [sections],
+  );
+  const [activeSectionId, setActiveSectionId] = useState(sections[0]?.id ?? '');
+  const [activeSubsectionId, setActiveSubsectionId] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let frameId: number | null = null;
+
+    const updateReadingPosition = () => {
+      frameId = null;
+      const article = articleRef.current;
+
+      if (!article || flattenedHeadings.length === 0) {
+        return;
+      }
+
+      const articleRect = article.getBoundingClientRect();
+      const articleTop = window.scrollY + articleRect.top;
+      const readableDistance = Math.max(1, article.scrollHeight - window.innerHeight);
+      const nextProgress = Math.min(
+        100,
+        Math.max(0, ((window.scrollY - articleTop) / readableDistance) * 100),
+      );
+      setProgress(Math.round(nextProgress));
+
+      const activationLine = Math.min(180, window.innerHeight * 0.24);
+      let activeHeading = flattenedHeadings[0];
+
+      for (const heading of flattenedHeadings) {
+        const element = document.getElementById(heading.id);
+
+        if (element && element.getBoundingClientRect().top <= activationLine) {
+          activeHeading = heading;
+        } else if (element) {
+          break;
+        }
+      }
+
+      setActiveSectionId(activeHeading.sectionId);
+      setActiveSubsectionId(activeHeading.subsectionId);
+    };
+
+    const scheduleUpdate = () => {
+      if (frameId === null) {
+        frameId = window.requestAnimationFrame(updateReadingPosition);
+      }
+    };
+
+    updateReadingPosition();
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+
+    return () => {
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
+  }, [articleRef, flattenedHeadings]);
+
+  return { activeSectionId, activeSubsectionId, progress };
+}
+
+function NavigationLinks({
+  sections,
+  activeSectionId,
+  activeSubsectionId,
+  onNavigate,
+}: {
+  sections: NavigationSection[];
+  activeSectionId: string;
+  activeSubsectionId: string | null;
+  onNavigate: (event: MouseEvent<HTMLAnchorElement>, id: string) => void;
+}) {
+  return (
+    <ol className="space-y-1">
+      {sections.map((section) => {
+        const isActiveSection = section.id === activeSectionId;
+
+        return (
+          <li key={section.id}>
+            <a
+              href={`#${section.id}`}
+              aria-current={isActiveSection && !activeSubsectionId ? 'location' : undefined}
+              onClick={(event) => onNavigate(event, section.id)}
+              className={`block border-l-2 py-1.5 pl-3 text-sm leading-5 transition-colors ${
+                isActiveSection
+                  ? 'border-[var(--accent)] font-medium text-[var(--ink)]'
+                  : 'border-transparent text-[var(--ink-faint)] hover:border-[var(--rule-strong)] hover:text-[var(--ink-muted)]'
+              }`}
+            >
+              {renderInline(parseInline(section.title))}
+            </a>
+            {isActiveSection && section.children.length > 0 && (
+              <ol className="mb-2 ml-3 border-l border-[var(--rule)] pl-3">
+                {section.children.map((child) => {
+                  const isActiveSubsection = child.id === activeSubsectionId;
+
+                  return (
+                    <li key={child.id}>
+                      <a
+                        href={`#${child.id}`}
+                        aria-current={isActiveSubsection ? 'location' : undefined}
+                        onClick={(event) => onNavigate(event, child.id)}
+                        className={`block py-1 text-xs leading-5 transition-colors ${
+                          isActiveSubsection
+                            ? 'font-medium text-[var(--accent)]'
+                            : 'text-[var(--ink-faint)] hover:text-[var(--ink-muted)]'
+                        }`}
+                      >
+                        {renderInline(parseInline(child.title))}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function ReadingNavigation({
+  sections,
+  articleRef,
+}: {
+  sections: NavigationSection[];
+  articleRef: RefObject<HTMLElement | null>;
+}) {
+  const { activeSectionId, activeSubsectionId, progress } = useReadingPosition(
+    sections,
+    articleRef,
+  );
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion() ?? false;
+  const activeSection = sections.find((section) => section.id === activeSectionId) ?? sections[0];
+  const activeSubsection = activeSection?.children.find(
+    (child) => child.id === activeSubsectionId,
+  );
+
+  const handleNavigate = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+    const element = document.getElementById(id);
+
+    if (!element) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextHash = `#${id}`;
+
+    if (window.location.hash === nextHash) {
+      window.history.replaceState(null, '', nextHash);
+    } else {
+      window.history.pushState(null, '', nextHash);
+    }
+
+    element.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
+    setMobileOpen(false);
+  };
+
+  if (sections.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <aside className="hidden self-start xl:sticky xl:top-6 xl:block" aria-label="Article outline">
+        <div className="max-h-[calc(100vh-3rem)] overflow-y-auto border-l border-[var(--rule)] py-1 pl-5 pr-2">
+          <div className="mb-4">
+            <div className="flex items-center justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+              <span>Reading</span>
+              <span>{progress}%</span>
+            </div>
+            <div
+              className="mt-2 h-1 overflow-hidden bg-[var(--rule)]"
+              role="progressbar"
+              aria-label="Article reading progress"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={progress}
+            >
+              <div
+                className="h-full bg-[var(--accent)] transition-[width] duration-150 motion-reduce:transition-none"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+          <NavigationLinks
+            sections={sections}
+            activeSectionId={activeSectionId}
+            activeSubsectionId={activeSubsectionId}
+            onNavigate={handleNavigate}
+          />
+        </div>
+      </aside>
+
+      <div className="sticky top-0 z-30 -mx-6 mb-6 border-y border-[var(--rule)] bg-[var(--paper)]/95 px-6 py-2 shadow-[0_8px_22px_color-mix(in_srgb,var(--paper)_72%,transparent)] backdrop-blur xl:hidden">
+        <button
+          type="button"
+          aria-expanded={mobileOpen}
+          aria-controls="article-mobile-outline"
+          onClick={() => setMobileOpen((open) => !open)}
+          className="flex w-full items-center gap-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+        >
+          <span className="font-mono text-xs text-[var(--accent)]">{progress}%</span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-medium text-[var(--ink)]">
+              {activeSection ? renderInline(parseInline(activeSection.title)) : 'Article outline'}
+            </span>
+            {activeSubsection && (
+              <span className="block truncate text-xs text-[var(--ink-faint)]">
+                {renderInline(parseInline(activeSubsection.title))}
+              </span>
+            )}
+          </span>
+          <span aria-hidden="true" className="font-mono text-sm text-[var(--ink-faint)]">
+            {mobileOpen ? '−' : '+'}
+          </span>
+        </button>
+        <div className="mt-2 h-1 overflow-hidden bg-[var(--rule)]">
+          <div
+            className="h-full bg-[var(--accent)] transition-[width] duration-150 motion-reduce:transition-none"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        {mobileOpen && (
+          <nav
+            id="article-mobile-outline"
+            aria-label="Article outline"
+            className="mt-3 max-h-[60vh] overflow-y-auto border-t border-[var(--rule)] pt-3"
+          >
+            <NavigationLinks
+              sections={sections}
+              activeSectionId={activeSectionId}
+              activeSubsectionId={activeSubsectionId}
+              onNavigate={handleNavigate}
+            />
+          </nav>
+        )}
+      </div>
+    </>
+  );
+}
+
 function extractLeanRegions(source: string) {
   const regions = new Map<string, string>();
   const lines = source.replace(/\r\n/g, '\n').split('\n');
@@ -629,15 +969,22 @@ function extractLeanRegions(source: string) {
 export default function MarkdownDocument({
   markdown,
   leanSource = '',
+  navigation,
 }: {
   markdown: string;
   leanSource?: string;
+  navigation?: NavigationOptions;
 }) {
-  const blocks = parseMarkdown(markdown);
-  const leanRegions = extractLeanRegions(leanSource);
+  const blocks = useMemo(() => assignHeadingIds(parseMarkdown(markdown)), [markdown]);
+  const leanRegions = useMemo(() => extractLeanRegions(leanSource), [leanSource]);
+  const articleRef = useRef<HTMLElement>(null);
+  const navigationSections = useMemo(
+    () => buildNavigationSections(blocks, navigation?.excludeHeadings ?? []),
+    [blocks, navigation?.excludeHeadings],
+  );
 
-  return (
-    <article className="mx-auto max-w-5xl text-[16px]">
+  const article = (
+    <article ref={articleRef} className="min-w-0 text-[16px]">
       {blocks.map((block, index) => (
         <div
           key={index}
@@ -647,5 +994,22 @@ export default function MarkdownDocument({
         </div>
       ))}
     </article>
+  );
+
+  if (navigation) {
+    return (
+      <div className="mx-auto max-w-7xl">
+        <div className="xl:grid xl:grid-cols-[13.5rem_minmax(0,1fr)] xl:items-start xl:gap-8">
+          <ReadingNavigation sections={navigationSections} articleRef={articleRef} />
+          {article}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-5xl">
+      {article}
+    </div>
   );
 }
