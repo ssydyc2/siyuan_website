@@ -2,11 +2,13 @@
 
 ## Contents
 
-- [The problem and counterexample](#the-problem-and-counterexample)
-- [Prerequisites in mathematics and Lean](#prerequisites-in-mathematics-and-lean)
-- [Read the proof backwards](#read-the-proof-backwards)
-- [The dependency chain forward](#the-dependency-chain-forward)
-- [What has and has not been formalized](#what-has-and-has-not-been-formalized)
+- [1. The problem and counterexample](#1-the-problem-and-counterexample)
+- [2. Prerequisites in mathematics and Lean](#2-prerequisites-in-mathematics-and-lean)
+- [3. Read the proof backwards](#3-read-the-proof-backwards)
+- [4. The dependency chain forward](#4-the-dependency-chain-forward)
+- [5. What has and has not been formalized](#5-what-has-and-has-not-been-formalized)
+- [6. Lean reading notes](#6-lean-reading-notes)
+- [7. Sources](#7-sources)
 
 ## TL;DR
 
@@ -21,7 +23,7 @@ Lean certifies the formal proof shown here; the surrounding explanations are sti
 
 ---
 
-## The problem and counterexample
+## 1. The problem and counterexample
 
 There is a familiar claim about equations: **“Once the degree reaches five, there is no solution.”** It is memorable—and wrong. Every nonconstant polynomial has complex roots. What breaks at degree five is something more subtle: there is no formula that can always build those roots from the coefficients using only finitely many additions, subtractions, multiplications, divisions, and radicals.
 
@@ -58,7 +60,7 @@ Every mathematical step is paired with the exact Lean code compiled by the compa
 
 ---
 
-## Prerequisites in mathematics and Lean
+## 2. Prerequisites in mathematics and Lean
 
 ### Groups, rings, fields, and type classes
 
@@ -125,7 +127,7 @@ The centered dot `·` begins a branch when one tactic creates several goals. The
 
 ---
 
-## Read the proof backwards
+## 3. Read the proof backwards
 
 ### Step 0: the final theorem
 
@@ -325,7 +327,7 @@ Our stronger final theorem keeps the root equation visible, then pads the same p
 
 ---
 
-## The dependency chain forward
+## 4. The dependency chain forward
 
 We read the proof backwards, but Lean checks declarations in a forward order. Reassembled from foundations to conclusion, the argument is:
 
@@ -341,7 +343,7 @@ We read the proof backwards, but Lean checks declarations in a forward order. Re
 
 The threshold five is therefore a group-theoretic threshold. The symmetric groups \(S_2,S_3,S_4\) are solvable; \(S_5\) is not. Classical quadratic, cubic, and quartic formulas are possible because their generic Galois groups remain on the solvable side of that boundary.
 
-## What has and has not been formalized
+## 5. What has and has not been formalized
 
 The compiled theorem in this article is an explicit existential statement about polynomials and radical elements. It proves that every degree at least five has a counterexample. That is enough to refute any proposed radical procedure claimed to solve **all** rational polynomials of that degree.
 
@@ -349,14 +351,14 @@ We have not defined a programming language of symbolic formulas and then proved 
 
 The polynomial still has five complex roots. They can be approximated numerically. What does not exist is a construction of those roots from rational numbers by a finite tower of arithmetic operations and radicals.
 
-## Lean reading notes
+## 6. Lean reading notes
 
 - Read theorem signatures before tactic bodies. The signature is the mathematical contract.
 - Follow named hypotheses such as `h_irred`, `hx`, and `hab`; their names are a map of the paper proof.
 - When a one-line tactic looks magical, inspect the theorem supplied to it with `#check` and read its hypotheses as a checklist.
 - Distinguish mathematical compression from formal omission. A short final proof can be rigorous because earlier declarations have isolated every obligation.
 
-## Sources
+## 7. Sources
 
 - [Mathlib: Construction of an algebraic number that is not solvable by radicals](https://leanprover-community.github.io/mathlib4_docs/Archive/Wiedijk100Theorems/AbelRuffini.html)
 - [Mathlib: The Abel–Ruffini theorem and solvability by radicals](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/AbelRuffini.html)
