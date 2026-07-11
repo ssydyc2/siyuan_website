@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
+import abelRuffiniImage from '../assets/blog/abel-ruffini-backwards.webp';
 import rlForLlmsImage from '../assets/blog/efficient-rl-for-llms-2d-hd.webp';
 import kernelRuntimeImage from '../assets/blog/llm-kernel-runtime-basics-2d-hd.webp';
 import MarkdownDocument from '../components/MarkdownDocument';
 import RpgHeroScene from '../components/RpgHeroScene';
 import ThemeToggle from '../components/ThemeToggle';
 import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
+import abelRuffiniMarkdown from '../content/blog/abel-ruffini-backwards.md?raw';
 import kernelBasicsMarkdown from '../content/blog/llm-kernel-runtime-basics.md?raw';
+import abelRuffiniLean from '../../formal/abel-ruffini/AbelRuffini.lean?raw';
 
 interface Resource {
   title: string;
@@ -457,6 +460,42 @@ const kernelRuntimePhases: Phase[] = [
 
 const blogPosts: BlogPost[] = [
   {
+    id: 'abel-ruffini-backwards',
+    title: 'Why Degree Five Breaks the Formula',
+    eyebrow: 'Proof · Lean 4',
+    summary:
+      'A conclusion-first proof of Abel–Ruffini, tracing one hard quintic back through Galois groups, solvability, root counts, and a compiled Lean companion.',
+    readingChecklist: [],
+    phases: [
+      {
+        title: 'What Actually Fails',
+        period: 'Part I',
+        label: 'Part I',
+        summary: 'Separate the existence of complex roots from expression by radicals, then state the exact theorem.',
+        groups: [],
+      },
+      {
+        title: 'Prerequisites',
+        period: 'Part II',
+        label: 'Part II',
+        summary: 'Build the algebra, Galois theory, solvable-group, and Lean vocabulary used by the proof.',
+        groups: [],
+      },
+      {
+        title: 'The Proof Backwards',
+        period: 'Part III',
+        label: 'Part III',
+        summary: 'Start from the all-degrees counterexample and trace every dependency back to the hard quintic.',
+        groups: [],
+      },
+    ],
+    frameworkRows: [],
+    practicePath: [],
+    minimalPath: [],
+    topThree: [],
+    keyConcepts: '',
+  },
+  {
     id: 'efficient-rl-for-llms',
     title: 'Study Guide: Efficient RL for LLMs',
     eyebrow: 'Learning guide',
@@ -487,6 +526,10 @@ const blogPosts: BlogPost[] = [
 ];
 
 const blogPostImages: Record<string, { src: string; alt: string }> = {
+  'abel-ruffini-backwards': {
+    src: abelRuffiniImage,
+    alt: 'Pixel-art scholar studying five glowing roots and permutation paths on a proof board',
+  },
   'efficient-rl-for-llms': {
     src: rlForLlmsImage,
     alt: '2D illustration of an RL pipeline for LLM training systems',
@@ -818,7 +861,22 @@ function KernelBasicsDetail({ post }: { post: BlogPost }) {
   );
 }
 
+function AbelRuffiniDetail({ post }: { post: BlogPost }) {
+  return (
+    <div className="mx-auto max-w-6xl space-y-8">
+      <div className="mx-auto max-w-4xl">
+        <BlogPostVisual postId={post.id} />
+      </div>
+      <MarkdownDocument markdown={abelRuffiniMarkdown} leanSource={abelRuffiniLean} />
+    </div>
+  );
+}
+
 function BlogPostDetail({ post }: { post: BlogPost }) {
+  if (post.id === 'abel-ruffini-backwards') {
+    return <AbelRuffiniDetail post={post} />;
+  }
+
   if (post.id === 'efficient-rl-for-llms') {
     return <EfficientRlDetail post={post} />;
   }

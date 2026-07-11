@@ -16,7 +16,8 @@ type Block =
   | { type: 'hr' }
   | { type: 'code'; language: string; value: string }
   | { type: 'list'; ordered: boolean; items: ListItem[] }
-  | { type: 'table'; headers: string[]; rows: string[][] };
+  | { type: 'table'; headers: string[]; rows: string[][] }
+  | { type: 'proofPair'; regionId: string; proof: Block[] };
 
 interface ListItem {
   text: string;
@@ -157,6 +158,26 @@ function parseMarkdown(markdown: string): Block[] {
       continue;
     }
 
+    const proofPair = line.match(/^:::\s+proof-lean\s+([a-z0-9-]+)\s*$/i);
+
+    if (proofPair) {
+      const proofLines: string[] = [];
+      index += 1;
+
+      while (index < lines.length && lines[index].trim() !== ':::') {
+        proofLines.push(lines[index]);
+        index += 1;
+      }
+
+      blocks.push({
+        type: 'proofPair',
+        regionId: proofPair[1],
+        proof: parseMarkdown(proofLines.join('\n')),
+      });
+      index += index < lines.length ? 1 : 0;
+      continue;
+    }
+
     if (line.startsWith('```')) {
       const language = line.slice(3).trim();
       const codeLines: string[] = [];
@@ -224,6 +245,7 @@ function parseMarkdown(markdown: string): Block[] {
 function isBlockBoundary(lines: string[], index: number) {
   const line = lines[index];
   return (
+    /^:::\s+proof-lean\s+/.test(line) ||
     line.startsWith('```') ||
     /^(#{1,6})\s+/.test(line) ||
     /^(-{3,}|\*{3,})\s*$/.test(line.trim()) ||
@@ -387,7 +409,13 @@ function renderInline(nodes: InlineNode[]): ReactNode {
   });
 }
 
-function MarkdownList({ block }: { block: Extract<Block, { type: 'list' }> }) {
+function MarkdownList({
+  block,
+  leanRegions,
+}: {
+  block: Extract<Block, { type: 'list' }>;
+  leanRegions: Map<string, string>;
+}) {
   const Tag = block.ordered ? 'ol' : 'ul';
   const hasCheckboxes = block.items.some((item) => item.checked !== undefined);
   const listClass = block.ordered
@@ -413,7 +441,11 @@ function MarkdownList({ block }: { block: Extract<Block, { type: 'list' }> }) {
             <span>{renderInline(parseInline(item.text))}</span>
           </span>
           {item.children.map((child, childIndex) => (
-            <MarkdownBlock key={`${item.text}-child-${childIndex}`} block={child} />
+            <MarkdownBlock
+              key={`${item.text}-child-${childIndex}`}
+              block={child}
+              leanRegions={leanRegions}
+            />
           ))}
         </li>
       ))}
@@ -441,7 +473,7 @@ function MathBlock({ value }: { value: string }) {
   );
 }
 
-function MarkdownBlock({ block }: { block: Block }) {
+function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<string, string> }) {
   if (block.type === 'heading') {
     const content = renderInline(parseInline(block.text));
     const headingId = slugifyHeading(block.text);
@@ -486,7 +518,46 @@ function MarkdownBlock({ block }: { block: Block }) {
   }
 
   if (block.type === 'list') {
-    return <MarkdownList block={block} />;
+    return <MarkdownList block={block} leanRegions={leanRegions} />;
+  }
+
+  if (block.type === 'proofPair') {
+    const leanCode = leanRegions.get(block.regionId);
+
+    return (
+      <section className="my-9 overflow-hidden border border-[var(--rule-strong)] bg-[var(--paper-elevated)] shadow-[4px_5px_0_var(--rpg-shadow)]">
+        <div className="grid lg:grid-cols-2">
+          <div className="min-w-0 border-b border-[var(--rule-strong)] lg:border-b-0 lg:border-r">
+            <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--accent)]">
+              Mathematics
+            </div>
+            <div className="px-5 py-2 sm:px-6">
+              {block.proof.map((proofBlock, index) => (
+                <MarkdownBlock
+                  key={`${block.regionId}-proof-${index}`}
+                  block={proofBlock}
+                  leanRegions={leanRegions}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="min-w-0">
+            <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+              Lean 4 · {block.regionId}
+            </div>
+            {leanCode ? (
+              <pre className="m-0 max-h-[38rem] overflow-auto bg-[color-mix(in_srgb,var(--paper-muted)_70%,transparent)] px-5 py-5 text-[0.78rem] leading-6 text-[var(--ink-soft)]">
+                <code>{leanCode}</code>
+              </pre>
+            ) : (
+              <p className="m-5 border border-[var(--rule)] bg-[var(--paper-muted)] p-4 font-mono text-sm text-[var(--accent-strong)]">
+                Missing Lean region: {block.regionId}
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -517,11 +588,63 @@ function MarkdownBlock({ block }: { block: Block }) {
   );
 }
 
-export default function MarkdownDocument({ markdown }: { markdown: string }) {
+function extractLeanRegions(source: string) {
+  const regions = new Map<string, string>();
+  const lines = source.replace(/\r\n/g, '\n').split('\n');
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const start = lines[index].match(/^\s*--\s*region\s+([a-z0-9-]+)\s*$/i);
+
+    if (!start) {
+      continue;
+    }
+
+    const regionId = start[1];
+
+    if (regions.has(regionId)) {
+      throw new Error(`Duplicate Lean region: ${regionId}`);
+    }
+
+    const codeLines: string[] = [];
+    index += 1;
+
+    while (
+      index < lines.length &&
+      !new RegExp(`^\\s*--\\s*endregion\\s+${regionId}\\s*$`, 'i').test(lines[index])
+    ) {
+      codeLines.push(lines[index]);
+      index += 1;
+    }
+
+    if (index >= lines.length) {
+      throw new Error(`Unclosed Lean region: ${regionId}`);
+    }
+
+    regions.set(regionId, codeLines.join('\n').trim());
+  }
+
+  return regions;
+}
+
+export default function MarkdownDocument({
+  markdown,
+  leanSource = '',
+}: {
+  markdown: string;
+  leanSource?: string;
+}) {
+  const blocks = parseMarkdown(markdown);
+  const leanRegions = extractLeanRegions(leanSource);
+
   return (
-    <article className="mx-auto max-w-3xl text-[16px]">
-      {parseMarkdown(markdown).map((block, index) => (
-        <MarkdownBlock key={index} block={block} />
+    <article className="mx-auto max-w-5xl text-[16px]">
+      {blocks.map((block, index) => (
+        <div
+          key={index}
+          className={block.type === 'proofPair' ? '' : 'mx-auto max-w-3xl'}
+        >
+          <MarkdownBlock block={block} leanRegions={leanRegions} />
+        </div>
       ))}
     </article>
   );

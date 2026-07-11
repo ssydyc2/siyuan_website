@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build",
     "postbuild": "cp dist/index.html dist/404.html",
     "lint": "eslint .",
+    "verify:lean-regions": "bun scripts/verify-lean-regions.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
