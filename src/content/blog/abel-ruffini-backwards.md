@@ -145,39 +145,6 @@ p(X)=a_0+a_1X+\cdots+a_nX^n
 
 The word **formal** matters: \(X\) is an indeterminate, not yet a number. Two polynomials are equal exactly when all corresponding coefficients are equal. The set of polynomials over \(F\), with coefficientwise addition and the usual convolution product, is denoted by \(F[X]\).
 
-### Degree and leading coefficient
-
-If \(p\ne0\), its degree is the largest exponent with nonzero coefficient:
-
-```latex
-\deg p=\max\{i\mid a_i\ne0\}.
-```
-
-The coefficient \(a_{\deg p}\) is the **leading coefficient**. A polynomial is **monic** if its leading coefficient is \(1\). For nonzero polynomials over a field,
-
-```latex
-\deg(pq)=\deg p+\deg q.
-```
-
-The zero polynomial has no largest nonzero coefficient; one either leaves its degree undefined or assigns it the formal value \(-\infty\).
-
-### Root
-
-Let \(E\) be a field containing \(F\), and let \(\alpha\in E\). Evaluation replaces the formal variable by \(\alpha\):
-
-```latex
-p(\alpha)=\sum_{i=0}^{n}a_i\alpha^i\in E.
-```
-
-The element \(\alpha\) is a **root** of \(p\) if \(p(\alpha)=0\). By the factor theorem, this is equivalent to
-
-```latex
-(X-\alpha)\mid p
-\qquad\text{in }E[X].
-```
-
-For \(p\ne0\), a root has multiplicity \(m\) if \((X-\alpha)^m\mid p\) but \((X-\alpha)^{m+1}\nmid p\).
-
 ### Units and factorization
 
 A **unit** in a ring is an element with a multiplicative inverse. The units of \(F[X]\) are exactly the nonzero constant polynomials. Consequently, multiplying a polynomial by a nonzero scalar does not create a mathematically meaningful factorization.
