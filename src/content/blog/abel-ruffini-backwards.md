@@ -12,21 +12,25 @@
 
 ## The problem and counterexample
 
-Every nonconstant polynomial has complex roots. The question here is narrower: can those roots always be written from the coefficients using finitely many additions, subtractions, multiplications, divisions, and radicals? Quadratic, cubic, and quartic equations have such formulas. Starting at degree five, no formula by radicals can solve every equation.
+There is a familiar claim about equations: **“Once the degree reaches five, there is no solution.”** It is memorable—and wrong. Every nonconstant polynomial has complex roots. What breaks at degree five is something more subtle: there is no formula that can always build those roots from the coefficients using only finitely many additions, subtractions, multiplications, divisions, and radicals.
 
-We prove this with one explicit quintic:
+Quadratic, cubic, and quartic equations have such formulas. Why does the pattern stop exactly at five? Instead of beginning with an abstract impossibility theorem, we follow one concrete polynomial all the way down.
+
+The counterexample is
 
 ```latex
 \Phi(X)=X^5-4X+2\in\mathbb Q[X].
 ```
 
-Its complex roots exist, but none is solvable by radicals over \(\mathbb Q\). For every \(n\ge5\), define
+Its five complex roots certainly exist. Yet none of them can be reached by radicals over \(\mathbb Q\). That tension—existence without a radical expression—is the real content of Abel–Ruffini.
+
+One quintic is enough to reach every higher degree. For \(n\ge5\), define
 
 ```latex
 P_n(X)=X^{n-5}\Phi(X).
 ```
 
-Then \(P_n\) has degree \(n\) and retains a non-radical root of \(\Phi\). This gives the precise theorem proved below:
+The factor \(X^{n-5}\) adds zero roots, but it does not remove the hard roots of \(\Phi\). Thus \(P_n\) has degree \(n\) and still contains a root that radicals cannot express. The precise theorem is:
 
 ```latex
 \forall n \ge 5,\ \exists P_n \in \mathbb{Q}[X],\quad
@@ -37,7 +41,9 @@ Then \(P_n\) has degree \(n\) and retains a non-radical root of \(\Phi\). This g
 \ \alpha\text{ is not solvable by radicals over }\mathbb Q.
 ```
 
-We prove it backwards: start from this conclusion, then trace each required theorem and lemma through the Galois group, solvable groups, irreducibility, and root counting. Every step is paired with the exact Lean code compiled by the companion project.
+The proof runs in the opposite direction from a textbook. We start with the conclusion and repeatedly ask: **what earlier fact makes this line possible?** That question takes us backwards through the Galois group, solvable groups, irreducibility, root counting, and finally the elementary polynomial facts underneath them.
+
+Every mathematical step is paired with the exact Lean code compiled by the companion project. The goal is not merely to verify the theorem, but to make the mathematical dependency chain and the Lean proof structure visible at the same time.
 
 ---
 
