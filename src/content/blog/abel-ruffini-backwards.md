@@ -8,6 +8,17 @@
 - [The dependency chain forward](#the-dependency-chain-forward)
 - [What has and has not been formalized](#what-has-and-has-not-been-formalized)
 
+## TL;DR
+
+This article proves Abel–Ruffini with two tools: **backward reasoning** and **Lean**. We begin with an explicit counterexample, then work backwards through every theorem and lemma needed to make the conclusion true.
+
+Why this approach?
+
+1. **It is more intuitive.** Starting from the result tells us why each abstract concept is needed before we introduce it.
+2. **Lean checks the proof and its logical dependencies.** Every formal step beside the mathematics is compiled, so missing assumptions and invalid deductions cannot quietly slip through—which is especially comforting when most of this article was generated with the help of AI. Lean, fortunately, is less impressed by confident prose than we are.
+
+Lean certifies the formal proof shown here; the surrounding explanations are still meant to be read critically by humans.
+
 ---
 
 ## The problem and counterexample
