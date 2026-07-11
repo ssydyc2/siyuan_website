@@ -133,9 +133,92 @@ A field is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero 
 
 ### Polynomials, roots, and irreducibility
 
-For a field \(F\), a polynomial \(p\in F[X]\) is **irreducible** if it is nonzero, not a unit, and cannot be factored into two nonunits. If \(p\) is irreducible and \(\alpha\) is a root, then \(p\) is, up to normalization, the minimal polynomial of \(\alpha\) over \(F\).
+### Polynomial
 
-A polynomial is **separable** if its roots in a splitting field are distinct. Every irreducible polynomial over \(\mathbb Q\) is separable because \(\mathbb Q\) has characteristic zero.
+Let \(F\) be a field. A polynomial over \(F\) is a finite formal sum
+
+```latex
+p(X)=a_0+a_1X+\cdots+a_nX^n
+=\sum_{i=0}^{n}a_iX^i,
+\qquad a_i\in F.
+```
+
+The word **formal** matters: \(X\) is an indeterminate, not yet a number. Two polynomials are equal exactly when all corresponding coefficients are equal. The set of polynomials over \(F\), with coefficientwise addition and the usual convolution product, is denoted by \(F[X]\).
+
+### Degree and leading coefficient
+
+If \(p\ne0\), its degree is the largest exponent with nonzero coefficient:
+
+```latex
+\deg p=\max\{i\mid a_i\ne0\}.
+```
+
+The coefficient \(a_{\deg p}\) is the **leading coefficient**. A polynomial is **monic** if its leading coefficient is \(1\). For nonzero polynomials over a field,
+
+```latex
+\deg(pq)=\deg p+\deg q.
+```
+
+The zero polynomial has no largest nonzero coefficient; one either leaves its degree undefined or assigns it the formal value \(-\infty\).
+
+### Root
+
+Let \(E\) be a field containing \(F\), and let \(\alpha\in E\). Evaluation replaces the formal variable by \(\alpha\):
+
+```latex
+p(\alpha)=\sum_{i=0}^{n}a_i\alpha^i\in E.
+```
+
+The element \(\alpha\) is a **root** of \(p\) if \(p(\alpha)=0\). By the factor theorem, this is equivalent to
+
+```latex
+(X-\alpha)\mid p
+\qquad\text{in }E[X].
+```
+
+For \(p\ne0\), a root has multiplicity \(m\) if \((X-\alpha)^m\mid p\) but \((X-\alpha)^{m+1}\nmid p\).
+
+### Units and factorization
+
+A **unit** in a ring is an element with a multiplicative inverse. The units of \(F[X]\) are exactly the nonzero constant polynomials. Consequently, multiplying a polynomial by a nonzero scalar does not create a mathematically meaningful factorization.
+
+A nonzero, nonunit polynomial \(p\in F[X]\) is **reducible over \(F\)** if there exist nonunit polynomials \(f,g\in F[X]\) such that
+
+```latex
+p=fg.
+```
+
+Otherwise, \(p\) is **irreducible over \(F\)**. Equivalently, \(p\) is irreducible if every factorization \(p=fg\) forces either \(f\) or \(g\) to be a nonzero constant. For a polynomial of positive degree, this means it has no factor whose degree lies strictly between \(0\) and \(\deg p\).
+
+Irreducibility depends on the coefficient field. For example, \(X^2-2\) is irreducible in \(\mathbb Q[X]\), but it factors in \(\mathbb R[X]\):
+
+```latex
+X^2-2=(X-\sqrt2)(X+\sqrt2).
+```
+
+### Minimal polynomial
+
+An element \(\alpha\in E\) is **algebraic over \(F\)** if it is a root of some nonzero polynomial in \(F[X]\). For every algebraic \(\alpha\), there is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
+
+```latex
+m_{\alpha,F}(\alpha)=0.
+```
+
+This is the **minimal polynomial** of \(\alpha\) over \(F\). It divides every polynomial \(q\in F[X]\) for which \(q(\alpha)=0\). Therefore, if an irreducible polynomial \(p\in F[X]\) has \(\alpha\) as a root, then its monic normalization is the minimal polynomial:
+
+```latex
+m_{\alpha,F}=\frac{1}{\operatorname{leadingCoeff}(p)}p.
+```
+
+### Separable polynomial
+
+A nonzero polynomial is **separable over \(F\)** if, in a field where it splits completely into linear factors, no root occurs with multiplicity greater than one. Equivalently,
+
+```latex
+\gcd(p,p')=1,
+```
+
+where \(p'\) is the formal derivative. Every irreducible polynomial over a field of characteristic zero is separable. In particular, every irreducible polynomial in \(\mathbb Q[X]\) is separable.
 
 ### Field extensions and Galois groups
 
