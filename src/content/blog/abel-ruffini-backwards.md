@@ -64,42 +64,52 @@ Every mathematical step is paired with the exact Lean code compiled by the compa
 
 ### Groups, rings, fields, and type classes
 
-We build the definitions in order, adding one requirement at a time.
+Each structure gets its own definition. We begin with groups, the structure that will later describe symmetries of polynomial roots.
 
-1. A **binary operation** on a set \(S\) is a function \(\star:S\times S\to S\). Closure is part of its type: if \(a,b\in S\), then \(a\star b\in S\).
+### Group
 
-2. A **semigroup** is a pair \((S,\star)\) consisting of a set and an associative binary operation. Thus, for every \(a,b,c\in S\),
+A group is a tuple \((G,\star,e,(-)^{-1})\) consisting of a set \(G\), a binary operation \(\star:G\times G\to G\), an identity element \(e\in G\), and an inverse operation \((-)^{-1}:G\to G\). For every \(a,b,c\in G\), it satisfies:
+
+- **Associativity:** \((a\star b)\star c=a\star(b\star c)\).
+- **Identity:** \(e\star a=a=a\star e\).
+- **Inverses:** \(a^{-1}\star a=e=a\star a^{-1}\).
+
+### Semigroup
+
+A semigroup is a pair \((S,\star)\) consisting of a set \(S\) and a binary operation \(\star:S\times S\to S\) satisfying associativity. For every \(a,b,c\in S\),
 
 ```latex
 (a\star b)\star c=a\star(b\star c).
 ```
 
-3. A **monoid** is a semigroup \((M,\star)\) together with an identity element \(e\in M\) satisfying, for every \(a\in M\),
+### Monoid
+
+A monoid is a semigroup \((M,\star)\) together with an identity element \(e\in M\) satisfying, for every \(a\in M\),
 
 ```latex
 e\star a=a=a\star e.
 ```
 
-4. A **commutative monoid** is a monoid whose operation also satisfies, for every \(a,b\in M\),
+### Commutative monoid
+
+A commutative monoid is a monoid whose operation also satisfies, for every \(a,b\in M\),
 
 ```latex
 a\star b=b\star a.
 ```
 
-5. A **group** is a monoid \((G,\star,e)\) equipped with an inverse operation \((-)^{-1}:G\to G\) such that, for every \(a\in G\),
+### Abelian group
 
-```latex
-a^{-1}\star a=e=a\star a^{-1}.
-```
-
-6. An **abelian group**, also called a **commutative group**, is a group whose operation is commutative:
+An abelian group, also called a commutative group, is a group whose operation is commutative:
 
 ```latex
 a\star b=b\star a
 \qquad\text{for every }a,b\in G.
 ```
 
-7. A **ring** is a tuple \((R,+,\cdot,-,0,1)\) such that:
+### Ring
+
+A ring is a tuple \((R,+,\cdot,-,0,1)\) such that:
 
 - \((R,+,0,-)\) is an abelian group;
 - \((R,\cdot,1)\) is a monoid; and
@@ -113,9 +123,15 @@ a\cdot(b+c)=a\cdot b+a\cdot c,
 
 The additive inverse of \(a\) is written \(-a\), and subtraction is the derived operation \(a-b:=a+(-b)\). Multiplication in a ring need not be commutative.
 
-8. A **commutative ring** is a ring whose multiplication is commutative. Equivalently, its multiplicative structure \((R,\cdot,1)\) is a commutative monoid.
+### Commutative ring
 
-9. A **field** is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero element has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
+A commutative ring is a ring whose multiplication is commutative. Equivalently, its multiplicative structure \((R,\cdot,1)\) is a commutative monoid.
+
+### Field
+
+A field is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero element has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
+
+### The hierarchy in Lean
 
 Lean separates the carrier type from the structure placed on it. In `[Field F]`, the square brackets ask type-class inference to supply a field structure on the type `F`. A theorem written for an arbitrary `F : Type*` with `[Field F]` therefore works for \(\mathbb Q\), \(\mathbb R\), finite fields, and many other fields without repeating their axioms.
 
