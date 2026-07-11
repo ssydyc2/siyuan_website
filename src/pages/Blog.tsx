@@ -478,7 +478,7 @@ const blogPosts: BlogPost[] = [
         title: 'Prerequisites',
         period: 'Foundations',
         label: 'Foundations',
-        summary: 'Build the algebra, Galois theory, solvable-group, and Lean vocabulary used by the proof.',
+        summary: 'Build the algebra, Galois theory, and solvable-group foundations used by the proof.',
         groups: [],
       },
       {

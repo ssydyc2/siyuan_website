@@ -3,7 +3,7 @@
 ## Contents
 
 - [1. The problem and counterexample](#1-the-problem-and-counterexample)
-- [2. Prerequisites in mathematics and Lean](#2-prerequisites-in-mathematics-and-lean)
+- [2. Mathematical prerequisites](#2-mathematical-prerequisites)
 - [3. Read the proof backwards](#3-read-the-proof-backwards)
 - [4. The dependency chain forward](#4-the-dependency-chain-forward)
 - [5. What has and has not been formalized](#5-what-has-and-has-not-been-formalized)
@@ -60,9 +60,9 @@ Every mathematical step is paired with the exact Lean code compiled by the compa
 
 ---
 
-## 2. Prerequisites in mathematics and Lean
+## 2. Mathematical prerequisites
 
-### Groups, rings, fields, and type classes
+### Algebraic structures
 
 Each structure gets its own definition. We begin with groups, the structure that will later describe symmetries of polynomial roots.
 
@@ -131,25 +131,11 @@ A commutative ring is a ring whose multiplication is commutative. Equivalently, 
 
 A field is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero element has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
 
-### The hierarchy in Lean
-
-Lean separates the carrier type from the structure placed on it. In `[Field F]`, the square brackets ask type-class inference to supply a field structure on the type `F`. A theorem written for an arbitrary `F : Type*` with `[Field F]` therefore works for \(\mathbb Q\), \(\mathbb R\), finite fields, and many other fields without repeating their axioms.
-
-::: proof-lean algebra-interfaces
-The first eight `#check` commands show the same hierarchy in mathlib. `CommMonoid` extends the monoid structure with commutativity; `CommGroup` is mathlib's name for an abelian group; `CommRing` adds commutative multiplication to a ring; and `Field` adds division by nonzero elements and nontriviality.
-
-`Type*` means a type living in some universe whose level Lean should infer. `Polynomial R` is available once `R` is at least a semiring; the notation `R[X]` is a readable synonym. `Algebra R A` says that `A` contains a compatible image of `R`. The expression `Polynomial.aeval x p` evaluates `p : R[X]` at `x : A` through that algebra structure.
-
-The declarations ending in `: Prop` are propositions, not data. Thus `Irreducible p` and `p.Separable` are statements that can be assumed or proved.
-:::
-
 ### Polynomials, roots, and irreducibility
 
 For a field \(F\), a polynomial \(p\in F[X]\) is **irreducible** if it is nonzero, not a unit, and cannot be factored into two nonunits. If \(p\) is irreducible and \(\alpha\) is a root, then \(p\) is, up to normalization, the minimal polynomial of \(\alpha\) over \(F\).
 
 A polynomial is **separable** if its roots in a splitting field are distinct. Every irreducible polynomial over \(\mathbb Q\) is separable because \(\mathbb Q\) has characteristic zero.
-
-Lean writes a root condition as `(aeval x) p = 0`. Parentheses are optional in many places, so `aeval x p = 0` means the same thing. The type of `x` determines the codomain of evaluation.
 
 ### Field extensions and Galois groups
 
@@ -169,12 +155,6 @@ G^{(k+1)}=[G^{(k)},G^{(k)}].
 
 The group is **solvable** if some term of this series is the trivial subgroup. Abelian groups are solvable immediately because their first commutator subgroup is trivial. Solvability is preserved by subgroups, quotients, and in particular by surjective homomorphic images.
 
-::: proof-lean galois-interfaces
-`Polynomial.Gal p` is mathlib's Galois group attached to `p`. The homomorphism `galActionHom p E` sends a Galois automorphism to its permutation of `p.rootSet E`.
-
-`derivedSeries G` is a function from natural numbers to subgroups of `G`. `IsSolvable G : Prop` asserts that this sequence eventually becomes bottom, the trivial subgroup. Finally, `solvableByRad F E` is an `IntermediateField F E`; membership `x ∈ solvableByRad F E` is the formal statement that `x` can be built by radicals over `F` inside `E`.
-:::
-
 ### What solvable by radicals means
 
 Begin with a base field \(F\). We may perform arithmetic inside it. We may then adjoin an element \(\beta\) whose positive integer power \(\beta^m\) already belongs to the field constructed so far. Repeating this finitely many times gives a **radical tower**. An element is solvable by radicals if it lies in some such construction, allowing the necessary roots of unity.
@@ -185,15 +165,6 @@ The bridge to group theory is the deep direction used here:
 
 The reason is structural. After roots of unity are present, adjoining one radical produces a cyclic, hence abelian, Galois layer. A tower of radical adjunctions therefore produces a tower whose successive Galois quotients are abelian. That is precisely the normal-series characterization of a solvable group.
 
-### Four Lean proof idioms used below
-
-- `by` opens tactic mode; indented lines transform the current goal.
-- `have h : P := ...` records an intermediate proposition. Lean can often infer `P`, giving `have h := ...`.
-- `obtain ⟨x, hx⟩ := h` eliminates an existential statement and names its witness and proof.
-- `refine ⟨..., ?_, ...⟩` constructs a conjunction or existential result while leaving `_`-marked goals for subsequent lines.
-
-The centered dot `·` begins a branch when one tactic creates several goals. The placeholder `·` appearing as an argument, as in `f · h`, is different: it is function-section syntax and means “insert the missing argument here.”
-
 ---
 
 ## 3. Read the proof backwards
@@ -201,6 +172,16 @@ The centered dot `·` begins a branch when one tactic creates several goals. The
 ### Step 0: the final theorem
 
 We start at the end. The theorem does not claim that every degree-\(n\) polynomial is hard. It claims that for each \(n\ge5\) there exists at least one counterexample.
+
+Before reading the theorem, here is the small amount of Lean vocabulary it uses.
+
+::: proof-lean algebra-interfaces
+Lean separates a carrier type from the structure placed on it. A hypothesis such as `[Field F]` asks type-class inference for a field structure on `F`. Mathlib calls an abelian group `CommGroup`; the other names follow the mathematical hierarchy directly.
+
+`Type*` is a type whose universe level Lean infers. `R[X]` denotes `Polynomial R`. `Algebra R A` says that `A` contains a compatible image of `R`, and `Polynomial.aeval x p` evaluates `p : R[X]` at `x : A`. Declarations such as `Irreducible p` and `p.Separable` have type `Prop`: they are statements to prove, rather than data to compute.
+:::
+
+The proof body uses four recurring constructions. `by` opens tactic mode. `have` records an intermediate fact. `obtain ⟨x, hx⟩` extracts a witness and its proof from an existential statement. `refine ⟨..., ?_, ...⟩` supplies known pieces of the result and leaves the marked goals to prove next.
 
 ::: proof-lean final-theorem
 Fix a natural number \(n\) with \(5\le n\). We must produce a polynomial `p`, prove its natural degree is `n`, then produce a complex root `x`, prove the root equation, and prove non-membership in the radical subfield.
@@ -253,6 +234,14 @@ The tactic `decide` proves each because these propositions are decidable and con
 So what is the general theorem being specialized?
 
 ### Step 4: the Galois obstruction
+
+The next Lean declarations encode the Galois group, its action on roots, the derived series, solvability, and the field of radical elements.
+
+::: proof-lean galois-interfaces
+`Polynomial.Gal p` is the Galois group attached to `p`. The homomorphism `galActionHom p E` sends an automorphism to its permutation of `p.rootSet E`.
+
+`derivedSeries G` assigns a subgroup to each natural number, while `IsSolvable G` asserts that this series eventually reaches the trivial subgroup. Finally, `x ∈ solvableByRad F E` is the formal statement that `x` can be constructed by radicals over `F` inside `E`.
+:::
 
 ::: proof-lean radical-contradiction
 Assume `x` is a root of an irreducible member \(X^5-aX+b\). Suppose, for contradiction, that `x` is solvable by radicals.
