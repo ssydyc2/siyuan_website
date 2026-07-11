@@ -389,6 +389,22 @@ samp {
     background-color 180ms ease;
 }
 
+.timeline-card-hitbox {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.timeline-card-interactive:has(.timeline-card-hitbox:focus-visible) .timeline-card-panel {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.timeline-card-interactive:has(.timeline-card-hitbox:active) .timeline-card-panel {
+  transform: translateY(0) scale(0.995);
+}
+
 .group:hover .timeline-card-panel {
   transform: translateY(-2px);
   box-shadow:

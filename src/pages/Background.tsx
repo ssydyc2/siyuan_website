@@ -66,12 +66,14 @@ function TimelineCard({
   item,
   isActive,
   reduceMotion,
-  cardRef
+  cardRef,
+  onActivate
 }: {
   item: TimelineItem;
   isActive: boolean;
   reduceMotion: boolean;
   cardRef: (node: HTMLDivElement | null) => void;
+  onActivate: () => void;
 }) {
   const itemRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress: itemScrollProgress } = useScroll({
@@ -141,7 +143,14 @@ function TimelineCard({
         }}
         transition={cardTransition}
       >
-        <div className="relative group">
+        <div className="timeline-card-interactive group relative">
+          <button
+            type="button"
+            className="timeline-card-hitbox absolute inset-0 z-10 cursor-pointer"
+            aria-label={`Highlight and center ${item.title.replace(/\n/g, ' ')} at ${item.company ?? item.period}`}
+            aria-pressed={isActive}
+            onClick={onActivate}
+          />
           <motion.div
             className="timeline-card-panel relative border p-4 transition-colors duration-300 group-hover:border-[var(--rule-strong)]"
             animate={{
@@ -263,6 +272,14 @@ export default function Background() {
     };
   }, [updateActiveTimelineItem]);
 
+  const activateTimelineItem = useCallback((index: number) => {
+    setActiveTimelineIndex(index);
+    timelineRefs.current[index]?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'center'
+    });
+  }, [reduceMotion]);
+
   const prefersReducedMotion = reduceMotion ?? false;
 
   return (
@@ -333,6 +350,7 @@ export default function Background() {
               cardRef={(node) => {
                 timelineRefs.current[index] = node;
               }}
+              onActivate={() => activateTimelineItem(index)}
             />
           ))}
         </div>
