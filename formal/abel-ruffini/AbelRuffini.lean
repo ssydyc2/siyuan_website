@@ -33,7 +33,12 @@ open Function Polynomial Polynomial.Gal Ideal
 attribute [local instance] splits_ℚ_ℂ
 
 -- region algebra-interfaces
+#check Semigroup
+#check Monoid
+#check CommMonoid
 #check Group
+#check CommGroup
+#check Ring
 #check CommRing
 #check Field
 #check Polynomial

@@ -64,24 +64,64 @@ Every mathematical step is paired with the exact Lean code compiled by the compa
 
 ### Groups, rings, fields, and type classes
 
-A **group** is a set \(G\) equipped with a binary operation \(\cdot:G\times G\to G\), a distinguished element \(e\in G\), and an inverse operation \((-)^{-1}:G\to G\), satisfying, for every \(a,b,c\in G\):
+We build the definitions in order, adding one requirement at a time.
 
-- **Associativity:** \((a\cdot b)\cdot c=a\cdot(b\cdot c)\).
-- **Identity:** \(e\cdot a=a=a\cdot e\).
-- **Inverses:** \(a^{-1}\cdot a=e=a\cdot a^{-1}\).
+1. A **binary operation** on a set \(S\) is a function \(\star:S\times S\to S\). Closure is part of its type: if \(a,b\in S\), then \(a\star b\in S\).
 
-A **commutative ring** is a tuple \((R,+,\cdot,-,0,1)\) such that:
+2. A **semigroup** is a pair \((S,\star)\) consisting of a set and an associative binary operation. Thus, for every \(a,b,c\in S\),
+
+```latex
+(a\star b)\star c=a\star(b\star c).
+```
+
+3. A **monoid** is a semigroup \((M,\star)\) together with an identity element \(e\in M\) satisfying, for every \(a\in M\),
+
+```latex
+e\star a=a=a\star e.
+```
+
+4. A **commutative monoid** is a monoid whose operation also satisfies, for every \(a,b\in M\),
+
+```latex
+a\star b=b\star a.
+```
+
+5. A **group** is a monoid \((G,\star,e)\) equipped with an inverse operation \((-)^{-1}:G\to G\) such that, for every \(a\in G\),
+
+```latex
+a^{-1}\star a=e=a\star a^{-1}.
+```
+
+6. An **abelian group**, also called a **commutative group**, is a group whose operation is commutative:
+
+```latex
+a\star b=b\star a
+\qquad\text{for every }a,b\in G.
+```
+
+7. A **ring** is a tuple \((R,+,\cdot,-,0,1)\) such that:
 
 - \((R,+,0,-)\) is an abelian group;
-- \((R,\cdot,1)\) is a commutative monoid; and
+- \((R,\cdot,1)\) is a monoid; and
 - multiplication distributes over addition on both sides:
-  \(a\cdot(b+c)=a\cdot b+a\cdot c\) and \((a+b)\cdot c=a\cdot c+b\cdot c\).
 
-A **field** is a commutative ring \(F\) with \(0\ne1\) such that every \(a\in F\setminus\{0\}\) has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
+```latex
+a\cdot(b+c)=a\cdot b+a\cdot c,
+\qquad
+(a+b)\cdot c=a\cdot c+b\cdot c.
+```
+
+The additive inverse of \(a\) is written \(-a\), and subtraction is the derived operation \(a-b:=a+(-b)\). Multiplication in a ring need not be commutative.
+
+8. A **commutative ring** is a ring whose multiplication is commutative. Equivalently, its multiplicative structure \((R,\cdot,1)\) is a commutative monoid.
+
+9. A **field** is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero element has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
 
 Lean separates the carrier type from the structure placed on it. In `[Field F]`, the square brackets ask type-class inference to supply a field structure on the type `F`. A theorem written for an arbitrary `F : Type*` with `[Field F]` therefore works for \(\mathbb Q\), \(\mathbb R\), finite fields, and many other fields without repeating their axioms.
 
 ::: proof-lean algebra-interfaces
+The first eight `#check` commands show the same hierarchy in mathlib. `CommMonoid` extends the monoid structure with commutativity; `CommGroup` is mathlib's name for an abelian group; `CommRing` adds commutative multiplication to a ring; and `Field` adds division by nonzero elements and nontriviality.
+
 `Type*` means a type living in some universe whose level Lean should infer. `Polynomial R` is available once `R` is at least a semiring; the notation `R[X]` is a readable synonym. `Algebra R A` says that `A` contains a compatible image of `R`. The expression `Polynomial.aeval x p` evaluates `p : R[X]` at `x : A` through that algebra structure.
 
 The declarations ending in `: Prop` are propositions, not data. Thus `Irreducible p` and `p.Separable` are statements that can be assumed or proved.
