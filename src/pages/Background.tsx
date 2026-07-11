@@ -2,10 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import RpgHeroScene from '../components/RpgHeroScene';
 
+type ExperienceIcon = 'ai' | 'ads' | 'ml' | 'network' | 'research' | 'math' | 'applied-math';
+
 interface TimelineItem {
   period: string;
   title: string;
   company?: string;
+  icon: ExperienceIcon;
   description: string;
   tags: string[];
 }
@@ -15,6 +18,7 @@ const timelineData: TimelineItem[] = [
     period: "2025 - Present",
     title: "Software Engineer, Machine Learning",
     company: "Meta Inc.",
+    icon: "ai",
     description: "On the AI Platform team, working on LLM inference and training supporting other teams, especially for TPU.",
     tags: ["LLM", "Infra", "Performance Optimization"]
   },
@@ -22,6 +26,7 @@ const timelineData: TimelineItem[] = [
     period: "2022 - 2025",
     title: "Software Engineer, Machine Learning",
     company: "Meta Inc.",
+    icon: "ads",
     description: "Trained and deployed machine learning models for users' languages, advertiser's subsidy and ads notifications that are running in Meta's ads systems",
     tags: ["ML Systems", "Ads"]
   },
@@ -29,6 +34,7 @@ const timelineData: TimelineItem[] = [
     period: "2020 - 2022",
     title: "Machine Learning Engineer",
     company: "Snap Inc.",
+    icon: "ml",
     description: "Developed machine learning models for friend recommendations and notification optimization, directly impacting user engagement and retention.",
     tags: ["ML Systems", "Recommendation Systems"]
   },
@@ -36,6 +42,7 @@ const timelineData: TimelineItem[] = [
     period: "2018 - 2020",
     title: "Software Engineer, Infrastructure",
     company: "Snap Inc.",
+    icon: "network",
     description: "Built service mesh infrastructure powering real-time communication for hundreds of millions of users.",
     tags: ["Distributed Systems", "Infrastructure"]
   },
@@ -43,6 +50,7 @@ const timelineData: TimelineItem[] = [
     period: "2013 - 2018",
     title: "Ph.D. in Operations Research\nM.S. in Computer Science",
     company: "University of Southern California",
+    icon: "research",
     description: "Focused on theoretical optimization and algorithmic research",
     tags: ["Optimization", "Mathematical Modeling", "Research"]
   },
@@ -50,6 +58,7 @@ const timelineData: TimelineItem[] = [
     period: "2010 - 2013",
     title: "M.A. in Mathematics",
     company: "Indiana University Bloomington",
+    icon: "math",
     description: "Ph.D dropout",
     tags: ["Mathematics", "Graduate Study"]
   },
@@ -57,10 +66,59 @@ const timelineData: TimelineItem[] = [
     period: "2006 - 2010",
     title: "B.S. in Mathematics and Applied Mathematics",
     company: "University of Science and Technology of China",
+    icon: "applied-math",
     description: "",
     tags: ["Mathematics", "Applied Mathematics"]
   }
 ];
+
+function ExperienceGlyph({ type, isActive }: { type: ExperienceIcon; isActive: boolean }) {
+  const glyphs: Record<ExperienceIcon, React.ReactNode> = {
+    ai: <><path fill="#28356f" d="M5 6h14v12H5z"/><path fill="#637cf4" d="M7 8h10v8H7z"/><path fill="#f5c45e" d="M10 13l1.5-4h1L14 13h-1.2l-.25-.8h-2.1l-.25.8zm.8-1.8h1.4l-.7-1.9z"/><path stroke="#dc6b4d" d="M8 3v3m4-3v3m4-3v3M8 18v3m4-3v3m4-3v3M2 9h3m14 0h3M2 15h3m14 0h3"/></>,
+    ads: <><circle fill="#5b78c9" cx="15.5" cy="9" r="7"/><circle fill="#f2c24f" cx="15.5" cy="9" r="4.3"/><circle fill="#df6a5f" cx="15.5" cy="9" r="1.8"/><path fill="#58a78e" d="M3 12h9v10H3z"/><path fill="#f7e7bd" d="M5 14h5v6H5z"/><path stroke="#314361" strokeWidth="1.5" d="M7.5 13v8m2-6.2c-.5-.5-1.2-.8-2-.8-1.1 0-2 .6-2 1.4 0 2.3 4 1 4 3.2 0 .8-.9 1.4-2 1.4-.9 0-1.7-.3-2.2-.9"/><path stroke="#314361" strokeWidth="1.6" d="M8 11l4-3 3.5 1 5-5m-2 0h2v2"/></>,
+    ml: <><path stroke="#7c5ac7" strokeWidth="1.4" d="M6 6l6 3 6-4M6 6l1 11m5-8l-5 8m5-8l5 8m1-12l-1 12"/><circle fill="#ed7d5e" cx="6" cy="6" r="3"/><circle fill="#58a6a6" cx="18" cy="5" r="3"/><circle fill="#f0b84f" cx="12" cy="9" r="2.5"/><circle fill="#637cf4" cx="7" cy="17" r="3"/><circle fill="#cf6793" cx="17" cy="17" r="3"/><circle fill="#fff4d9" cx="12" cy="9" r=".8"/></>,
+    network: <><path fill="#e5c86e" d="M2 3h8v7H2z"/><path fill="#73a8d7" d="M14 3h8v7h-8z"/><path fill="#cf745f" d="M8 15h8v7H8z"/><path fill="#fff7dc" d="M4 5h4v1H4zm0 2h3v1H4zm12-2h4v1h-4zm0 2h3v1h-3zm-6 10h4v1h-4zm0 2h3v1h-3z"/><path stroke="#53617d" strokeWidth="1.5" d="M6 10v2h12v-2m-6 2v3"/></>,
+    research: <><path fill="#eee5ce" stroke="#58627d" strokeWidth="1.3" d="M9 2h6m-5 0v7L5 19a2 2 0 002 3h10a2 2 0 002-3L14 9V2"/><path fill="#67b7aa" d="M7.5 16l2-4h5l2 4z"/><path fill="#4e8fc3" d="M6.5 18h11l.8 1.6c.3.6-.1 1.4-.9 1.4H6.6c-.8 0-1.2-.8-.9-1.4z"/><circle fill="#f2b84b" cx="14" cy="13" r="1"/><circle fill="#dc6b74" cx="10" cy="17" r=".8"/></>,
+    math: <><path fill="#9a633f" d="M1 3h22v17H1z"/><path fill="#d59a5f" d="M2.5 4.5h19v14H2.5z"/><path fill="#244f49" d="M4 6h16v11H4z"/><path fill="#f7eed4" d="M6.4 8.2c1.1-.9 2.7-.9 3.4-.1.6.7.3 1.7-.2 3-.7 1.8-1.3 3.5-.2 4.4.4.3.9.3 1.4.1l.3.7c-.9.5-1.9.4-2.5-.2-1.5-1.3-.7-3.4 0-5.3.4-1.1.7-1.8.3-2.2-.3-.4-1.2-.3-1.9.3z"/><path fill="#f2c14f" d="M12 9h5v1h-1v4.6h-1V10h-1.5v4.6h-1V10H12z"/><path stroke="#79bce0" strokeWidth="1.1" d="M5.5 14.5c1.5-1.7 2.8-1.6 4-.2s2.8 1.5 4.1-.7 3-2.2 4.9-.7"/><path fill="#f4e6bc" d="M5 18.2h6v1H5z"/><path fill="#df6d69" d="M12 18.2h4v1h-4z"/><path fill="#68aeb0" d="M17 18.2h3v1h-3z"/></>,
+    'applied-math': <><path stroke="#54617b" strokeWidth="1.3" d="M3 2v19h19M6 5v16m4-16v16m4-16v16m4-16v16M3 17h19M3 13h19M3 9h19" opacity=".38"/><path fill="#f4be4f" d="M4 18l4-9 4 6 4-10 5 13h-2l-3-8-4 9-4-6-2 5z"/><path stroke="#d85f68" strokeWidth="1.8" d="M4 16c3-8 6 3 9-5s5 5 8-4"/><circle fill="#5b77cf" cx="13" cy="11" r="1.7"/></>
+  };
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      fill="none"
+      strokeLinecap="square"
+      strokeLinejoin="miter"
+    >
+      <defs>
+        <filter id={`timeline-icon-muted-${type}`} colorInterpolationFilters="sRGB">
+          <feColorMatrix in="SourceGraphic" type="saturate" values="0" />
+        </filter>
+        <filter id={`timeline-icon-active-${type}`} colorInterpolationFilters="sRGB">
+          <feColorMatrix in="SourceGraphic" type="saturate" values="0" result="luminosity" />
+          <feFlood floodColor="var(--accent)" result="accentColor" />
+          <feBlend in="luminosity" in2="accentColor" mode="multiply" result="tintedIcon" />
+          <feComposite in="tintedIcon" in2="SourceGraphic" operator="in" />
+        </filter>
+      </defs>
+      <g
+        filter={`url(#timeline-icon-muted-${type})`}
+        className="transition-opacity duration-200"
+        opacity={isActive ? 0 : 1}
+      >
+        {glyphs[type]}
+      </g>
+      <g
+        filter={`url(#timeline-icon-active-${type})`}
+        className="transition-opacity duration-200"
+        opacity={isActive ? 1 : 0}
+      >
+        {glyphs[type]}
+      </g>
+    </svg>
+  );
+}
 
 function TimelineCard({
   item,
@@ -163,6 +221,18 @@ function TimelineCard({
             transition={accentTransition}
             whileHover={reduceMotion ? undefined : { y: -2 }}
           >
+            <motion.div
+              aria-hidden="true"
+              className="absolute right-3 top-3 flex h-13 w-13 items-center justify-center border border-[var(--rule-strong)] bg-[var(--paper-muted)] p-1.5 shadow-[3px_3px_0_var(--shadow-rule)]"
+              animate={{
+                opacity: isActive ? 0.96 : 0.46,
+                scale: isActive && !reduceMotion ? 1.04 : 1
+              }}
+              transition={accentTransition}
+            >
+              <ExperienceGlyph type={item.icon} isActive={isActive} />
+            </motion.div>
+
             {/* Period badge */}
             <div className="mb-2 inline-flex items-center border border-[var(--rule)] bg-[var(--paper-muted)] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--accent)]">
               <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--amber)]" />
@@ -170,7 +240,7 @@ function TimelineCard({
             </div>
 
             {/* Title & Company */}
-            <h3 className="mb-0.5 whitespace-pre-line text-base font-semibold text-[var(--ink)]">{item.title}</h3>
+            <h3 className="mb-0.5 max-w-[calc(100%-3.75rem)] whitespace-pre-line text-base font-semibold text-[var(--ink)]">{item.title}</h3>
             {item.company && (
               <p className="mb-1 font-mono text-xs text-[var(--accent)]">{item.company}</p>
             )}
