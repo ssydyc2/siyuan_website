@@ -1,14 +1,32 @@
-# Why Degree Five Breaks the Formula
+# Why Can't Equations of Degree Five or Higher Be Solved by Radicals?
 
-## Abel–Ruffini backwards, with Lean at every step
+## Contents
 
-There is a sentence about equations that is repeated so often that it is easy to repeat it incorrectly:
+- [The problem and counterexample](#the-problem-and-counterexample)
+- [Prerequisites in mathematics and Lean](#prerequisites-in-mathematics-and-lean)
+- [Read the proof backwards](#read-the-proof-backwards)
+- [The dependency chain forward](#the-dependency-chain-forward)
+- [What has and has not been formalized](#what-has-and-has-not-been-formalized)
 
-**“Equations of degree five or more do not have solutions.”**
+---
 
-That sentence is false. Every nonconstant polynomial with complex coefficients has a complex root, and in fact splits completely over \(\mathbb C\). What fails at degree five is not the existence of roots. What fails is the existence of a formula that obtains every root from the coefficients using only finitely many additions, subtractions, multiplications, divisions, and radicals.
+## The problem and counterexample
 
-This article proves a precise counterexample theorem:
+Every nonconstant polynomial has complex roots. The question here is narrower: can those roots always be written from the coefficients using finitely many additions, subtractions, multiplications, divisions, and radicals? Quadratic, cubic, and quartic equations have such formulas. Starting at degree five, no formula by radicals can solve every equation.
+
+We prove this with one explicit quintic:
+
+```latex
+\Phi(X)=X^5-4X+2\in\mathbb Q[X].
+```
+
+Its complex roots exist, but none is solvable by radicals over \(\mathbb Q\). For every \(n\ge5\), define
+
+```latex
+P_n(X)=X^{n-5}\Phi(X).
+```
+
+Then \(P_n\) has degree \(n\) and retains a non-radical root of \(\Phi\). This gives the precise theorem proved below:
 
 ```latex
 \forall n \ge 5,\ \exists P_n \in \mathbb{Q}[X],\quad
@@ -19,64 +37,11 @@ This article proves a precise counterexample theorem:
 \ \alpha\text{ is not solvable by radicals over }\mathbb Q.
 ```
 
-The presentation runs in the opposite direction from a textbook. We begin with that conclusion, inspect what Lean needs in order to accept it, and repeatedly ask: **what earlier fact makes this line possible?** Only after seeing the target do we descend through the Galois group, solvable groups, irreducibility, root counting, and the elementary algebra underneath them.
-
-The Lean code is not decorative pseudocode. Every panel on the right is extracted directly from the companion file compiled with Lean 4.31.0 and mathlib 4.31.0. The mathematical column explains the same declaration at the level of an algebra reader who is learning Lean.
-
-## Contents
-
-- [Part I: What actually fails at degree five?](#part-i-what-actually-fails-at-degree-five)
-- [Part II: Prerequisites in mathematics and Lean](#part-ii-prerequisites-in-mathematics-and-lean)
-- [Part III: Read the proof backwards](#part-iii-read-the-proof-backwards)
-- [The dependency chain forward](#the-dependency-chain-forward)
-- [What has and has not been formalized](#what-has-and-has-not-been-formalized)
+We prove it backwards: start from this conclusion, then trace each required theorem and lemma through the Galois group, solvable groups, irreducibility, and root counting. Every step is paired with the exact Lean code compiled by the companion project.
 
 ---
 
-## Part I: What actually fails at degree five?
-
-### Three different meanings of solve
-
-For a polynomial equation, “solve” can mean at least three things.
-
-1. **Existence:** does a root exist in a chosen field? The equation \(X^2+1=0\) has no root in \(\mathbb R\), but it has roots \(\pm i\) in \(\mathbb C\).
-2. **Approximation:** can we compute roots numerically to arbitrary precision? For ordinary polynomials the answer is yes; numerical root finding does not stop at degree five.
-3. **Expression by radicals:** can each root be built from the coefficients using field operations and repeated extraction of \(m\)-th roots? This is the meaning in Abel–Ruffini.
-
-The Fundamental Theorem of Algebra settles the first question over \(\mathbb C\). Abel–Ruffini gives a negative answer to the third question for the general equation of degree at least five. There is no contradiction because a number may exist, be approximable, and still have no radical expression.
-
-### The hard quintic
-
-The entire proof will pivot around one polynomial:
-
-```latex
-\Phi(X)=X^5-4X+2\in\mathbb Q[X].
-```
-
-It has five complex roots. The strong fact is that **none of those roots is solvable by radicals over \(\mathbb Q\)**. Once we have one such root \(\alpha\), the extension to every degree \(n\ge5\) is simple:
-
-```latex
-P_n(X)=X^{n-5}\Phi(X).
-```
-
-The factor \(X^{n-5}\) adds zero roots but does not remove the roots of \(\Phi\). Thus \(P_n\) has degree \(n\) and still has the hard root \(\alpha\).
-
-### The reverse dependency ladder
-
-Starting at the theorem and walking downward, the questions are:
-
-1. Why does padding the quintic produce every degree \(n\ge5\)?
-2. Why does \(X^5-4X+2\) have a root not obtainable by radicals?
-3. Why would a radical expression force its Galois group to be solvable?
-4. Why is its Galois group the full symmetric group \(S_5\)?
-5. Why is \(S_5\) not solvable?
-6. Why is the polynomial irreducible, and why does it have the required distribution of real and complex roots?
-
-Part III answers those questions in exactly that order. First, however, we need a compact dictionary between the mathematical nouns and their Lean types.
-
----
-
-## Part II: Prerequisites in mathematics and Lean
+## Prerequisites in mathematics and Lean
 
 ### Groups, rings, fields, and type classes
 
@@ -143,7 +108,7 @@ The centered dot `·` begins a branch when one tactic creates several goals. The
 
 ---
 
-## Part III: Read the proof backwards
+## Read the proof backwards
 
 ### Step 0: the final theorem
 

@@ -461,30 +461,30 @@ const kernelRuntimePhases: Phase[] = [
 const blogPosts: BlogPost[] = [
   {
     id: 'abel-ruffini-backwards',
-    title: 'Why Degree Five Breaks the Formula',
+    title: "Why Can't Equations of Degree Five or Higher Be Solved by Radicals?",
     eyebrow: 'Proof · Lean 4',
     summary:
-      'A conclusion-first proof of Abel–Ruffini, tracing one hard quintic back through Galois groups, solvability, root counts, and a compiled Lean companion.',
+      'An explicit counterexample proof of Abel–Ruffini, traced backwards through its mathematical lemmas and compiled Lean code.',
     readingChecklist: [],
     phases: [
       {
-        title: 'What Actually Fails',
-        period: 'Part I',
-        label: 'Part I',
-        summary: 'Separate the existence of complex roots from expression by radicals, then state the exact theorem.',
+        title: 'Problem and Counterexample',
+        period: 'Opening',
+        label: 'Opening',
+        summary: 'State the radical-solvability problem and introduce the explicit quintic used in the proof.',
         groups: [],
       },
       {
         title: 'Prerequisites',
-        period: 'Part II',
-        label: 'Part II',
+        period: 'Foundations',
+        label: 'Foundations',
         summary: 'Build the algebra, Galois theory, solvable-group, and Lean vocabulary used by the proof.',
         groups: [],
       },
       {
         title: 'The Proof Backwards',
-        period: 'Part III',
-        label: 'Part III',
+        period: 'Proof',
+        label: 'Proof',
         summary: 'Start from the all-degrees counterexample and trace every dependency back to the hard quintic.',
         groups: [],
       },
