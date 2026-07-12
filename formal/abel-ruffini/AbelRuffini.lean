@@ -63,49 +63,63 @@ attribute [local instance] splits_ℚ_ℂ
 #check Equiv.Perm.not_solvable
 -- endregion library-bridge
 
--- region hard-quintic
 variable (R : Type*) [CommRing R] (a b : ℕ)
 
-/-- A quintic polynomial that we will show is irreducible -/
-noncomputable def Φ : R[X] :=
+/-- The reusable polynomial family used internally by the proof. -/
+noncomputable def quinticFamily : R[X] :=
   X ^ 5 - C (a : R) * X + C (b : R)
+
+-- region hard-quintic
+/-- The concrete quintic used in the Abel–Ruffini counterexample. -/
+noncomputable def Φ : ℚ[X] :=
+  X ^ 5 - C 4 * X + C 2
 -- endregion hard-quintic
 
 variable {R}
 
--- region polynomial-bookkeeping
 @[simp]
-theorem map_Phi {S : Type*} [CommRing S] (f : R →+* S) : (Φ R a b).map f = Φ S a b := by simp [Φ]
+theorem map_Phi {S : Type*} [CommRing S] (f : R →+* S) :
+    (quinticFamily R a b).map f = quinticFamily S a b := by
+  simp [quinticFamily]
 
 @[simp]
-theorem coeff_zero_Phi : (Φ R a b).coeff 0 = (b : R) := by simp [Φ, coeff_X_pow]
+theorem coeff_zero_Phi : (quinticFamily R a b).coeff 0 = (b : R) := by
+  simp [quinticFamily, coeff_X_pow]
 
 @[simp]
-theorem coeff_five_Phi : (Φ R a b).coeff 5 = 1 := by
-  simp [Φ, -map_natCast]
+theorem coeff_five_Phi : (quinticFamily R a b).coeff 5 = 1 := by
+  simp [quinticFamily, -map_natCast]
 
 variable [Nontrivial R]
 
-theorem degree_Phi : (Φ R a b).degree = ((5 : ℕ) : WithBot ℕ) := by
+theorem degree_Phi : (quinticFamily R a b).degree = ((5 : ℕ) : WithBot ℕ) := by
   suffices degree (X ^ 5 - C (a : R) * X) = ((5 : ℕ) : WithBot ℕ) by
-    rwa [Φ, degree_add_eq_left_of_degree_lt]
+    rwa [quinticFamily, degree_add_eq_left_of_degree_lt]
     convert! (degree_C_le (R := R)).trans_lt (WithBot.coe_lt_coe.mpr (show 0 < 5 by simp))
   rw [degree_sub_eq_left_of_degree_lt] <;> rw [degree_X_pow]
   exact (degree_C_mul_X_le (a : R)).trans_lt (WithBot.coe_lt_coe.mpr (show 1 < 5 by simp))
 
-theorem natDegree_Phi : (Φ R a b).natDegree = 5 :=
+theorem natDegree_Phi : (quinticFamily R a b).natDegree = 5 :=
   natDegree_eq_of_degree_eq_some (degree_Phi a b)
 
-theorem leadingCoeff_Phi : (Φ R a b).leadingCoeff = 1 := by
+theorem leadingCoeff_Phi : (quinticFamily R a b).leadingCoeff = 1 := by
   rw [Polynomial.leadingCoeff, natDegree_Phi, coeff_five_Phi]
 
-theorem monic_Phi : (Φ R a b).Monic :=
+theorem monic_Phi : (quinticFamily R a b).Monic :=
   leadingCoeff_Phi a b
+
+-- region polynomial-bookkeeping
+@[simp]
+theorem hardQuintic_natDegree : Φ.natDegree = 5 := by
+  simpa [Φ, quinticFamily] using natDegree_Phi (R := ℚ) 4 2
+
+theorem hardQuintic_monic : Φ.Monic := by
+  simpa [Φ, quinticFamily] using monic_Phi (R := ℚ) 4 2
 -- endregion polynomial-bookkeeping
 
 -- region eisenstein
 theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬p ^ 2 ∣ b) :
-    Irreducible (Φ ℚ a b) := by
+    Irreducible (quinticFamily ℚ a b) := by
   rw [← map_Phi a b (Int.castRingHom ℚ), ← IsPrimitive.Int.irreducible_iff_irreducible_map_cast]
   on_goal 1 =>
     apply irreducible_of_eisenstein_criterion
@@ -116,7 +130,7 @@ theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b)
       rw [mem_span_singleton]
       rw [degree_Phi] at hn; norm_cast at hn
       interval_cases n <;>
-      simp +decide only [Φ, coeff_X_pow, coeff_C, Int.natCast_dvd_natCast.mpr,
+      simp +decide only [quinticFamily, coeff_X_pow, coeff_C, Int.natCast_dvd_natCast.mpr,
         hpb, if_true, coeff_C_mul, if_false, coeff_X_zero, hpa, coeff_add, zero_add, mul_zero,
         coeff_sub, add_zero, zero_sub, dvd_neg, neg_zero, dvd_mul_of_dvd_left]
     · simp only [degree_Phi, ← WithBot.coe_zero]
@@ -128,8 +142,8 @@ theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b)
 
 -- region real-root-upper-bound
 attribute [local simp] map_ofNat in -- use `ofNat` simp theorem with bad keys
-theorem real_roots_Phi_le : Fintype.card ((Φ ℚ a b).rootSet ℝ) ≤ 3 := by
-  rw [← map_Phi a b (algebraMap ℤ ℚ), Φ, ← one_mul (X ^ 5), ← C_1]
+theorem real_roots_Phi_le : Fintype.card ((quinticFamily ℚ a b).rootSet ℝ) ≤ 3 := by
+  rw [← map_Phi a b (algebraMap ℤ ℚ), quinticFamily, ← one_mul (X ^ 5), ← C_1]
   apply (card_rootSet_le_derivative _).trans
     (Nat.succ_le_succ ((card_rootSet_le_derivative _).trans (Nat.succ_le_succ _)))
   suffices (Polynomial.rootSet (C (20 : ℚ) * X ^ 3) ℝ).Subsingleton by
@@ -141,10 +155,12 @@ theorem real_roots_Phi_le : Fintype.card ((Φ ℚ a b).rootSet ℝ) ≤ 3 := by
 
 -- region real-root-existence
 theorem real_roots_Phi_ge_aux (hab : b < a) :
-    ∃ x y : ℝ, x ≠ y ∧ aeval x (Φ ℚ a b) = 0 ∧ aeval y (Φ ℚ a b) = 0 := by
-  let f : ℝ → ℝ := fun x : ℝ => aeval x (Φ ℚ a b)
-  have hf : f = fun x : ℝ => x ^ 5 - a * x + b := by simp [f, Φ]
-  have hc : ∀ s : Set ℝ, ContinuousOn f s := fun s => (Φ ℚ a b).continuousOn_aeval
+    ∃ x y : ℝ, x ≠ y ∧ aeval x (quinticFamily ℚ a b) = 0 ∧
+      aeval y (quinticFamily ℚ a b) = 0 := by
+  let f : ℝ → ℝ := fun x : ℝ => aeval x (quinticFamily ℚ a b)
+  have hf : f = fun x : ℝ => x ^ 5 - a * x + b := by simp [f, quinticFamily]
+  have hc : ∀ s : Set ℝ, ContinuousOn f s := fun s =>
+    (quinticFamily ℚ a b).continuousOn_aeval
   have ha : (1 : ℝ) ≤ a := Nat.one_le_cast.mpr (Nat.one_le_of_lt hab)
   have hle : (0 : ℝ) ≤ 1 := zero_le_one
   have hf0 : 0 ≤ f 0 := by simp [hf]
@@ -171,10 +187,11 @@ theorem real_roots_Phi_ge_aux (hab : b < a) :
 -- endregion real-root-existence
 
 -- region real-root-lower-bound
-theorem real_roots_Phi_ge (hab : b < a) : 2 ≤ Fintype.card ((Φ ℚ a b).rootSet ℝ) := by
-  have q_ne_zero : Φ ℚ a b ≠ 0 := (monic_Phi a b).ne_zero
+theorem real_roots_Phi_ge (hab : b < a) :
+    2 ≤ Fintype.card ((quinticFamily ℚ a b).rootSet ℝ) := by
+  have q_ne_zero : quinticFamily ℚ a b ≠ 0 := (monic_Phi a b).ne_zero
   obtain ⟨x, y, hxy, hx, hy⟩ := real_roots_Phi_ge_aux a b hab
-  have key : ↑({x, y} : Finset ℝ) ⊆ (Φ ℚ a b).rootSet ℝ := by
+  have key : ↑({x, y} : Finset ℝ) ⊆ (quinticFamily ℚ a b).rootSet ℝ := by
     simp [Set.insert_subset, mem_rootSet_of_ne q_ne_zero, hx, hy]
   convert! Fintype.card_le_of_embedding (Set.embeddingOfSubset _ _ key)
   simp only [Finset.coe_sort_coe, Fintype.card_coe, Finset.card_singleton,
@@ -182,13 +199,14 @@ theorem real_roots_Phi_ge (hab : b < a) : 2 ≤ Fintype.card ((Φ ℚ a b).rootS
 -- endregion real-root-lower-bound
 
 -- region complex-root-count
-theorem complex_roots_Phi (h : (Φ ℚ a b).Separable) : Fintype.card ((Φ ℚ a b).rootSet ℂ) = 5 :=
+theorem complex_roots_Phi (h : (quinticFamily ℚ a b).Separable) :
+    Fintype.card ((quinticFamily ℚ a b).rootSet ℂ) = 5 :=
   (card_rootSet_eq_natDegree h (IsAlgClosed.splits _)).trans (natDegree_Phi a b)
 -- endregion complex-root-count
 
 -- region full-galois-group
-theorem gal_Phi (hab : b < a) (h_irred : Irreducible (Φ ℚ a b)) :
-    Bijective (galActionHom (Φ ℚ a b) ℂ) := by
+theorem gal_Phi (hab : b < a) (h_irred : Irreducible (quinticFamily ℚ a b)) :
+    Bijective (galActionHom (quinticFamily ℚ a b) ℂ) := by
   apply galActionHom_bijective_of_prime_degree' h_irred
   · simp only [natDegree_Phi]; decide
   · rw [complex_roots_Phi a b h_irred.separable, Nat.succ_le_succ_iff]
@@ -198,7 +216,8 @@ theorem gal_Phi (hab : b < a) (h_irred : Irreducible (Φ ℚ a b)) :
 -- endregion full-galois-group
 
 -- region radical-contradiction
-theorem not_solvable_by_rad (p : ℕ) (x : ℂ) (hx : aeval x (Φ ℚ a b) = 0) (hab : b < a)
+theorem not_solvable_by_rad (p : ℕ) (x : ℂ)
+    (hx : aeval x (quinticFamily ℚ a b) = 0) (hab : b < a)
     (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬p ^ 2 ∣ b) : x ∉ solvableByRad ℚ ℂ := by
   have h_irred := irreducible_Phi a b p hp hpa hpb hp2b
   apply mt (isSolvable_gal_of_irreducible · h_irred hx)
@@ -209,29 +228,35 @@ theorem not_solvable_by_rad (p : ℕ) (x : ℂ) (hx : aeval x (Φ ℚ a b) = 0) 
 -- endregion radical-contradiction
 
 -- region concrete-quintic
-theorem not_solvable_by_rad' (x : ℂ) (hx : aeval x (Φ ℚ 4 2) = 0) : x ∉ solvableByRad ℚ ℂ := by
+theorem not_solvable_by_rad' (x : ℂ) (hx : aeval x Φ = 0) : x ∉ solvableByRad ℚ ℂ := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]] at hx
   apply not_solvable_by_rad 4 2 2 x hx <;> decide
 -- endregion concrete-quintic
 
 /-- **Abel-Ruffini Theorem** -/
 -- region quintic-hard-root
 theorem exists_not_solvable_by_rad : ∃ x : ℂ, IsAlgebraic ℚ x ∧ x ∉ solvableByRad ℚ ℂ := by
-  obtain ⟨x, hx⟩ := (IsAlgClosed.splits (Φ ℂ 4 2)).exists_eval_eq_zero (by simp [degree_Phi])
+  obtain ⟨x, hx⟩ := (IsAlgClosed.splits (quinticFamily ℂ 4 2)).exists_eval_eq_zero
+    (by simp [degree_Phi])
   rw [← map_Phi 4 2 (algebraMap ℚ ℂ), eval_map] at hx
-  exact ⟨x, ⟨Φ ℚ 4 2, (monic_Phi 4 2).ne_zero, hx⟩, not_solvable_by_rad' x hx⟩
+  have hΦ : Φ = quinticFamily ℚ 4 2 := by simp [Φ, quinticFamily]
+  exact ⟨x, ⟨Φ, hΦ.symm ▸ (monic_Phi 4 2).ne_zero, hΦ.symm ▸ hx⟩,
+    not_solvable_by_rad' x (hΦ.symm ▸ hx)⟩
 -- endregion quintic-hard-root
 
 -- region degree-n-construction
 /-- Pad the hard quintic with zero roots to obtain a polynomial of any degree at least five. -/
 noncomputable def hardPolynomial (n : ℕ) : ℚ[X] :=
-  X ^ (n - 5) * Φ ℚ 4 2
+  X ^ (n - 5) * Φ
 
 theorem hardPolynomial_monic (n : ℕ) : (hardPolynomial n).Monic := by
-  exact (monic_X.pow (n - 5)).mul (monic_Phi 4 2)
+  have hΦ : Φ.Monic := by
+    simpa [Φ, quinticFamily] using monic_Phi (R := ℚ) 4 2
+  exact (monic_X.pow (n - 5)).mul hΦ
 
 theorem hardPolynomial_natDegree (n : ℕ) (hn : 5 ≤ n) :
     (hardPolynomial n).natDegree = n := by
-  rw [hardPolynomial,
+  rw [hardPolynomial, show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily],
     natDegree_mul (monic_X.pow (n - 5)).ne_zero (monic_Phi 4 2).ne_zero,
     natDegree_pow, natDegree_X,
     natDegree_Phi, mul_one, Nat.sub_add_cancel hn]
@@ -239,12 +264,13 @@ theorem hardPolynomial_natDegree (n : ℕ) (hn : 5 ≤ n) :
 
 -- region root-preservation
 theorem quintic_has_hard_root :
-    ∃ x : ℂ, aeval x (Φ ℚ 4 2) = 0 ∧ x ∉ solvableByRad ℚ ℂ := by
+    ∃ x : ℂ, aeval x Φ = 0 ∧ x ∉ solvableByRad ℚ ℂ := by
   obtain ⟨x, hx⟩ :=
-    (IsAlgClosed.splits (Φ ℂ 4 2)).exists_eval_eq_zero
+    (IsAlgClosed.splits (quinticFamily ℂ 4 2)).exists_eval_eq_zero
       (by simp [degree_Phi])
   rw [← map_Phi 4 2 (algebraMap ℚ ℂ), eval_map] at hx
-  exact ⟨x, hx, not_solvable_by_rad' x hx⟩
+  have hΦ : Φ = quinticFamily ℚ 4 2 := by simp [Φ, quinticFamily]
+  exact ⟨x, hΦ.symm ▸ hx, not_solvable_by_rad' x (hΦ.symm ▸ hx)⟩
 -- endregion root-preservation
 
 -- region final-theorem
