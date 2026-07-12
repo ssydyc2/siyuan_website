@@ -26,7 +26,7 @@ type Block =
   | { type: 'code'; language: string; value: string }
   | { type: 'list'; ordered: boolean; items: ListItem[] }
   | { type: 'table'; headers: string[]; rows: string[][] }
-  | { type: 'proofPair'; regionId: string; proof: Block[] };
+  | { type: 'proofPair'; regionId: string; proof: Block[]; leanExplanation: Block[] };
 
 interface ListItem {
   text: string;
@@ -181,6 +181,7 @@ function assignHeadingIds(blocks: Block[], counts = new Map<string, number>()): 
       return {
         ...block,
         proof: assignHeadingIds(block.proof, counts),
+        leanExplanation: assignHeadingIds(block.leanExplanation, counts),
       };
     }
 
@@ -237,10 +238,22 @@ function parseMarkdown(markdown: string): Block[] {
 
     if (proofPair) {
       const proofLines: string[] = [];
+      const leanExplanationLines: string[] = [];
+      let readingLeanExplanation = false;
       index += 1;
 
       while (index < lines.length && lines[index].trim() !== ':::') {
-        proofLines.push(lines[index]);
+        if (lines[index].trim() === '::: lean-explanation') {
+          readingLeanExplanation = true;
+          index += 1;
+          continue;
+        }
+
+        if (readingLeanExplanation) {
+          leanExplanationLines.push(lines[index]);
+        } else {
+          proofLines.push(lines[index]);
+        }
         index += 1;
       }
 
@@ -248,6 +261,7 @@ function parseMarkdown(markdown: string): Block[] {
         type: 'proofPair',
         regionId: proofPair[1],
         proof: parseMarkdown(proofLines.join('\n')),
+        leanExplanation: parseMarkdown(leanExplanationLines.join('\n')),
       });
       index += index < lines.length ? 1 : 0;
       continue;
@@ -621,9 +635,22 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
               Lean 4 · {block.regionId}
             </div>
             {leanCode ? (
-              <pre className="m-0 max-h-[38rem] overflow-auto bg-[color-mix(in_srgb,var(--paper-muted)_70%,transparent)] px-5 py-5 text-[0.78rem] leading-6 text-[var(--ink-soft)]">
-                <code>{leanCode}</code>
-              </pre>
+              <>
+                <pre className="m-0 max-h-[38rem] overflow-auto bg-[color-mix(in_srgb,var(--paper-muted)_70%,transparent)] px-5 py-5 text-[0.78rem] leading-6 text-[var(--ink-soft)]">
+                  <code>{leanCode}</code>
+                </pre>
+                {block.leanExplanation.length > 0 && (
+                  <div className="border-t border-[var(--rule)] px-5 py-2 sm:px-6">
+                    {block.leanExplanation.map((explanationBlock, index) => (
+                      <MarkdownBlock
+                        key={`${block.regionId}-lean-explanation-${index}`}
+                        block={explanationBlock}
+                        leanRegions={leanRegions}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <p className="m-5 border border-[var(--rule)] bg-[var(--paper-muted)] p-4 font-mono text-sm text-[var(--accent-strong)]">
                 Missing Lean region: {block.regionId}
