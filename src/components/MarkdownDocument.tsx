@@ -507,11 +507,13 @@ function MarkdownList({
 }) {
   const Tag = block.ordered ? 'ol' : 'ul';
   const hasCheckboxes = block.items.some((item) => item.checked !== undefined);
+  const nestedListClass =
+    ' [&>li>ul]:my-1.5 [&>li>ul]:space-y-0.5 [&>li>ul]:pl-5 [&>li>ul]:text-sm [&>li>ul>li]:leading-5';
   const listClass = block.ordered
-    ? 'my-5 list-decimal space-y-3 pl-6 text-[var(--ink-muted)]'
+    ? `my-5 list-decimal space-y-3 pl-6 text-[var(--ink-muted)]${nestedListClass}`
     : hasCheckboxes
-      ? 'my-5 list-none space-y-4 pl-0 text-[var(--ink-muted)]'
-      : 'my-5 list-disc space-y-3 pl-6 text-[var(--ink-muted)]';
+      ? `my-5 list-none space-y-4 pl-0 text-[var(--ink-muted)]${nestedListClass}`
+      : `my-5 list-disc space-y-3 pl-6 text-[var(--ink-muted)]${nestedListClass}`;
 
   return (
     <Tag className={listClass}>
@@ -632,7 +634,7 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
           </div>
           <div className="min-w-0">
             <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
-              Lean 4 · {block.regionId}
+              Lean 4 Code · {block.regionId}
             </div>
             {leanCode ? (
               <>
@@ -640,14 +642,19 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
                   <code>{leanCode}</code>
                 </pre>
                 {block.leanExplanation.length > 0 && (
-                  <div className="border-t border-[var(--rule)] px-5 py-2 sm:px-6">
-                    {block.leanExplanation.map((explanationBlock, index) => (
-                      <MarkdownBlock
-                        key={`${block.regionId}-lean-explanation-${index}`}
-                        block={explanationBlock}
-                        leanRegions={leanRegions}
-                      />
-                    ))}
+                  <div className="border-t border-[var(--rule)]">
+                    <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+                      Lean 4 Explanation
+                    </div>
+                    <div className="px-5 py-2 sm:px-6">
+                      {block.leanExplanation.map((explanationBlock, index) => (
+                        <MarkdownBlock
+                          key={`${block.regionId}-lean-explanation-${index}`}
+                          block={explanationBlock}
+                          leanRegions={leanRegions}
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
               </>

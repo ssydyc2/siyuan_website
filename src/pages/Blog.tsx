@@ -464,7 +464,7 @@ const blogPosts: BlogPost[] = [
     title: "Why Can't Equations of Degree Five or Higher Be Solved by Radicals?",
     eyebrow: 'Proof · Lean 4',
     summary:
-      'An explicit counterexample proof of Abel–Ruffini, traced backwards through its mathematical lemmas and compiled Lean code.',
+      'A step-by-step construction of an explicit Abel–Ruffini counterexample, with each mathematical dependency verified by compiled Lean code.',
     readingChecklist: [],
     phases: [
       {
@@ -482,10 +482,10 @@ const blogPosts: BlogPost[] = [
         groups: [],
       },
       {
-        title: 'The Proof Backwards',
+        title: 'Build the Proof Step by Step',
         period: 'Proof',
         label: 'Proof',
-        summary: 'Start from the all-degrees counterexample and trace every dependency back to the hard quintic.',
+        summary: 'Build the hard quintic from its basic polynomial facts through the Galois obstruction and final all-degrees theorem.',
         groups: [],
       },
     ],
@@ -870,7 +870,7 @@ function AbelRuffiniDetail({ post }: { post: BlogPost }) {
       <MarkdownDocument
         markdown={abelRuffiniMarkdown}
         leanSource={abelRuffiniLean}
-        navigation={{ excludeHeadings: ['contents', 'tldr'] }}
+        navigation={{ excludeHeadings: ['contents', 'overview-and-approach'] }}
       />
     </div>
   );

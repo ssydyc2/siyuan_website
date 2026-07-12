@@ -4,12 +4,43 @@
 
 - [1. The problem and counterexample](#1-the-problem-and-counterexample)
 - [2. Mathematical prerequisites](#2-mathematical-prerequisites)
-- [3. Read the proof backwards](#3-read-the-proof-backwards)
+  - [I. Algebraic structures](#i-algebraic-structures)
+  - [II. Group](#ii-group)
+  - [III. Semigroup](#iii-semigroup)
+  - [IV. Monoid](#iv-monoid)
+  - [V. Commutative monoid](#v-commutative-monoid)
+  - [VI. Abelian group](#vi-abelian-group)
+  - [VII. Ring](#vii-ring)
+  - [VIII. Commutative ring](#viii-commutative-ring)
+  - [IX. Field](#ix-field)
+  - [X. Polynomials, roots, and irreducibility](#x-polynomials-roots-and-irreducibility)
+  - [XI. Polynomial](#xi-polynomial)
+  - [XII. Units and factorization](#xii-units-and-factorization)
+  - [XIII. Minimal polynomial](#xiii-minimal-polynomial)
+  - [XIV. Separable polynomial](#xiv-separable-polynomial)
+  - [XV. Field extensions and Galois groups](#xv-field-extensions-and-galois-groups)
+  - [XVI. Commutators, derived series, and solvable groups](#xvi-commutators-derived-series-and-solvable-groups)
+  - [XVII. What solvable by radicals means](#xvii-what-solvable-by-radicals-means)
+- [3. Build the proof step by step](#3-build-the-proof-step-by-step)
+  - [I. Define the hard quintic](#i-define-the-hard-quintic)
+  - [II. Verify the polynomial bookkeeping](#ii-verify-the-polynomial-bookkeeping)
+  - [III. Prove irreducibility by Eisenstein](#iii-prove-irreducibility-by-eisenstein)
+  - [IV. Exhibit two real roots](#iv-exhibit-two-real-roots)
+  - [V. At most three real roots](#v-at-most-three-real-roots)
+  - [VI. Count all complex roots](#vi-count-all-complex-roots)
+  - [VII. Inspect the imported bridges](#vii-inspect-the-imported-bridges)
+  - [VIII. Why the Galois group is S5](#viii-why-the-galois-group-is-s5)
+  - [IX. The Galois obstruction](#ix-the-galois-obstruction)
+  - [X. Specialize the hard quintic](#x-specialize-the-hard-quintic)
+  - [XI. Recover the algebraic counterexample](#xi-recover-the-algebraic-counterexample)
+  - [XII. Preserve the hard root](#xii-preserve-the-hard-root)
+  - [XIII. Manufacture degree n from degree five](#xiii-manufacture-degree-n-from-degree-five)
+  - [XIV. The final theorem](#xiv-the-final-theorem)
 - [4. Sources](#4-sources)
 
-## TL;DR
+## Overview and approach
 
-This article explains why equations of degree five or higher cannot always be solved by radicals. It has two stages. First, we introduce the mathematical prerequisites—groups, fields, polynomials, field extensions, Galois groups, solvable groups, and radical towers. Then we start from an explicit counterexample and trace the proof backwards, one dependency at a time.
+This article explains why equations of degree five or higher cannot always be solved by radicals. It has two stages. First, we introduce the mathematical prerequisites—groups, fields, polynomials, field extensions, Galois groups, solvable groups, and radical towers. Then we build an explicit counterexample in dependency order, with each step supported by results already established.
 
 Each stage of the main argument presents a pure mathematical proof beside the exact compiled Lean code that verifies the same logical step. The explanation below the code shows how the formal statement corresponds to the mathematics.
 
@@ -18,7 +49,7 @@ Why this approach?
 1. **It is more intuitive.** Starting from the result tells us why each abstract concept is needed before we introduce it.
 2. **Lean checks the proof and its logical dependencies.** Every formal step beside the mathematics is compiled, so missing assumptions and invalid deductions cannot quietly slip through—which is especially comforting when most of this article was generated with the help of AI. Lean, fortunately, is less impressed by confident prose than we are.
 
-The article gives the complete framework of the proof and fully verifies the explicit counterexample. It does not re-prove every foundational theorem inside Galois theory or mathlib from first principles; doing so would turn one article into a book. Those deeper results are stated precisely, linked to their formal sources, and used as named dependencies. Lean certifies the formal proof shown here; the surrounding explanations are still meant to be read critically by humans.
+This article is written for readers learning abstract algebra who may otherwise lose the main argument behind a wall of definitions. Its aim is to make the purpose of each construction visible as it enters the proof, so that readers can understand what the mathematics is doing without giving up mathematical precision. The article gives the complete framework of the proof and fully verifies the explicit counterexample, but it does not re-prove every foundational theorem in Galois theory or mathlib from first principles; doing so would turn one article into a book. Those deeper results are stated precisely, linked to their formal sources, and used as named dependencies. Lean certifies the formal proof shown here; the surrounding explanations are still meant to be read critically by humans.
 
 ---
 
@@ -53,7 +84,7 @@ The factor \(X^{n-5}\) adds zero roots, but it does not remove the hard roots of
 \ \alpha\text{ is not solvable by radicals over }\mathbb Q.
 ```
 
-The proof runs in the opposite direction from a textbook. We start with the conclusion and repeatedly ask: **what earlier fact makes this line possible?** That question takes us backwards through the Galois group, solvable groups, irreducibility, root counting, and finally the elementary polynomial facts underneath them.
+The proof is assembled from the ground up. We define the polynomial, verify its elementary properties, prove irreducibility and count its roots, identify its Galois group, and only then derive the obstruction to solving its roots by radicals. This order keeps both the mathematical dependencies and the Lean declarations visible from one step to the next.
 
 Every mathematical step is paired with the exact Lean code compiled by the companion project. The goal is not merely to verify the theorem, but to make the mathematical dependency chain and the Lean proof structure visible at the same time.
 
@@ -464,214 +495,66 @@ The bridge to group theory is the deep direction used here:
 
 ---
 
-## 3. Read the proof backwards
+## 3. Build the proof step by step
 
-### I. The final theorem
+We now assemble the proof in dependency order. Each Lean declaration uses only definitions and results that have already appeared, so the argument can be read—and compiled—from top to bottom.
 
-We start at the end. The theorem does not claim that every degree-\(n\) polynomial is hard. It claims that for each \(n\ge5\) there exists at least one counterexample.
+### I. Define the hard quintic
 
-Before reading the theorem, fix the mathematical objects that occur in its statement.
-
-::: proof-lean algebra-interfaces
-Let \(F\) be a field, let \(E/F\) be a field extension, and let \(F[X]\) denote the polynomial ring over \(F\). For \(p\in F[X]\) and \(x\in E\), evaluation sends \(p\) to \(p(x)\). We will also use irreducibility, separability, Galois groups, derived series, and the set of elements of \(E\) solvable by radicals over \(F\), all as defined in the prerequisites.
-
-::: lean-explanation
-Lean separates a carrier type from the structure placed on it. A hypothesis such as `[Field F]` asks type-class inference for a field structure on `F`. Mathlib calls an abelian group `CommGroup`; the other names follow the mathematical hierarchy directly.
-
-`Type*` is a type whose universe level Lean infers. `R[X]` denotes `Polynomial R`. `Algebra R A` says that `A` contains a compatible image of `R`, and `Polynomial.aeval x p` evaluates `p : R[X]` at `x : A`. Declarations such as `Irreducible p` and `p.Separable` have type `Prop`: they are statements to prove, rather than data to compute.
-:::
-
-::: proof-lean final-theorem
-Fix \(n\ge5\), and define
+::: proof-lean hard-quintic
+For any commutative ring \(R\) containing the natural numbers, define
 
 ```latex
-\Phi(X)=X^5-4X+2,
-\qquad
-P_n(X)=X^{n-5}\Phi(X).
+\Phi_{a,b}(X)=X^5-aX+b\in R[X].
 ```
 
-The lemmas proved below give a complex number \(x\) such that \(\Phi(x)=0\) and \(x\) is not solvable by radicals over \(\mathbb Q\). They also give \(\deg P_n=n\). Finally,
-
-```latex
-P_n(x)=x^{n-5}\Phi(x)=x^{n-5}\cdot0=0.
-```
-
-Thus \(P_n\in\mathbb Q[X]\) has degree \(n\) and has a complex root not solvable by radicals over \(\mathbb Q\).
+Specializing to \(R=\mathbb Q\), \(a=4\), and \(b=2\) gives the hard quintic used throughout the proof.
 
 ::: lean-explanation
-The proof body uses four recurring constructions. `by` opens tactic mode. `have` records an intermediate fact. `obtain ⟨x, hx⟩` extracts a witness and its proof from an existential statement. `refine ⟨..., ?_, ...⟩` supplies known pieces of the result and leaves the marked goals to prove next.
+`variable (R : Type*) [CommRing R] (a b : ℕ)` means: let `R` be an arbitrary commutative ring, and let `a` and `b` be natural numbers. The square brackets tell Lean to infer the commutative-ring structure on `R` automatically. For this proof, `Type*` can simply be read as “some type.” When `a` and `b` occur in a polynomial over `R`, Lean coerces them from natural numbers to elements of `R`.
 
-The nested existential statement mirrors that checklist exactly. `obtain` extracts the hard quintic root. `refine` supplies the padded polynomial, the degree theorem, the root, and the non-radical proof. Only the evaluation goal remains. Because polynomial evaluation respects multiplication, `simp` reduces it to the already-known equation \(\Phi(x)=0\).
+`noncomputable` permits classical choices that may occur downstream; it does not mean the displayed polynomial cannot be evaluated. The notation `C r` embeds a scalar as a constant polynomial, and `X` is the polynomial variable.
+
+The parameters are natural numbers but are coerced into `R`. Specializing `R = ℚ`, `a = 4`, and `b = 2` gives exactly \(X^5-4X+2\).
 :::
 
-This compact proof is possible only because the preceding declarations have already packaged every difficult point. We now walk to those declarations.
+### II. Verify the polynomial bookkeeping
 
-### II. Manufacture degree n from degree five
+::: proof-lean polynomial-bookkeeping
+For \(\Phi_{a,b}(X)=X^5-aX+b\), direct inspection gives:
 
-::: proof-lean degree-n-construction
-Define \(P_n=X^{n-5}\Phi\). Both factors are monic, so their product is monic and in particular nonzero. The natural degree of a product of nonzero polynomials is the sum of their natural degrees:
+- the constant coefficient is \(b\);
+- the coefficient of \(X^5\) is \(1\);
+- its degree is five;
+- its leading coefficient is \(1\), so it is monic and nonzero;
+- applying a coefficient homomorphism preserves the displayed expression.
 
-```latex
-\operatorname{natDegree}(P_n)
-=(n-5)+5=n.
-```
-
-The assumption \(n\ge5\) gives \((n-5)+5=n\), completing the degree calculation.
+These elementary facts justify the later degree, coefficient, and nonzeroness calculations.
 
 ::: lean-explanation
-In Lean, `monic_X.pow (n - 5)` proves that the first factor is monic, while `monic_Phi 4 2` proves the same for the quintic. The explicit nonzero proofs passed to `natDegree_mul` prevent the zero-polynomial exception.
+Lean records each fact as a separate reusable lemma.
 
-Natural-number subtraction truncates at zero, so Lean uses `Nat.sub_add_cancel hn` with the hypothesis `hn : 5 ≤ n` for the final equality.
+The generic parameters `R`, `a`, and `b` make these lemmas reusable over integers, rationals, reals, and complex numbers. `WithBot ℕ` in the ordinary degree accommodates the degree of the zero polynomial; `natDegree` instead returns a natural number.
 :::
 
-The construction need not be irreducible for \(n>5\). It only needs to retain one root that no radical formula can express. If one wanted an irreducible hard example in every degree, that would be a stronger and substantially different theorem.
+### III. Prove irreducibility by Eisenstein
 
-### III. Preserve the hard root
+::: proof-lean eisenstein
+Eisenstein's criterion says that an integer polynomial is irreducible over \(\mathbb Q\) if some prime \(p\):
 
-::: proof-lean root-preservation
-The polynomial \(\Phi\in\mathbb Q[X]\) has degree five. Viewed over \(\mathbb C\), it therefore has a root \(x\in\mathbb C\) by the Fundamental Theorem of Algebra, so \(\Phi(x)=0\). The Galois argument below proves that every complex root of \(\Phi\) is not solvable by radicals over \(\mathbb Q\). Hence this chosen \(x\) has both required properties.
+1. does not divide the leading coefficient;
+2. divides every other coefficient;
+3. has \(p^2\) not dividing the constant coefficient.
+
+For \(X^5-aX+b\), the assumptions \(p\mid a\), \(p\mid b\), and \(p^2\nmid b\) give exactly those conditions. The zero coefficients are automatically divisible by \(p\), and a prime cannot divide the leading coefficient \(1\). Therefore the polynomial is irreducible over \(\mathbb Q\). For \(a=4\), \(b=2\), and \(p=2\), every hypothesis holds.
 
 ::: lean-explanation
-`IsAlgClosed.splits` states that the polynomial splits over \(\mathbb C\), and positive degree then supplies `x` and its root equation. Because the polynomial was defined over \(\mathbb Q\), `map_Phi` and `eval_map` transport the equation through `algebraMap ℚ ℂ`. The final component invokes the specialized non-radical-root theorem.
+The proof first moves to \(\mathbb Z[X]\), applies mathlib's ideal-valued Eisenstein criterion, checks coefficients by a finite `interval_cases`, then transfers irreducibility back to \(\mathbb Q[X]\). `all_goals` supplies monicity-derived primitiveness to the remaining transfer goals.
 :::
 
-Notice the logical shape: algebraic closure proves that a root **does** exist; Galois theory proves that the same root **cannot** be expressed by radicals. These are complementary statements, not competing ones.
+For the concrete values \(a=4,b=2,p=2\), all hypotheses hold. This is why the apparently arbitrary polynomial \(X^5-4X+2\) is such an efficient witness.
 
-### IV. Specialize the hard quintic
-
-::: proof-lean concrete-quintic
-The general family is \(X^5-aX+b\). We choose \(a=4\), \(b=2\), and the Eisenstein prime \(p=2\). The remaining hypotheses are finite arithmetic facts:
-
-- \(2<4\), needed by the real-root argument;
-- \(2\) is prime;
-- \(2\mid4\) and \(2\mid2\);
-- \(2^2\nmid2\).
-
-These facts satisfy the hypotheses of the general theorem proved below, so every root of \(X^5-4X+2\) is not solvable by radicals over \(\mathbb Q\).
-
-::: lean-explanation
-The tactic `decide` proves each because these propositions are decidable and concrete. The combinator `<;>` applies it to every goal created by `apply`.
-:::
-
-So what is the general theorem being specialized?
-
-### V. The Galois obstruction
-
-We now state the Galois objects used in the contradiction.
-
-::: proof-lean galois-interfaces
-Let \(p\in F[X]\), let \(L\) be its splitting field, and let \(R\) be its root set. The Galois action is the homomorphism
-
-```latex
-\rho:\operatorname{Gal}(p/F)\longrightarrow\operatorname{Sym}(R).
-```
-
-The contradiction below compares solvability of this Galois group with solvability of its permutation image. It also uses the radical closure of \(F\) in \(E\), whose elements are exactly those obtainable inside \(E\) by radical towers over \(F\).
-
-::: lean-explanation
-`Polynomial.Gal p` is the Galois group attached to `p`. The homomorphism `galActionHom p E` sends an automorphism to its permutation of `p.rootSet E`.
-
-`derivedSeries G` assigns a subgroup to each natural number, while `IsSolvable G` asserts that this series eventually reaches the trivial subgroup. Finally, `x ∈ solvableByRad F E` is the formal statement that `x` can be constructed by radicals over `F` inside `E`.
-:::
-
-::: proof-lean radical-contradiction
-Let \(x\) be a root of an irreducible polynomial \(\Phi_{a,b}=X^5-aX+b\) satisfying the hypotheses established below. Suppose for contradiction that \(x\) is solvable by radicals over \(\mathbb Q\).
-
-The radicals-to-Galois theorem implies that \(\operatorname{Gal}(\Phi_{a,b}/\mathbb Q)\) is solvable. Its Galois action is surjective onto \(\operatorname{Sym}(R)\), where \(R\) is the set of its five complex roots. A surjective image of a solvable group is solvable, so \(\operatorname{Sym}(R)\cong S_5\) would be solvable. But \(S_5\) is not solvable. This contradiction proves that \(x\) is not solvable by radicals.
-
-::: lean-explanation
-1. `isSolvable_gal_of_irreducible` turns that assumption, irreducibility, and the root equation into solvability of the polynomial's Galois group.
-2. `gal_Phi` says the Galois action on the five roots is bijective, so in particular it is surjective onto their full permutation group.
-3. `solvable_of_surjective` transfers solvability through that surjection.
-4. `Equiv.Perm.not_solvable` says a symmetric group on at least five objects is not solvable.
-
-The tactic `mt` is modus tollens: from `A → B` it produces `¬B → ¬A`. Here it converts “radical root implies solvable Galois group” into “non-solvable Galois group implies non-radical root.” The cardinality calculation at the end identifies the root set as a five-element type.
-:::
-
-This is the conceptual heart of Abel–Ruffini. A radical formula can create only solvable symmetry, while the roots of this quintic exhibit all of \(S_5\), a symmetry group too complicated to be solvable.
-
-### VI. Inspect the imported bridges
-
-::: proof-lean library-bridge
-The contradiction uses four mathematical results:
-
-1. If an irreducible polynomial has a root solvable by radicals, its Galois group is solvable.
-2. An irreducible rational polynomial of prime degree whose real-root count is between one and three below its complex-root count has full symmetric Galois action.
-3. Every surjective homomorphic image of a solvable group is solvable.
-4. The permutation group on at least five elements is not solvable.
-
-Together they turn root-count information about our quintic into an obstruction to radical expressions.
-
-::: lean-explanation
-These are the four library results on which the short Lean contradiction rests.
-
-- The first is the radicals-to-solvable-Galois bridge. Its first argument is membership in the intermediate field `solvableByRad F E`.
-- The second recognizes a full Galois action for an irreducible prime-degree rational polynomial whose real and complex root counts differ by one to three.
-- The third says a surjective image of a solvable group is solvable.
-- The fourth says the permutation group of any type with cardinality at least five is not solvable.
-
-`#check` asks Lean to print an expression's inferred type. It changes no theorem; it is a precise way to inspect the contract that later code must satisfy.
-:::
-
-Mathlib proves the first bridge by induction through the operations that generate `solvableByRad`. The radical case adjoins roots of unity, studies the Galois group of \(X^m-c\), and passes solvability through a field tower. Mathlib proves the non-solvability of permutation groups beginning with an explicit nontrivial element that remains in every term of the derived series of `Perm (Fin 5)`, then embeds that group into larger permutation groups.
-
-Those developments are deep reusable libraries. Our companion calls them by their public theorem statements, while rebuilding every lemma specific to the polynomial \(X^5-4X+2\).
-
-### VII. Why the Galois group is S5
-
-::: proof-lean full-galois-group
-Let \(R_{\mathbb R}\) and \(R_{\mathbb C}\) be the real and complex root sets of \(\Phi_{a,b}\). We prove:
-
-1. \(\Phi_{a,b}\) is irreducible over \(\mathbb Q\);
-2. its degree is the prime number five;
-3. \(|R_{\mathbb C}|=5\);
-4. \(2\le |R_{\mathbb R}|\le3\).
-
-Thus the number of complex roots is between one and three larger than the number of real roots. The prime-degree Galois criterion therefore makes the Galois action bijective. Since its target is the permutation group of five roots, the Galois group is isomorphic to \(S_5\).
-
-::: lean-explanation
-`galActionHom_bijective_of_prime_degree'` packages the prime-degree criterion. The degree lemma reduces primality to the concrete fact that five is prime, which `decide` proves. Separability and algebraic closure supply the five complex roots, while the real-root lemmas supply the required inequalities.
-
-`Bijective` packages injectivity and surjectivity. The contradiction in V uses `.2`, the surjective half.
-:::
-
-Why does this criterion force all of \(S_5\)? Irreducibility makes the Galois action transitive. Prime degree strongly restricts transitive subgroups. A small number of nonreal roots supplies a transposition through complex conjugation. The resulting transitive subgroup contains enough cycles and a transposition to be the full symmetric group.
-
-### VIII. Count all complex roots
-
-::: proof-lean complex-root-count
-Let \(p=\Phi_{a,b}\). Because \(p\) is irreducible over the characteristic-zero field \(\mathbb Q\), it is separable. The Fundamental Theorem of Algebra says that \(p\) splits over \(\mathbb C\). A separable polynomial of degree five that splits has five distinct roots. Therefore
-
-```latex
-|R_{\mathbb C}|=5.
-```
-
-::: lean-explanation
-`card_rootSet_eq_natDegree` says that a separable polynomial which splits has as many distinct roots as its natural degree. `natDegree_Phi` replaces that degree by five.
-
-The hypothesis is written explicitly as `h : (Φ ℚ a b).Separable`. Later it is supplied by `h_irred.separable`, using the fact that irreducible polynomials over \(\mathbb Q\) are separable.
-:::
-
-This is the formal location of the Fundamental Theorem of Algebra in the Galois-group calculation.
-
-### IX. At most three real roots
-
-::: proof-lean real-root-upper-bound
-If a real polynomial has \(r\) distinct roots, Rolle's theorem implies that its derivative has at least \(r-1\) distinct roots. Applying this twice to
-
-```latex
-f(X)=X^5-aX+b
-```
-
-reduces the problem to the second derivative \(20X^3\), whose real root set is the singleton \(\{0\}\). Therefore the first derivative has at most two distinct real roots and \(f\) has at most three.
-
-::: lean-explanation
-The proof maps the integer-coefficient expression into \(\mathbb Q[X]\), differentiates through `card_rootSet_le_derivative`, and finishes the monomial root-set computation with normalization. The scoped attribute line changes simplification behavior only inside this theorem.
-:::
-
-This bound is uniform in \(a,b\); the lower bound needs the inequality \(b<a\).
-
-### X. Exhibit two real roots
+### IV. Exhibit two real roots
 
 ::: proof-lean real-root-existence
 Let \(f(x)=x^5-ax+b\), with natural numbers \(b<a\). We know \(f(0)=b\ge0\). The proof splits according to the sign of \(f(1)=1-a+b\).
@@ -702,62 +585,143 @@ Because the polynomial is monic, Lean first records that it is nonzero. The two 
 This separation between “construct roots” and “count roots” is typical of formal proofs: each change of representation is made explicit.
 :::
 
-Combining IX and X gives two or three real roots. Since there are five distinct complex roots, there are two or three nonreal roots at the level needed by the prime-degree criterion. Complex conjugate pairing rules out an odd number in the concrete situation, but the criterion only needs the stated inequalities.
+Combining the two witness construction with the cardinality argument gives at least two real roots. Together with the next upper bound, the polynomial has two or three real roots. Once we also know that it has five distinct complex roots, the inequalities required by the prime-degree criterion follow.
 
-### XI. Prove irreducibility by Eisenstein
+### V. At most three real roots
 
-::: proof-lean eisenstein
-Eisenstein's criterion says that an integer polynomial is irreducible over \(\mathbb Q\) if some prime \(p\):
-
-1. does not divide the leading coefficient;
-2. divides every other coefficient;
-3. has \(p^2\) not dividing the constant coefficient.
-
-For \(X^5-aX+b\), the assumptions \(p\mid a\), \(p\mid b\), and \(p^2\nmid b\) give exactly those conditions. The zero coefficients are automatically divisible by \(p\), and a prime cannot divide the leading coefficient \(1\). Therefore the polynomial is irreducible over \(\mathbb Q\). For \(a=4\), \(b=2\), and \(p=2\), every hypothesis holds.
-
-::: lean-explanation
-The proof first moves to \(\mathbb Z[X]\), applies mathlib's ideal-valued Eisenstein criterion, checks coefficients by a finite `interval_cases`, then transfers irreducibility back to \(\mathbb Q[X]\). `all_goals` supplies monicity-derived primitiveness to the remaining transfer goals.
-:::
-
-For the concrete values \(a=4,b=2,p=2\), all hypotheses hold. This is why the apparently arbitrary polynomial \(X^5-4X+2\) is such an efficient witness.
-
-### XII. Verify the polynomial bookkeeping
-
-::: proof-lean polynomial-bookkeeping
-For \(\Phi_{a,b}(X)=X^5-aX+b\), direct inspection gives:
-
-- the constant coefficient is \(b\);
-- the coefficient of \(X^5\) is \(1\);
-- its degree is five;
-- its leading coefficient is \(1\), so it is monic and nonzero;
-- applying a coefficient homomorphism preserves the displayed expression.
-
-These elementary facts justify the later degree, coefficient, and nonzeroness calculations.
-
-::: lean-explanation
-Lean records each fact as a separate reusable lemma.
-
-The generic parameters `R`, `a`, and `b` make these lemmas reusable over integers, rationals, reals, and complex numbers. `WithBot ℕ` in the ordinary degree accommodates the degree of the zero polynomial; `natDegree` instead returns a natural number.
-:::
-
-At the very bottom sits the definition that all those simplifiers unfold.
-
-::: proof-lean hard-quintic
-For any commutative ring \(R\) containing the natural numbers, define
+::: proof-lean real-root-upper-bound
+If a real polynomial has \(r\) distinct roots, Rolle's theorem implies that its derivative has at least \(r-1\) distinct roots. Applying this twice to
 
 ```latex
-\Phi_{a,b}(X)=X^5-aX+b\in R[X].
+f(X)=X^5-aX+b
 ```
 
-Specializing to \(R=\mathbb Q\), \(a=4\), and \(b=2\) gives the hard quintic used throughout the proof.
+reduces the problem to the second derivative \(20X^3\), whose real root set is the singleton \(\{0\}\). Therefore the first derivative has at most two distinct real roots and \(f\) has at most three.
 
 ::: lean-explanation
-`noncomputable` permits classical choices that may occur downstream; it does not mean the displayed polynomial cannot be evaluated. The notation `C r` embeds a scalar as a constant polynomial, and `X` is the polynomial variable.
-
-The parameters are natural numbers but are coerced into `R`. Specializing `R = ℚ`, `a = 4`, and `b = 2` gives exactly \(X^5-4X+2\).
+The proof maps the integer-coefficient expression into \(\mathbb Q[X]\), differentiates through `card_rootSet_le_derivative`, and finishes the monomial root-set computation with normalization. The scoped attribute line changes simplification behavior only inside this theorem.
 :::
 
-### XIII. Recover the algebraic counterexample
+This bound is uniform in \(a,b\); the lower bound needs the inequality \(b<a\).
+
+### VI. Count all complex roots
+
+::: proof-lean complex-root-count
+Let \(p=\Phi_{a,b}\). Because \(p\) is irreducible over the characteristic-zero field \(\mathbb Q\), it is separable. The Fundamental Theorem of Algebra says that \(p\) splits over \(\mathbb C\). A separable polynomial of degree five that splits has five distinct roots. Therefore
+
+```latex
+|R_{\mathbb C}|=5.
+```
+
+::: lean-explanation
+`card_rootSet_eq_natDegree` says that a separable polynomial which splits has as many distinct roots as its natural degree. `natDegree_Phi` replaces that degree by five.
+
+The hypothesis is written explicitly as `h : (Φ ℚ a b).Separable`. Later it is supplied by `h_irred.separable`, using the fact that irreducible polynomials over \(\mathbb Q\) are separable.
+:::
+
+This is the formal location of the Fundamental Theorem of Algebra in the Galois-group calculation.
+
+### VII. Inspect the imported bridges
+
+::: proof-lean library-bridge
+The contradiction uses four mathematical results:
+
+1. If an irreducible polynomial has a root solvable by radicals, its Galois group is solvable.
+2. An irreducible rational polynomial of prime degree whose real-root count is between one and three below its complex-root count has full symmetric Galois action.
+3. Every surjective homomorphic image of a solvable group is solvable.
+4. The permutation group on at least five elements is not solvable.
+
+Together they turn root-count information about our quintic into an obstruction to radical expressions.
+
+::: lean-explanation
+These are the four library results on which the short Lean contradiction rests.
+
+- The first is the radicals-to-solvable-Galois bridge. Its first argument is membership in the intermediate field `solvableByRad F E`.
+- The second recognizes a full Galois action for an irreducible prime-degree rational polynomial whose real and complex root counts differ by one to three.
+- The third says a surjective image of a solvable group is solvable.
+- The fourth says the permutation group of any type with cardinality at least five is not solvable.
+
+`#check` asks Lean to print an expression's inferred type. It changes no theorem; it is a precise way to inspect the contract that later code must satisfy.
+:::
+
+Mathlib proves the first bridge by induction through the operations that generate `solvableByRad`. The radical case adjoins roots of unity, studies the Galois group of \(X^m-c\), and passes solvability through a field tower. Mathlib proves the non-solvability of permutation groups beginning with an explicit nontrivial element that remains in every term of the derived series of `Perm (Fin 5)`, then embeds that group into larger permutation groups.
+
+Those developments are deep reusable libraries. Our companion calls them by their public theorem statements, while rebuilding every lemma specific to the polynomial \(X^5-4X+2\).
+
+### VIII. Why the Galois group is S5
+
+::: proof-lean full-galois-group
+Let \(R_{\mathbb R}\) and \(R_{\mathbb C}\) be the real and complex root sets of \(\Phi_{a,b}\). We prove:
+
+1. \(\Phi_{a,b}\) is irreducible over \(\mathbb Q\);
+2. its degree is the prime number five;
+3. \(|R_{\mathbb C}|=5\);
+4. \(2\le |R_{\mathbb R}|\le3\).
+
+Thus the number of complex roots is between one and three larger than the number of real roots. The prime-degree Galois criterion therefore makes the Galois action bijective. Since its target is the permutation group of five roots, the Galois group is isomorphic to \(S_5\).
+
+::: lean-explanation
+`galActionHom_bijective_of_prime_degree'` packages the prime-degree criterion. The degree lemma reduces primality to the concrete fact that five is prime, which `decide` proves. Separability and algebraic closure supply the five complex roots, while the real-root lemmas supply the required inequalities.
+
+`Bijective` packages injectivity and surjectivity. The Galois obstruction in the next step uses `.2`, the surjective half.
+:::
+
+Why does this criterion force all of \(S_5\)? Irreducibility makes the Galois action transitive. Prime degree strongly restricts transitive subgroups. A small number of nonreal roots supplies a transposition through complex conjugation. The resulting transitive subgroup contains enough cycles and a transposition to be the full symmetric group.
+
+### IX. The Galois obstruction
+
+We now state the Galois objects used in the contradiction.
+
+::: proof-lean galois-interfaces
+Let \(p\in F[X]\), let \(L\) be its splitting field, and let \(R\) be its root set. The Galois action is the homomorphism
+
+```latex
+\rho:\operatorname{Gal}(p/F)\longrightarrow\operatorname{Sym}(R).
+```
+
+The contradiction compares solvability of this Galois group with solvability of its permutation image. It also uses the radical closure of \(F\) in \(E\), whose elements are exactly those obtainable inside \(E\) by radical towers over \(F\).
+
+::: lean-explanation
+`Polynomial.Gal p` is the Galois group attached to `p`. The homomorphism `galActionHom p E` sends an automorphism to its permutation of `p.rootSet E`.
+
+`derivedSeries G` assigns a subgroup to each natural number, while `IsSolvable G` asserts that this series eventually reaches the trivial subgroup. Finally, `x ∈ solvableByRad F E` is the formal statement that `x` can be constructed by radicals over `F` inside `E`.
+:::
+
+::: proof-lean radical-contradiction
+Let \(x\) be a root of an irreducible polynomial \(\Phi_{a,b}=X^5-aX+b\) satisfying the hypotheses established above. Suppose for contradiction that \(x\) is solvable by radicals over \(\mathbb Q\).
+
+The radicals-to-Galois theorem implies that \(\operatorname{Gal}(\Phi_{a,b}/\mathbb Q)\) is solvable. Its Galois action is surjective onto \(\operatorname{Sym}(R)\), where \(R\) is the set of its five complex roots. A surjective image of a solvable group is solvable, so \(\operatorname{Sym}(R)\cong S_5\) would be solvable. But \(S_5\) is not solvable. This contradiction proves that \(x\) is not solvable by radicals.
+
+::: lean-explanation
+1. `isSolvable_gal_of_irreducible` turns that assumption, irreducibility, and the root equation into solvability of the polynomial's Galois group.
+2. `gal_Phi` says the Galois action on the five roots is bijective, so in particular it is surjective onto their full permutation group.
+3. `solvable_of_surjective` transfers solvability through that surjection.
+4. `Equiv.Perm.not_solvable` says a symmetric group on at least five objects is not solvable.
+
+The tactic `mt` is modus tollens: from `A → B` it produces `¬B → ¬A`. Here it converts “radical root implies solvable Galois group” into “non-solvable Galois group implies non-radical root.” The cardinality calculation at the end identifies the root set as a five-element type.
+:::
+
+This is the conceptual heart of Abel–Ruffini. A radical formula can create only solvable symmetry, while the roots of this quintic exhibit all of \(S_5\), a symmetry group too complicated to be solvable.
+
+### X. Specialize the hard quintic
+
+::: proof-lean concrete-quintic
+The general family is \(X^5-aX+b\). We choose \(a=4\), \(b=2\), and the Eisenstein prime \(p=2\). The remaining hypotheses are finite arithmetic facts:
+
+- \(2<4\), needed by the real-root argument;
+- \(2\) is prime;
+- \(2\mid4\) and \(2\mid2\);
+- \(2^2\nmid2\).
+
+These facts satisfy the hypotheses of the general theorem just proved, so every root of \(X^5-4X+2\) is not solvable by radicals over \(\mathbb Q\).
+
+::: lean-explanation
+The tactic `decide` proves each because these propositions are decidable and concrete. The combinator `<;>` applies it to every goal created by `apply`.
+:::
+
+We have now turned the general Galois obstruction into a statement about the concrete polynomial used in the rest of the article.
+
+### XI. Recover the algebraic counterexample
 
 ::: proof-lean quintic-hard-root
 By the Fundamental Theorem of Algebra, \(\Phi\) has a complex root \(x\). Since \(\Phi\in\mathbb Q[X]\) is nonzero and \(\Phi(x)=0\), the number \(x\) is algebraic over \(\mathbb Q\). The Galois obstruction already proved shows that \(x\) is not solvable by radicals over \(\mathbb Q\). Thus there exists an algebraic complex number that is not solvable by radicals.
@@ -768,10 +732,69 @@ Our stronger final theorem keeps the root equation visible, then pads the same p
 The polynomial itself witnesses `IsAlgebraic ℚ x`; monicity proves that witness is nonzero; and `not_solvable_by_rad'` supplies the obstruction.
 :::
 
+### XII. Preserve the hard root
+
+::: proof-lean root-preservation
+The polynomial \(\Phi\in\mathbb Q[X]\) has degree five. Viewed over \(\mathbb C\), it therefore has a root \(x\in\mathbb C\) by the Fundamental Theorem of Algebra, so \(\Phi(x)=0\). The Galois argument above proves that every complex root of \(\Phi\) is not solvable by radicals over \(\mathbb Q\). Hence this chosen \(x\) has both required properties.
+
+::: lean-explanation
+`IsAlgClosed.splits` states that the polynomial splits over \(\mathbb C\), and positive degree then supplies `x` and its root equation. Because the polynomial was defined over \(\mathbb Q\), `map_Phi` and `eval_map` transport the equation through `algebraMap ℚ ℂ`. The final component invokes the specialized non-radical-root theorem.
+:::
+
+Notice the logical shape: algebraic closure proves that a root **does** exist; Galois theory proves that the same root **cannot** be expressed by radicals. These are complementary statements, not competing ones.
+
+### XIII. Manufacture degree n from degree five
+
+::: proof-lean degree-n-construction
+Define \(P_n=X^{n-5}\Phi\). Both factors are monic, so their product is monic and in particular nonzero. The natural degree of a product of nonzero polynomials is the sum of their natural degrees:
+
+```latex
+\operatorname{natDegree}(P_n)
+=(n-5)+5=n.
+```
+
+The assumption \(n\ge5\) gives \((n-5)+5=n\), completing the degree calculation.
+
+::: lean-explanation
+In Lean, `monic_X.pow (n - 5)` proves that the first factor is monic, while `monic_Phi 4 2` proves the same for the quintic. The explicit nonzero proofs passed to `natDegree_mul` prevent the zero-polynomial exception.
+
+Natural-number subtraction truncates at zero, so Lean uses `Nat.sub_add_cancel hn` with the hypothesis `hn : 5 ≤ n` for the final equality.
+:::
+
+The construction need not be irreducible for \(n>5\). It only needs to retain one root that no radical formula can express. If one wanted an irreducible hard example in every degree, that would be a stronger and substantially different theorem.
+
+### XIV. The final theorem
+
+All the required pieces are now available. The theorem does not claim that every degree-\(n\) polynomial is hard. It claims that for each \(n\ge5\) there exists at least one counterexample.
+
+::: proof-lean final-theorem
+Fix \(n\ge5\), and define
+
+```latex
+\Phi(X)=X^5-4X+2,
+\qquad
+P_n(X)=X^{n-5}\Phi(X).
+```
+
+The preceding lemmas give a complex number \(x\) such that \(\Phi(x)=0\) and \(x\) is not solvable by radicals over \(\mathbb Q\). They also give \(\deg P_n=n\). Finally,
+
+```latex
+P_n(x)=x^{n-5}\Phi(x)=x^{n-5}\cdot0=0.
+```
+
+Thus \(P_n\in\mathbb Q[X]\) has degree \(n\) and has a complex root not solvable by radicals over \(\mathbb Q\).
+
+::: lean-explanation
+The nested existential statement follows the mathematical proof directly: extract a non-radical root of the hard quintic, choose the padded polynomial, and supply its degree and the chosen root. The only remaining goal is the root equation for the product; polynomial evaluation respects multiplication, so it reduces to the known equation \(\Phi(x)=0\).
+:::
+
+The final Lean theorem is short because every difficult point has already been packaged in a declaration that was compiled earlier in the file.
+
 ---
 
 ## 4. Sources
 
+- [Companion Lean source for this article](https://github.com/ssydyc2/personal_website/tree/main/formal/abel-ruffini)
 - [Mathlib: Construction of an algebraic number that is not solvable by radicals](https://leanprover-community.github.io/mathlib4_docs/Archive/Wiedijk100Theorems/AbelRuffini.html)
 - [Mathlib: The Abel–Ruffini theorem and solvability by radicals](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/AbelRuffini.html)
 - [Mathlib: Polynomial Galois groups](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/PolynomialGaloisGroup.html)
