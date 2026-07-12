@@ -63,10 +63,10 @@ attribute [local instance] splits_ℚ_ℂ
 #check Equiv.Perm.not_solvable
 -- endregion library-bridge
 
+-- region hard-quintic
 variable (R : Type*) [CommRing R] (a b : ℕ)
 
 /-- A quintic polynomial that we will show is irreducible -/
--- region hard-quintic
 noncomputable def Φ : R[X] :=
   X ^ 5 - C (a : R) * X + C (b : R)
 -- endregion hard-quintic
