@@ -87,6 +87,7 @@ theorem hardQuintic_monic : Φ.Monic := by
   simp [Φ]
 -- endregion polynomial-bookkeeping
 
+-- region eisenstein
 private noncomputable def Φℤ : ℤ[X] :=
   X ^ 5 - C 4 * X + C 2
 
@@ -122,7 +123,6 @@ private theorem hardQuintic_irreducible_aux : Irreducible Φ := by
     · norm_num [Φℤ, span_singleton_pow, mem_span_singleton]
   all_goals exact Φℤ_monic.isPrimitive
 
--- region eisenstein
 theorem hardQuintic_irreducible : Irreducible Φ :=
   hardQuintic_irreducible_aux
 -- endregion eisenstein
