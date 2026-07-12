@@ -117,7 +117,6 @@ theorem hardQuintic_monic : Φ.Monic := by
   simpa [Φ, quinticFamily] using monic_Phi (R := ℚ) 4 2
 -- endregion polynomial-bookkeeping
 
--- region eisenstein
 theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬p ^ 2 ∣ b) :
     Irreducible (quinticFamily ℚ a b) := by
   rw [← map_Phi a b (Int.castRingHom ℚ), ← IsPrimitive.Int.irreducible_iff_irreducible_map_cast]
@@ -138,9 +137,13 @@ theorem irreducible_Phi (p : ℕ) (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b)
     · rw [coeff_zero_Phi, span_singleton_pow, mem_span_singleton]
       exact mt Int.natCast_dvd_natCast.mp hp2b
   all_goals exact Monic.isPrimitive (monic_Phi a b)
+
+-- region eisenstein
+theorem hardQuintic_irreducible : Irreducible Φ := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]]
+  exact irreducible_Phi 4 2 2 (by decide) (by decide) (by decide) (by decide)
 -- endregion eisenstein
 
--- region real-root-upper-bound
 attribute [local simp] map_ofNat in -- use `ofNat` simp theorem with bad keys
 theorem real_roots_Phi_le : Fintype.card ((quinticFamily ℚ a b).rootSet ℝ) ≤ 3 := by
   rw [← map_Phi a b (algebraMap ℤ ℚ), quinticFamily, ← one_mul (X ^ 5), ← C_1]
@@ -151,9 +154,13 @@ theorem real_roots_Phi_le : Fintype.card ((quinticFamily ℚ a b).rootSet ℝ) �
     exact this
   rw [rootSet_C_mul_X_pow] <;>
   norm_num
+
+-- region real-root-upper-bound
+theorem hardQuintic_real_roots_le : Fintype.card (Φ.rootSet ℝ) ≤ 3 := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]]
+  exact real_roots_Phi_le 4 2
 -- endregion real-root-upper-bound
 
--- region real-root-existence
 theorem real_roots_Phi_ge_aux (hab : b < a) :
     ∃ x y : ℝ, x ≠ y ∧ aeval x (quinticFamily ℚ a b) = 0 ∧
       aeval y (quinticFamily ℚ a b) = 0 := by
@@ -184,9 +191,14 @@ theorem real_roots_Phi_ge_aux (hab : b < a) :
     have ha' := neg_nonpos.mpr (hle.trans ha)
     obtain ⟨x, ⟨-, hx1⟩, hx2⟩ := intermediate_value_Icc ha' (hc _) (Set.mem_Icc.mpr ⟨hfa, hf0⟩)
     exact ⟨x, 1, (hx1.trans_lt zero_lt_one).ne, hx2, hf1⟩
+
+-- region real-root-existence
+theorem hardQuintic_has_two_real_roots :
+    ∃ x y : ℝ, x ≠ y ∧ aeval x Φ = 0 ∧ aeval y Φ = 0 := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]]
+  exact real_roots_Phi_ge_aux 4 2 (by decide)
 -- endregion real-root-existence
 
--- region real-root-lower-bound
 theorem real_roots_Phi_ge (hab : b < a) :
     2 ≤ Fintype.card ((quinticFamily ℚ a b).rootSet ℝ) := by
   have q_ne_zero : quinticFamily ℚ a b ≠ 0 := (monic_Phi a b).ne_zero
@@ -196,15 +208,24 @@ theorem real_roots_Phi_ge (hab : b < a) :
   convert! Fintype.card_le_of_embedding (Set.embeddingOfSubset _ _ key)
   simp only [Finset.coe_sort_coe, Fintype.card_coe, Finset.card_singleton,
     Finset.card_insert_of_notMem (mt Finset.mem_singleton.mp hxy)]
+
+-- region real-root-lower-bound
+theorem hardQuintic_real_roots_ge : 2 ≤ Fintype.card (Φ.rootSet ℝ) := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]]
+  exact real_roots_Phi_ge 4 2 (by decide)
 -- endregion real-root-lower-bound
 
--- region complex-root-count
 theorem complex_roots_Phi (h : (quinticFamily ℚ a b).Separable) :
     Fintype.card ((quinticFamily ℚ a b).rootSet ℂ) = 5 :=
   (card_rootSet_eq_natDegree h (IsAlgClosed.splits _)).trans (natDegree_Phi a b)
+
+-- region complex-root-count
+theorem hardQuintic_complex_roots : Fintype.card (Φ.rootSet ℂ) = 5 := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]]
+  exact complex_roots_Phi 4 2 (irreducible_Phi 4 2 2 (by decide) (by decide)
+    (by decide) (by decide)).separable
 -- endregion complex-root-count
 
--- region full-galois-group
 theorem gal_Phi (hab : b < a) (h_irred : Irreducible (quinticFamily ℚ a b)) :
     Bijective (galActionHom (quinticFamily ℚ a b) ℂ) := by
   apply galActionHom_bijective_of_prime_degree' h_irred
@@ -213,9 +234,14 @@ theorem gal_Phi (hab : b < a) (h_irred : Irreducible (quinticFamily ℚ a b)) :
     exact (real_roots_Phi_le a b).trans (Nat.le_succ 3)
   · simp_rw [complex_roots_Phi a b h_irred.separable, Nat.succ_le_succ_iff]
     exact real_roots_Phi_ge a b hab
+
+-- region full-galois-group
+theorem hardQuintic_galoisAction_bijective : Bijective (galActionHom Φ ℂ) := by
+  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]]
+  exact gal_Phi 4 2 (by decide) (irreducible_Phi 4 2 2 (by decide) (by decide)
+    (by decide) (by decide))
 -- endregion full-galois-group
 
--- region radical-contradiction
 theorem not_solvable_by_rad (p : ℕ) (x : ℂ)
     (hx : aeval x (quinticFamily ℚ a b) = 0) (hab : b < a)
     (hp : p.Prime) (hpa : p ∣ a) (hpb : p ∣ b) (hp2b : ¬p ^ 2 ∣ b) : x ∉ solvableByRad ℚ ℂ := by
@@ -225,13 +251,15 @@ theorem not_solvable_by_rad (p : ℕ) (x : ℂ)
   refine Equiv.Perm.not_solvable _ (le_of_eq ?_)
     (solvable_of_surjective (gal_Phi a b hab h_irred).2)
   rw_mod_cast [Cardinal.mk_fintype, complex_roots_Phi a b h_irred.separable]
--- endregion radical-contradiction
 
--- region concrete-quintic
+-- region radical-contradiction
 theorem not_solvable_by_rad' (x : ℂ) (hx : aeval x Φ = 0) : x ∉ solvableByRad ℚ ℂ := by
-  rw [show Φ = quinticFamily ℚ 4 2 by simp [Φ, quinticFamily]] at hx
-  apply not_solvable_by_rad 4 2 2 x hx <;> decide
--- endregion concrete-quintic
+  apply mt (isSolvable_gal_of_irreducible · hardQuintic_irreducible hx)
+  intro h
+  refine Equiv.Perm.not_solvable _ (le_of_eq ?_)
+    (solvable_of_surjective hardQuintic_galoisAction_bijective.2)
+  rw_mod_cast [Cardinal.mk_fintype, hardQuintic_complex_roots]
+-- endregion radical-contradiction
 
 /-- **Abel-Ruffini Theorem** -/
 -- region quintic-hard-root
