@@ -502,42 +502,35 @@ We now assemble the proof in dependency order. Each Lean declaration uses only d
 ### I. Define the hard quintic
 
 ::: proof-lean hard-quintic
-For any commutative ring \(R\) containing the natural numbers, define
+Define the concrete rational polynomial
 
 ```latex
-\Phi_{a,b}(X)=X^5-aX+b\in R[X].
+\Phi(X)=X^5-4X+2\in\mathbb Q[X].
 ```
 
-Specializing to \(R=\mathbb Q\), \(a=4\), and \(b=2\) gives the hard quintic used throughout the proof.
+This is the only polynomial needed for the final counterexample.
 
 ::: lean-explanation
-`variable (R : Type*) [CommRing R] (a b : ℕ)` means: let `R` be an arbitrary commutative ring, and let `a` and `b` be natural numbers. The square brackets tell Lean to infer the commutative-ring structure on `R` automatically. For this proof, `Type*` can simply be read as “some type.” When `a` and `b` occur in a polynomial over `R`, Lean coerces them from natural numbers to elements of `R`.
-
-`noncomputable` permits classical choices that may occur downstream; it does not mean the displayed polynomial cannot be evaluated. The notation `C r` embeds a scalar as a constant polynomial, and `X` is the polynomial variable.
-
-The parameters are natural numbers but are coerced into `R`. Specializing `R = ℚ`, `a = 4`, and `b = 2` gives exactly \(X^5-4X+2\).
+`ℚ[X]` is Lean's notation for polynomials with rational coefficients. `C 4` and `C 2` turn the rational numbers into constant polynomials, while `X` is the polynomial variable. The keyword `noncomputable` permits classical constructions used later; it does not prevent this polynomial from being evaluated.
 :::
 
 ### II. Verify the polynomial bookkeeping
 
 ::: proof-lean polynomial-bookkeeping
-For \(\Phi_{a,b}(X)=X^5-aX+b\), direct inspection gives:
+For \(\Phi(X)=X^5-4X+2\), direct inspection gives:
 
-- the constant coefficient is \(b\);
-- the coefficient of \(X^5\) is \(1\);
 - its degree is five;
-- its leading coefficient is \(1\), so it is monic and nonzero;
-- applying a coefficient homomorphism preserves the displayed expression.
+- its leading coefficient is \(1\), so it is monic and nonzero.
 
-These elementary facts justify the later degree, coefficient, and nonzeroness calculations.
+These are the two concrete facts about \(\Phi\) that the final construction will reuse.
 
 ::: lean-explanation
-Lean records each fact as a separate reusable lemma.
-
-The generic parameters `R`, `a`, and `b` make these lemmas reusable over integers, rationals, reals, and complex numbers. `WithBot ℕ` in the ordinary degree accommodates the degree of the zero polynomial; `natDegree` instead returns a natural number.
+`hardQuintic_natDegree` records that the natural degree is five. `hardQuintic_monic` records that the leading coefficient is one. Monicity also implies that the polynomial is nonzero.
 :::
 
 ### III. Prove irreducibility by Eisenstein
+
+To prove irreducibility and analyze real and complex roots without duplicating nearly identical arguments, the Lean file now introduces the internal family \(X^5-aX+b\). The reader-facing polynomial remains the single specialization \(a=4,b=2\); the parameters only package the next few lemmas for reuse across coefficient rings.
 
 ::: proof-lean eisenstein
 Eisenstein's criterion says that an integer polynomial is irreducible over \(\mathbb Q\) if some prime \(p\):
