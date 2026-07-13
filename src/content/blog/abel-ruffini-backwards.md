@@ -661,23 +661,6 @@ Why does this criterion force all of \(S_5\)? Irreducibility makes the Galois ac
 
 ### IX. The Galois obstruction
 
-We now state the Galois objects used in the contradiction.
-
-::: proof-lean galois-interfaces
-Let \(p\in F[X]\), let \(L\) be its splitting field, and let \(R\) be its root set. The Galois action is the homomorphism
-
-```latex
-\rho:\operatorname{Gal}(p/F)\longrightarrow\operatorname{Sym}(R).
-```
-
-The contradiction compares solvability of this Galois group with solvability of its permutation image. It also uses the radical closure of \(F\) in \(E\), whose elements are exactly those obtainable inside \(E\) by radical towers over \(F\).
-
-::: lean-explanation
-`Polynomial.Gal p` is the Galois group attached to `p`. The homomorphism `galActionHom p E` sends an automorphism to its permutation of `p.rootSet E`.
-
-`derivedSeries G` assigns a subgroup to each natural number, while `IsSolvable G` asserts that this series eventually reaches the trivial subgroup. Finally, `x ∈ solvableByRad F E` is the formal statement that `x` can be constructed by radicals over `F` inside `E`.
-:::
-
 ::: proof-lean radical-contradiction
 Let \(x\) be any complex root of \(\Phi=X^5-4X+2\). Suppose for contradiction that \(x\) is solvable by radicals over \(\mathbb Q\).
 
