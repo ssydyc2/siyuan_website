@@ -41,7 +41,7 @@
 
 When I was learning abstract algebra, one of my biggest frustrations was encountering an endless stream of definitions and concepts without understanding what they were trying to accomplish.
 
-This article explains why equations of degree five or higher cannot always be solved by radicals. It has two stages. First, we introduce the mathematical prerequisites—groups, fields, polynomials, field extensions, Galois groups, solvable groups, and radical towers. Then we build an explicit counterexample in dependency order, with each step supported by results already established.
+This article explains why equations of degree five or higher cannot always be solved by radicals. It has three stages. First, we state the problem precisely and introduce the concrete quintic that will serve as the counterexample. Second, we develop the mathematical prerequisites—groups, fields, polynomials, field extensions, Galois groups, solvable groups, and radical towers. Third, we build the proof in dependency order, with each step supported by results already established.
 
 Each stage of the main argument presents a pure mathematical proof beside the exact compiled Lean code that verifies the same logical step. The explanation below the code shows how the formal statement corresponds to the mathematics.
 
