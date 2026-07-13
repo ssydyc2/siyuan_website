@@ -13,14 +13,13 @@
   - [VII. Ring](#vii-ring)
   - [VIII. Commutative ring](#viii-commutative-ring)
   - [IX. Field](#ix-field)
-  - [X. Polynomials, roots, and irreducibility](#x-polynomials-roots-and-irreducibility)
-  - [XI. Polynomial](#xi-polynomial)
-  - [XII. Units and factorization](#xii-units-and-factorization)
-  - [XIII. Minimal polynomial](#xiii-minimal-polynomial)
-  - [XIV. Separable polynomial](#xiv-separable-polynomial)
-  - [XV. Field extensions and Galois groups](#xv-field-extensions-and-galois-groups)
-  - [XVI. Commutators, derived series, and solvable groups](#xvi-commutators-derived-series-and-solvable-groups)
-  - [XVII. What solvable by radicals means](#xvii-what-solvable-by-radicals-means)
+  - [X. Polynomial](#x-polynomial)
+  - [XI. Units and factorization](#xi-units-and-factorization)
+  - [XII. Minimal polynomial](#xii-minimal-polynomial)
+  - [XIII. Separable polynomial](#xiii-separable-polynomial)
+  - [XIV. Field extensions and Galois groups](#xiv-field-extensions-and-galois-groups)
+  - [XV. Commutators, derived series, and solvable groups](#xv-commutators-derived-series-and-solvable-groups)
+  - [XVI. What solvable by radicals means](#xvi-what-solvable-by-radicals-means)
 - [3. Build the proof step by step](#3-build-the-proof-step-by-step)
   - [I. Define the hard quintic](#i-define-the-hard-quintic)
   - [II. Verify the polynomial bookkeeping](#ii-verify-the-polynomial-bookkeeping)
@@ -162,9 +161,7 @@ A commutative ring is a ring whose multiplication is commutative. Equivalently, 
 
 A field is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero element has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
 
-### X. Polynomials, roots, and irreducibility
-
-### XI. Polynomial
+### X. Polynomial
 
 Let \(F\) be a field. A polynomial over \(F\) is a finite formal sum
 
@@ -176,7 +173,7 @@ p(X)=a_0+a_1X+\cdots+a_nX^n
 
 The word **formal** matters: \(X\) is an indeterminate, not yet a number. Two polynomials are equal exactly when all corresponding coefficients are equal. The set of polynomials over \(F\), with coefficientwise addition and the usual convolution product, is denoted by \(F[X]\).
 
-### XII. Units and factorization
+### XI. Units and factorization
 
 A **unit** in a ring is an element with a multiplicative inverse. The units of \(F[X]\) are exactly the nonzero constant polynomials. Consequently, multiplying a polynomial by a nonzero scalar does not create a mathematically meaningful factorization.
 
@@ -194,7 +191,7 @@ Irreducibility depends on the coefficient field. For example, \(X^2-2\) is irred
 X^2-2=(X-\sqrt2)(X+\sqrt2).
 ```
 
-### XIII. Minimal polynomial
+### XII. Minimal polynomial
 
 An element \(\alpha\in E\) is **algebraic over \(F\)** if it is a root of some nonzero polynomial in \(F[X]\). For every algebraic \(\alpha\), there is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
 
@@ -236,7 +233,7 @@ m_{\sqrt2,\mathbb R}(X)=X-\sqrt2.
 
 Thus the minimal polynomial depends not only on \(\alpha\), but also on the chosen base field.
 
-### XIV. Separable polynomial
+### XIII. Separable polynomial
 
 A nonzero polynomial is **separable over \(F\)** if, in a field where it splits completely into linear factors, no root occurs with multiplicity greater than one. Equivalently,
 
@@ -246,7 +243,7 @@ A nonzero polynomial is **separable over \(F\)** if, in a field where it splits 
 
 where \(p'\) is the formal derivative. Every irreducible polynomial over a field of characteristic zero is separable. In particular, every irreducible polynomial in \(\mathbb Q[X]\) is separable.
 
-### XV. Field extensions and Galois groups
+### XIV. Field extensions and Galois groups
 
 A **field homomorphism** \(\iota:F\to E\) is a function preserving \(0\), \(1\), addition, and multiplication. Such a map is automatically injective: its kernel is an ideal of the field \(F\), so it is either \(\{0\}\) or all of \(F\), and preservation of \(1\) rules out the latter. We may therefore identify \(F\) with its image inside \(E\).
 
@@ -338,7 +335,7 @@ Separability has a different role. If \(p\) is separable of degree \(d\), then i
 
 For our quintic, the target is therefore \(S_5\). The decisive fact later will be that \(S_5\) is not a solvable group.
 
-### XVI. Commutators, derived series, and solvable groups
+### XV. Commutators, derived series, and solvable groups
 
 A **subgroup** \(H\le G\) is a subset of a group \(G\) that is itself a group under the same operation. Concretely, \(H\) contains the identity and is closed under multiplication and inverses. For example, the even permutations form a subgroup \(A_n\le S_n\).
 
@@ -440,7 +437,7 @@ The second equality says that \(A_5\) is **perfect**: it equals its own commutat
 
 Finally, solvability is preserved by subgroups and quotient groups. In particular, if \(f:G\to H\) is a surjective group homomorphism and \(G\) is solvable, then \(H\) is solvable: by the first isomorphism theorem, \(H\cong G/\ker f\). We will use the contrapositive later. Since \(S_5\) is not solvable, no solvable Galois group can map onto \(S_5\).
 
-### XVII. What solvable by radicals means
+### XVI. What solvable by radicals means
 
 Fix a base field \(F\) inside a larger field \(E\), such as \(\mathbb Q\subseteq\mathbb C\). A **radical tower over \(F\)** is a finite chain of field extensions
 
