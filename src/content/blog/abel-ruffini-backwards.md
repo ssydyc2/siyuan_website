@@ -5,20 +5,14 @@
 - [1. The problem and counterexample](#1-the-problem-and-counterexample)
 - [2. Mathematical prerequisites](#2-mathematical-prerequisites)
   - [I. Group](#i-group)
-  - [II. Semigroup](#ii-semigroup)
-  - [III. Monoid](#iii-monoid)
-  - [IV. Commutative monoid](#iv-commutative-monoid)
-  - [V. Abelian group](#v-abelian-group)
-  - [VI. Ring](#vi-ring)
-  - [VII. Commutative ring](#vii-commutative-ring)
-  - [VIII. Field](#viii-field)
-  - [IX. Polynomial](#ix-polynomial)
-  - [X. Units and factorization](#x-units-and-factorization)
-  - [XI. Minimal polynomial](#xi-minimal-polynomial)
-  - [XII. Separable polynomial](#xii-separable-polynomial)
-  - [XIII. Field extensions and Galois groups](#xiii-field-extensions-and-galois-groups)
-  - [XIV. Commutators, derived series, and solvable groups](#xiv-commutators-derived-series-and-solvable-groups)
-  - [XV. What solvable by radicals means](#xv-what-solvable-by-radicals-means)
+  - [II. Abelian group](#ii-abelian-group)
+  - [III. Field](#iii-field)
+  - [IV. Polynomial](#iv-polynomial)
+  - [V. Units and factorization](#v-units-and-factorization)
+  - [VI. Separable polynomial](#vi-separable-polynomial)
+  - [VII. Field extensions and Galois groups](#vii-field-extensions-and-galois-groups)
+  - [VIII. Commutators, derived series, and solvable groups](#viii-commutators-derived-series-and-solvable-groups)
+  - [IX. What solvable by radicals means](#ix-what-solvable-by-radicals-means)
 - [3. Build the proof step by step](#3-build-the-proof-step-by-step)
   - [I. Define the hard quintic](#i-define-the-hard-quintic)
   - [II. Verify the polynomial bookkeeping](#ii-verify-the-polynomial-bookkeeping)
@@ -36,11 +30,12 @@
 - [4. Sources](#4-sources)
 - [5. Appendix: why radicals imply a solvable Galois group](#5-appendix-why-radicals-imply-a-solvable-galois-group)
   - [I. The radicals-to-Galois theorem](#i-the-radicals-to-galois-theorem)
-  - [II. Group-theoretic and splitting-field lemmas](#ii-group-theoretic-and-splitting-field-lemmas)
-  - [III. Lemma: induction on the radical closure](#iii-lemma-induction-on-the-radical-closure)
-  - [IV. Lemma: extracting one radical](#iv-lemma-extracting-one-radical)
-  - [V. Theorem: the minimal polynomial has solvable Galois group](#v-theorem-the-minimal-polynomial-has-solvable-galois-group)
-  - [VI. Proof of the radicals-to-Galois theorem](#vi-proof-of-the-radicals-to-galois-theorem)
+  - [II. Prerequisites for the Appendix](#ii-prerequisites-for-the-appendix)
+  - [III. Group-theoretic and splitting-field lemmas](#iii-group-theoretic-and-splitting-field-lemmas)
+  - [IV. Lemma: induction on the radical closure](#iv-lemma-induction-on-the-radical-closure)
+  - [V. Lemma: extracting one radical](#v-lemma-extracting-one-radical)
+  - [VI. Theorem: the minimal polynomial has solvable Galois group](#vi-theorem-the-minimal-polynomial-has-solvable-galois-group)
+  - [VII. Proof of the radicals-to-Galois theorem](#vii-proof-of-the-radicals-to-galois-theorem)
 
 ## Overview and approach
 
@@ -98,6 +93,8 @@ Every mathematical step is paired with the exact Lean code compiled by the compa
 
 ## 2. Mathematical prerequisites
 
+This section contains only the definitions used directly by the main argument in Sections 1–3. The additional algebraic language needed only for the detailed radicals-to-Galois proof is collected separately in Appendix II.
+
 ### I. Group
 
 A group is a tuple \((G,\star,e,(-)^{-1})\) consisting of a set \(G\), a binary operation \(\star:G\times G\to G\), an identity element \(e\in G\), and an inverse operation \((-)^{-1}:G\to G\). For every \(a,b,c\in G\), it satisfies:
@@ -106,31 +103,7 @@ A group is a tuple \((G,\star,e,(-)^{-1})\) consisting of a set \(G\), a binary 
 - **Identity:** \(e\star a=a=a\star e\).
 - **Inverses:** \(a^{-1}\star a=e=a\star a^{-1}\).
 
-### II. Semigroup
-
-A semigroup is a pair \((S,\star)\) consisting of a set \(S\) and a binary operation \(\star:S\times S\to S\) satisfying associativity. For every \(a,b,c\in S\),
-
-```latex
-(a\star b)\star c=a\star(b\star c).
-```
-
-### III. Monoid
-
-A monoid is a semigroup \((M,\star)\) together with an identity element \(e\in M\) satisfying, for every \(a\in M\),
-
-```latex
-e\star a=a=a\star e.
-```
-
-### IV. Commutative monoid
-
-A commutative monoid is a monoid whose operation also satisfies, for every \(a,b\in M\),
-
-```latex
-a\star b=b\star a.
-```
-
-### V. Abelian group
+### II. Abelian group
 
 An abelian group, also called a commutative group, is a group whose operation is commutative:
 
@@ -139,31 +112,18 @@ a\star b=b\star a
 \qquad\text{for every }a,b\in G.
 ```
 
-### VI. Ring
+### III. Field
 
-A ring is a tuple \((R,+,\cdot,-,0,1)\) such that:
+A field is a set \(F\) with addition, multiplication, additive inverses, distinguished elements \(0,1\), and multiplicative inverses for nonzero elements, such that:
 
-- \((R,+,0,-)\) is an abelian group;
-- \((R,\cdot,1)\) is a monoid; and
-- multiplication distributes over addition on both sides:
+- \((F,+,0,-)\) is an abelian group;
+- \((F\setminus\{0\},\cdot,1,(-)^{-1})\) is an abelian group;
+- multiplication distributes over addition; and
+- \(0\ne1\).
 
-```latex
-a\cdot(b+c)=a\cdot b+a\cdot c,
-\qquad
-(a+b)\cdot c=a\cdot c+b\cdot c.
-```
+Examples include \(\mathbb Q\), \(\mathbb R\), and \(\mathbb C\). Division by a nonzero element is defined by \(a/b:=ab^{-1}\).
 
-The additive inverse of \(a\) is written \(-a\), and subtraction is the derived operation \(a-b:=a+(-b)\). Multiplication in a ring need not be commutative.
-
-### VII. Commutative ring
-
-A commutative ring is a ring whose multiplication is commutative. Equivalently, its multiplicative structure \((R,\cdot,1)\) is a commutative monoid.
-
-### VIII. Field
-
-A field is a commutative ring \(F\) satisfying \(0\ne1\) in which every nonzero element has a multiplicative inverse. Equivalently, \((F\setminus\{0\},\cdot,1)\) is an abelian group.
-
-### IX. Polynomial
+### IV. Polynomial
 
 Let \(F\) be a field. A polynomial over \(F\) is a finite formal sum
 
@@ -175,9 +135,9 @@ p(X)=a_0+a_1X+\cdots+a_nX^n
 
 The word **formal** matters: \(X\) is an indeterminate, not yet a number. Two polynomials are equal exactly when all corresponding coefficients are equal. The set of polynomials over \(F\), with coefficientwise addition and the usual convolution product, is denoted by \(F[X]\).
 
-### X. Units and factorization
+### V. Units and factorization
 
-A **unit** in a ring is an element with a multiplicative inverse. The units of \(F[X]\) are exactly the nonzero constant polynomials. Consequently, multiplying a polynomial by a nonzero scalar does not create a mathematically meaningful factorization.
+A **unit** of \(F[X]\) is a polynomial \(u\) for which some \(v\in F[X]\) satisfies \(uv=1\). The units of \(F[X]\) are exactly the nonzero constant polynomials. Consequently, multiplying a polynomial by a nonzero scalar does not create a mathematically meaningful factorization.
 
 A nonzero, nonunit polynomial \(p\in F[X]\) is **reducible over \(F\)** if there exist nonunit polynomials \(f,g\in F[X]\) such that
 
@@ -193,49 +153,7 @@ Irreducibility depends on the coefficient field. For example, \(X^2-2\) is irred
 X^2-2=(X-\sqrt2)(X+\sqrt2).
 ```
 
-### XI. Minimal polynomial
-
-An element \(\alpha\in E\) is **algebraic over \(F\)** if it is a root of some nonzero polynomial in \(F[X]\). For every algebraic \(\alpha\), there is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
-
-```latex
-m_{\alpha,F}(\alpha)=0.
-```
-
-This is the **minimal polynomial** of \(\alpha\) over \(F\). It divides every polynomial \(q\in F[X]\) for which \(q(\alpha)=0\). Therefore, if an irreducible polynomial \(p\in F[X]\) has \(\alpha\) as a root, then its monic normalization is the minimal polynomial:
-
-```latex
-m_{\alpha,F}=\frac{1}{\operatorname{leadingCoeff}(p)}p.
-```
-
-Why is the minimal polynomial not always \(X-\alpha\)? Its coefficients must lie in the **base field** \(F\), and \(X-\alpha\) belongs to \(F[X]\) only when \(\alpha\in F\).
-
-For example, take \(F=\mathbb Q\) and \(\alpha=\sqrt2\). The linear polynomial
-
-```latex
-X-\sqrt2
-```
-
-has \(\sqrt2\) as a root, but it is not an element of \(\mathbb Q[X]\), because its constant coefficient \(-\sqrt2\) is not rational. The polynomial
-
-```latex
-X^2-2\in\mathbb Q[X]
-```
-
-does have \(\sqrt2\) as a root, is monic, and is irreducible over \(\mathbb Q\). Therefore
-
-```latex
-m_{\sqrt2,\mathbb Q}(X)=X^2-2.
-```
-
-If we change the base field to \(\mathbb R\), then \(\sqrt2\in\mathbb R\), so the minimal polynomial becomes
-
-```latex
-m_{\sqrt2,\mathbb R}(X)=X-\sqrt2.
-```
-
-Thus the minimal polynomial depends not only on \(\alpha\), but also on the chosen base field.
-
-### XII. Separable polynomial
+### VI. Separable polynomial
 
 A nonzero polynomial is **separable over \(F\)** if, in a field where it splits completely into linear factors, no root occurs with multiplicity greater than one. Equivalently,
 
@@ -245,40 +163,17 @@ A nonzero polynomial is **separable over \(F\)** if, in a field where it splits 
 
 where \(p'\) is the formal derivative. Every irreducible polynomial over a field of characteristic zero is separable. In particular, every irreducible polynomial in \(\mathbb Q[X]\) is separable.
 
-### XIII. Field extensions and Galois groups
+### VII. Field extensions and Galois groups
 
-A **field homomorphism** \(\iota:F\to E\) is a function preserving \(0\), \(1\), addition, and multiplication. Such a map is automatically injective: its kernel is an ideal of the field \(F\), so it is either \(\{0\}\) or all of \(F\), and preservation of \(1\) rules out the latter. We may therefore identify \(F\) with its image inside \(E\).
-
-A **field extension** of \(F\) is a field \(E\) equipped with a specified field homomorphism \(F\to E\). We write \(E/F\), meaning that \(E\) is the larger field and \(F\) is the base field. For example, the usual inclusion \(\mathbb Q\hookrightarrow\mathbb C\) makes \(\mathbb C/\mathbb Q\) a field extension.
-
-Because elements of \(F\) act on elements of \(E\) by scalar multiplication,
+For the main proof, a **field extension** is an inclusion of fields
 
 ```latex
-a\cdot x=\iota(a)x,
-\qquad a\in F,\ x\in E,
+F\subseteq E.
 ```
 
-the field \(E\) is also a vector space over \(F\). The **degree of the extension** is its vector-space dimension
+We write \(E/F\), where \(F\) is the **base field** and \(E\) is the **extension field**. The slash records the inclusion and does not denote a quotient. For example, \(\mathbb C/\mathbb Q\) denotes the usual inclusion \(\mathbb Q\subseteq\mathbb C\). The more abstract formulation by a chosen field homomorphism, and the proof that it is equivalent to this concrete picture, are deferred to Appendix II.
 
-```latex
-[E:F]=\dim_F E,
-```
-
-which may be finite or infinite. For example, \([\mathbb Q(\sqrt2):\mathbb Q]=2\), with basis \(1,\sqrt2\).
-
-An **intermediate field** is a field \(K\) lying between the base and extension fields:
-
-```latex
-F\subseteq K\subseteq E.
-```
-
-If \(S\subseteq E\), then \(F(S)\), read “\(F\) adjoin \(S\),” is the smallest intermediate field containing both \(F\) and every element of \(S\). For one element we write \(F(\alpha)\). Thus
-
-```latex
-\mathbb Q(\sqrt2)=\{a+b\sqrt2:a,b\in\mathbb Q\}.
-```
-
-An element \(\alpha\in E\) is **algebraic over \(F\)** if some nonzero polynomial \(p\in F[X]\) satisfies \(p(\alpha)=0\). The extension \(E/F\) is **algebraic** if every element of \(E\) is algebraic over \(F\). It is **finite** if \([E:F]<\infty\); every finite extension is algebraic.
+An element \(\alpha\in E\) is **algebraic over \(F\)** if some nonzero polynomial \(p\in F[X]\) satisfies \(p(\alpha)=0\).
 
 Let \(p\in F[X]\). We say that \(p\) **splits over \(E\)** if it factors there entirely into linear terms:
 
@@ -337,7 +232,7 @@ Separability has a different role. If \(p\) is separable of degree \(d\), then i
 
 For our quintic, the target is therefore \(S_5\). The decisive fact later will be that \(S_5\) is not a solvable group.
 
-### XIV. Commutators, derived series, and solvable groups
+### VIII. Commutators, derived series, and solvable groups
 
 A **subgroup** \(H\le G\) is a subset of a group \(G\) that is itself a group under the same operation. Concretely, \(H\) contains the identity and is closed under multiplication and inverses. For example, the even permutations form a subgroup \(A_n\le S_n\).
 
@@ -439,7 +334,7 @@ The second equality says that \(A_5\) is **perfect**: it equals its own commutat
 
 Finally, solvability is preserved by subgroups and quotient groups. In particular, if \(f:G\to H\) is a surjective group homomorphism and \(G\) is solvable, then \(H\) is solvable: by the first isomorphism theorem, \(H\cong G/\ker f\). We will use the contrapositive later. Since \(S_5\) is not solvable, no solvable Galois group can map onto \(S_5\).
 
-### XV. What solvable by radicals means
+### IX. What solvable by radicals means
 
 Fix a base field \(F\) inside a larger field \(E\), such as \(\mathbb Q\subseteq\mathbb C\). A **radical tower over \(F\)** is a finite chain of field extensions
 
@@ -481,17 +376,11 @@ An element \(\alpha\in E\) is **solvable by radicals over \(F\)** if there exist
 
 The element does not have to be one of the generators \(\beta_i\); it may be any field expression made from them. A polynomial is called **solvable by radicals** if a radical extension contains all of its roots, or equivalently its splitting field embeds into such an extension.
 
-Roots of unity often need to be adjoined when connecting radical towers to Galois groups. A primitive \(n\)-th root of unity is an element \(\zeta_n\) satisfying
-
-```latex
-\zeta_n^n=1
-```
-
-and no smaller positive power equals \(1\). Adjoining it is itself a permitted radical step because \(1\) already lies in the preceding field. These roots of unity do not change what “constructible by radicals” means; they make the Galois structure of each radical step manageable.
-
-The bridge to group theory is the deep direction used here:
+The group-theoretic consequence needed later is:
 
 **If an irreducible polynomial has a root solvable by radicals, then its Galois group is solvable.**
+
+We use this theorem in the main proof. Its rigorous proof, together with the corresponding mathlib source, is given in [Appendix 5](#5-appendix-why-radicals-imply-a-solvable-galois-group); no part of that proof is required as a prerequisite here.
 
 ---
 
@@ -838,9 +727,184 @@ Then the Galois group of the splitting field of \(q\) over \(F\) is solvable:
 \operatorname{Gal}(q/F)\text{ is solvable}.
 ```
 
-The proof is given in Sections II–VI. The complete mathlib theorem body appears beside the final mathematical step in Section VI.
+The proof is given in Sections III–VII. The complete mathlib theorem body appears beside the final mathematical step in Section VII.
 
-### II. Group-theoretic and splitting-field lemmas
+### II. Prerequisites for the Appendix
+
+The main proof in Sections 1–3 does not depend on this section. The definitions below are collected here because the more detailed radicals-to-Galois proof uses abstract field maps, intermediate fields, adjoining, and minimal polynomials.
+
+#### A. Semigroups, monoids, and rings
+
+A **semigroup** is a set \(S\) with an associative binary operation \(\star\):
+
+```latex
+(a\star b)\star c=a\star(b\star c)
+\qquad(a,b,c\in S).
+```
+
+A **monoid** is a semigroup with an identity element \(e\) satisfying \(e\star a=a=a\star e\). It is **commutative** if \(a\star b=b\star a\) for all \(a,b\).
+
+A **ring** is a tuple \((R,+,\cdot,-,0,1)\) such that \((R,+,0,-)\) is an abelian group, \((R,\cdot,1)\) is a monoid, and multiplication distributes over addition:
+
+```latex
+a(b+c)=ab+ac,
+\qquad
+(a+b)c=ac+bc.
+```
+
+A **commutative ring** is a ring whose multiplication is commutative. These definitions supply the ambient algebraic structure needed for ideals and kernels below.
+
+#### B. Ideals, kernels, and field homomorphisms
+
+The purpose of this subsection is to prove that a field homomorphism places its domain inside its codomain as a subfield.
+
+**Definition 1 (field homomorphism).** Let \(F\) and \(E\) be fields. A field homomorphism \(\iota:F\to E\) is a function satisfying
+
+```latex
+\iota(0)=0,\qquad \iota(1)=1,
+\qquad
+\iota(a+b)=\iota(a)+\iota(b),
+\qquad
+\iota(ab)=\iota(a)\iota(b)
+```
+
+for all \(a,b\in F\).
+
+**Definition 2 (ideal).** Let \(R\) be a commutative ring. An ideal of \(R\) is a subset \(I\subseteq R\) such that:
+
+1. \(0\in I\);
+2. if \(a,b\in I\), then \(a-b\in I\);
+3. if \(r\in R\) and \(a\in I\), then \(ra\in I\).
+
+**Definition 3 (proper and prime ideals).** An ideal \(I\) is proper if \(I\ne R\). A proper ideal \(I\) is prime if, for every \(a,b\in R\),
+
+```latex
+ab\in I
+\quad\Longrightarrow\quad
+a\in I\text{ or }b\in I.
+```
+
+For example, if \(p\) is a prime integer, then \(p\mathbb Z\) is a prime ideal of \(\mathbb Z\), because \(p\mid ab\) implies \(p\mid a\) or \(p\mid b\).
+
+**Definition 4 (kernel).** The kernel of \(\iota:F\to E\) is
+
+```latex
+\ker(\iota)=\{a\in F:\iota(a)=0\}.
+```
+
+**Lemma (the kernel is an ideal).** The kernel \(\ker(\iota)\) is an ideal of \(F\).
+
+**Proof.** Since \(\iota(0)=0\), the kernel contains \(0\). If \(a,b\in\ker(\iota)\), then \(\iota(-b)=-\iota(b)\), because
+
+```latex
+\iota(b)+\iota(-b)=\iota(b-b)=\iota(0)=0.
+```
+
+Therefore \(\iota(a-b)=\iota(a)-\iota(b)=0\), so \(a-b\in\ker(\iota)\). If \(r\in F\) and \(a\in\ker(\iota)\), then
+
+```latex
+\iota(ra)=\iota(r)\iota(a)=0,
+```
+
+so \(ra\in\ker(\iota)\). Thus all three ideal axioms hold. \(\square\)
+
+**Lemma (the kernel is prime).** The kernel \(\ker(\iota)\) is a prime ideal of \(F\).
+
+**Proof.** It is proper because \(\iota(1)=1\ne0\). If \(ab\in\ker(\iota)\), then
+
+```latex
+0=\iota(ab)=\iota(a)\iota(b).
+```
+
+A field has no zero divisors: if \(uv=0\) and \(u\ne0\), multiplying by \(u^{-1}\) gives \(v=0\). Hence \(\iota(a)=0\) or \(\iota(b)=0\), so \(a\in\ker(\iota)\) or \(b\in\ker(\iota)\). \(\square\)
+
+The prime-kernel lemma explains the connection with prime ideals, but the injectivity theorem below needs only the ideal-kernel lemma and the next classification.
+
+**Lemma (ideals of a field).** The only ideals of a field \(F\) are \(\{0\}\) and \(F\).
+
+**Proof.** Let \(I\) be an ideal of \(F\). If \(I\) contains a nonzero element \(a\), then
+
+```latex
+1=a^{-1}a\in I.
+```
+
+Thus every \(r\in F\) satisfies \(r=r\cdot1\in I\), so \(I=F\). If \(I\) contains no nonzero element, then \(I=\{0\}\). \(\square\)
+
+**Theorem.** Every field homomorphism \(\iota:F\to E\) is injective.
+
+**Proof.** The ideal-kernel lemma shows that \(\ker(\iota)\) is an ideal of \(F\). The classification of ideals in a field therefore gives \(\ker(\iota)=\{0\}\) or \(\ker(\iota)=F\). The second alternative is impossible because \(1\notin\ker(\iota)\). Hence \(\ker(\iota)=\{0\}\).
+
+If \(\iota(a)=\iota(b)\), then \(\iota(a-b)=0\), so \(a-b\in\ker(\iota)=\{0\}\). Therefore \(a=b\). \(\square\)
+
+#### C. Abstract field extensions, intermediate fields, and adjoining
+
+Fix a field \(F\). An **abstract field extension of \(F\)** is a pair \((E,\iota)\), where \(E\) is a field and \(\iota:F\to E\) is a field homomorphism. The chosen map is part of the data: it specifies which element of \(E\) represents each scalar of \(F\). For example, there are two embeddings
+
+```latex
+\mathbb Q(\sqrt2)\longrightarrow\mathbb C,
+\qquad
+\sqrt2\longmapsto\sqrt2
+\quad\text{or}\quad
+\sqrt2\longmapsto-\sqrt2.
+```
+
+By the preceding theorem, \(\iota\) is injective. Its image
+
+```latex
+\iota(F)=\{\iota(a):a\in F\}
+```
+
+is a subfield of \(E\). Indeed, preservation of the field operations gives closure under addition, subtraction, and multiplication; and if \(a\ne0\), then
+
+```latex
+\iota(a)\iota(a^{-1})=\iota(1)=1,
+```
+
+so the image is closed under inverses of nonzero elements. Thus \(F\) is isomorphic to \(\iota(F)\subseteq E\), and after making this identification we may write \(F\subseteq E\). Conversely, an inclusion of fields is a field homomorphism. Hence the abstract and concrete definitions agree up to identifying \(F\) with its image.
+
+The field \(E\) is a vector space over \(F\), with scalar multiplication \(a\cdot x=\iota(a)x\). The **degree** of the extension is
+
+```latex
+[E:F]=\dim_F E.
+```
+
+An **intermediate field** is a field \(K\) satisfying \(F\subseteq K\subseteq E\). If \(S\subseteq E\), then \(F(S)\), read “\(F\) adjoin \(S\),” is the intersection of all intermediate fields containing \(S\). It is therefore the unique smallest intermediate field containing both \(F\) and \(S\). For one element, write \(F(\alpha)\). For example,
+
+```latex
+\mathbb Q(\sqrt2)=\{a+b\sqrt2:a,b\in\mathbb Q\}.
+```
+
+An extension \(E/F\) is **algebraic** if every element of \(E\) is algebraic over \(F\). It is **finite** if \([E:F]<\infty\); every finite extension is algebraic.
+
+#### D. Minimal polynomials
+
+Let \(E/F\) be a field extension and let \(\alpha\in E\) be algebraic over \(F\). There is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
+
+```latex
+m_{\alpha,F}(\alpha)=0.
+```
+
+It is called the **minimal polynomial** of \(\alpha\) over \(F\). It divides every polynomial \(q\in F[X]\) for which \(q(\alpha)=0\). Consequently, if an irreducible polynomial \(p\in F[X]\) has \(\alpha\) as a root, then
+
+```latex
+m_{\alpha,F}=\frac{1}{\operatorname{leadingCoeff}(p)}p.
+```
+
+The coefficients of the minimal polynomial must lie in the base field. For example, \(X-\sqrt2\notin\mathbb Q[X]\), whereas \(X^2-2\in\mathbb Q[X]\) is monic, irreducible, and vanishes at \(\sqrt2\). Hence
+
+```latex
+m_{\sqrt2,\mathbb Q}(X)=X^2-2.
+```
+
+Over \(\mathbb R\), however, \(\sqrt2\) already belongs to the base field, so
+
+```latex
+m_{\sqrt2,\mathbb R}(X)=X-\sqrt2.
+```
+
+Thus the minimal polynomial depends on both the element and the chosen base field.
+
+### III. Group-theoretic and splitting-field lemmas
 
 ::: proof-lean appendix-tower
 The Lean source imports the following four group-theoretic results. We cite them rather than replace them with a different proof.
@@ -909,7 +973,7 @@ The direct product on the right is solvable by cited theorem D. Cited theorem A 
 The four cited results are `solvable_of_solvable_injective`, `solvable_of_surjective`, the `solvable_prod` instance, and `isSolvable_of_isScalarTower`. The displayed declarations follow the same order as the mathematics: `gal_mul_isSolvable` and `gal_prod_isSolvable` are Lemma 3; `gal_isSolvable_of_splits` is Lemma 1; and `gal_isSolvable_tower` is Lemma 2. In the tower proof, `ϕ` is exactly the splitting-field isomorphism in the mathematical proof, and the final line invokes cited theorem C.
 :::
 
-### III. Lemma: induction on the radical closure
+### IV. Lemma: induction on the radical closure
 
 ::: proof-lean appendix-solvable-by-rad
 Let \(\mathcal R(F,E)\) be the intersection of all intermediate fields \(K\) with
@@ -995,7 +1059,7 @@ The reverse inclusion is part of the definition of \(S\), so \(S=\mathcal R(F,E)
 `solvableByRad_le` is the radical-minimality lemma; its one-line proof is the infimum argument given on the left. `solvableByRad_le_algClosure` proves Lemma 4 with the same composed polynomial `p.comp (X ^ n)`. `isIntegral_of_mem_solvableByRad` is the stated corollary. `Subalgebra.IsAlgebraic.toIntermediateField` is cited theorem E. The body of `solvableByRad.induction` then follows the mathematical proof in the same order: construct `s`, promote it to `t`, prove `ht` (radical closure), and apply `solvableByRad_le`.
 :::
 
-### IV. Lemma: extracting one radical
+### V. Lemma: extracting one radical
 
 ::: proof-lean appendix-radical-step
 The Lean proof first establishes three auxiliary results about binomials. We state and prove them in the same order.
@@ -1116,7 +1180,7 @@ The constant factor has trivial Galois group. Each binomial factor has solvable 
 The right column now includes every helper proved in this mathlib file. `map_rootsOfUnity_eq_pow_self` is cited theorem G. `gal_X_pow_sub_one_isSolvable`, `gal_X_pow_sub_C_isSolvable_aux`, and `splits_X_pow_sub_one_of_X_pow_sub_C` are Lemmas 5–7. `gal_X_pow_sub_C_isSolvable` is their corollary and calls `gal_isSolvable_tower` exactly as on the left. `induction_rad` is Lemma 8: it checks nonzeroness, applies minimal-polynomial divisibility, factors `p.comp (X ^ n)`, calls `gal_prod_isSolvable` on the binomial factors, and finishes through `gal_isSolvable_tower` and `gal_isSolvable_of_splits`.
 :::
 
-### V. Theorem: the minimal polynomial has solvable Galois group
+### VI. Theorem: the minimal polynomial has solvable Galois group
 
 ::: proof-lean appendix-main-induction
 **Theorem.** If \(z\in\mathcal R(F,E)\), then
@@ -1182,7 +1246,7 @@ All hypotheses of the induction lemma are satisfied. Therefore \(P(z)\) holds fo
 `nonempty_algHom_adjoin_of_splits` is cited theorem F. `induction_step` is Lemma 9 and follows the same sequence: define `p` and `q`; obtain `f`; prove `key`, the equality of minimal polynomials; use normality to split the transported minimal polynomial; use `gal_mul_isSolvable`; then apply `gal_isSolvable_of_splits`. `isSolvable_gal_minpoly` performs the four induction cases in exactly the order stated on the left: base, addition, multiplication, radical.
 :::
 
-### VI. Proof of the radicals-to-Galois theorem
+### VII. Proof of the radicals-to-Galois theorem
 
 ::: proof-lean appendix-normalization
 **Proof of the theorem in Section I.** Since \(x\) is solvable by radicals, \(x\in\mathcal R(F,E)\). The theorem of the preceding section gives

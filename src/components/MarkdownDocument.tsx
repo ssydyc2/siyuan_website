@@ -45,10 +45,17 @@ interface NavigationOptions {
   progressEndHeadingId?: string;
 }
 
-interface NavigationSection {
+interface NavigationEntry {
   id: string;
   title: string;
-  children: { id: string; title: string }[];
+}
+
+interface NavigationSubsection extends NavigationEntry {
+  children: NavigationEntry[];
+}
+
+interface NavigationSection extends NavigationEntry {
+  children: NavigationSubsection[];
 }
 
 function parseInline(text: string): InlineNode[] {
@@ -197,6 +204,7 @@ function buildNavigationSections(
   const excluded = new Set(excludedHeadings.map((value) => value.toLowerCase()));
   const sections: NavigationSection[] = [];
   let currentSection: NavigationSection | null = null;
+  let currentSubsection: NavigationSubsection | null = null;
 
   for (const block of blocks) {
     if (block.type !== 'heading' || !block.id) {
@@ -206,16 +214,24 @@ function buildNavigationSections(
     if (block.level === 2) {
       if (excluded.has(block.id.toLowerCase()) || excluded.has(block.text.toLowerCase())) {
         currentSection = null;
+        currentSubsection = null;
         continue;
       }
 
       currentSection = { id: block.id, title: block.text, children: [] };
+      currentSubsection = null;
       sections.push(currentSection);
       continue;
     }
 
     if (block.level === 3 && currentSection) {
-      currentSection.children.push({ id: block.id, title: block.text });
+      currentSubsection = { id: block.id, title: block.text, children: [] };
+      currentSection.children.push(currentSubsection);
+      continue;
+    }
+
+    if (block.level === 4 && currentSubsection) {
+      currentSubsection.children.push({ id: block.id, title: block.text });
     }
   }
 
@@ -586,7 +602,11 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
       );
     }
 
-    return <h3 id={headingId} className="mt-8 scroll-mt-8 text-xl font-medium text-[var(--ink)]">{content}</h3>;
+    if (block.level === 3) {
+      return <h3 id={headingId} className="mt-8 scroll-mt-8 text-xl font-medium text-[var(--ink)]">{content}</h3>;
+    }
+
+    return <h4 id={headingId} className="mt-7 scroll-mt-8 text-lg font-medium text-[var(--ink)]">{content}</h4>;
   }
 
   if (block.type === 'paragraph') {
@@ -705,17 +725,27 @@ function useReadingPosition(
 ) {
   const flattenedHeadings = useMemo(
     () => sections.flatMap((section) => [
-      { id: section.id, sectionId: section.id, subsectionId: null },
-      ...section.children.map((child) => ({
-        id: child.id,
-        sectionId: section.id,
-        subsectionId: child.id,
-      })),
+      { id: section.id, sectionId: section.id, subsectionId: null, detailId: null },
+      ...section.children.flatMap((child) => [
+        {
+          id: child.id,
+          sectionId: section.id,
+          subsectionId: child.id,
+          detailId: null,
+        },
+        ...child.children.map((detail) => ({
+          id: detail.id,
+          sectionId: section.id,
+          subsectionId: child.id,
+          detailId: detail.id,
+        })),
+      ]),
     ]),
     [sections],
   );
   const [activeSectionId, setActiveSectionId] = useState(sections[0]?.id ?? '');
   const [activeSubsectionId, setActiveSubsectionId] = useState<string | null>(null);
+  const [activeDetailId, setActiveDetailId] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -759,6 +789,7 @@ function useReadingPosition(
 
       setActiveSectionId(activeHeading.sectionId);
       setActiveSubsectionId(activeHeading.subsectionId);
+      setActiveDetailId(activeHeading.detailId);
     };
 
     const scheduleUpdate = () => {
@@ -781,18 +812,20 @@ function useReadingPosition(
     };
   }, [articleRef, flattenedHeadings, progressEndHeadingId]);
 
-  return { activeSectionId, activeSubsectionId, progress };
+  return { activeSectionId, activeSubsectionId, activeDetailId, progress };
 }
 
 function NavigationLinks({
   sections,
   activeSectionId,
   activeSubsectionId,
+  activeDetailId,
   onNavigate,
 }: {
   sections: NavigationSection[];
   activeSectionId: string;
   activeSubsectionId: string | null;
+  activeDetailId: string | null;
   onNavigate: (event: MouseEvent<HTMLAnchorElement>, id: string) => void;
 }) {
   return (
@@ -823,7 +856,7 @@ function NavigationLinks({
                     <li key={child.id}>
                       <a
                         href={`#${child.id}`}
-                        aria-current={isActiveSubsection ? 'location' : undefined}
+                        aria-current={isActiveSubsection && !activeDetailId ? 'location' : undefined}
                         onClick={(event) => onNavigate(event, child.id)}
                         className={`block py-1 text-xs leading-5 transition-colors ${
                           isActiveSubsection
@@ -833,6 +866,30 @@ function NavigationLinks({
                       >
                         {renderInline(parseInline(child.title))}
                       </a>
+                      {isActiveSubsection && child.children.length > 0 && (
+                        <ol className="mb-1 ml-2 border-l border-[var(--rule)] pl-2">
+                          {child.children.map((detail) => {
+                            const isActiveDetail = detail.id === activeDetailId;
+
+                            return (
+                              <li key={detail.id}>
+                                <a
+                                  href={`#${detail.id}`}
+                                  aria-current={isActiveDetail ? 'location' : undefined}
+                                  onClick={(event) => onNavigate(event, detail.id)}
+                                  className={`block py-1 text-[0.69rem] leading-4 transition-colors ${
+                                    isActiveDetail
+                                      ? 'font-medium text-[var(--accent)]'
+                                      : 'text-[var(--ink-faint)] hover:text-[var(--ink-muted)]'
+                                  }`}
+                                >
+                                  {renderInline(parseInline(detail.title))}
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      )}
                     </li>
                   );
                 })}
@@ -854,7 +911,7 @@ function ReadingNavigation({
   articleRef: RefObject<HTMLElement | null>;
   progressEndHeadingId?: string;
 }) {
-  const { activeSectionId, activeSubsectionId, progress } = useReadingPosition(
+  const { activeSectionId, activeSubsectionId, activeDetailId, progress } = useReadingPosition(
     sections,
     articleRef,
     progressEndHeadingId,
@@ -865,6 +922,7 @@ function ReadingNavigation({
   const activeSubsection = activeSection?.children.find(
     (child) => child.id === activeSubsectionId,
   );
+  const activeDetail = activeSubsection?.children.find((detail) => detail.id === activeDetailId);
 
   const handleNavigate = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     const element = document.getElementById(id);
@@ -920,6 +978,7 @@ function ReadingNavigation({
             sections={sections}
             activeSectionId={activeSectionId}
             activeSubsectionId={activeSubsectionId}
+            activeDetailId={activeDetailId}
             onNavigate={handleNavigate}
           />
         </div>
@@ -943,6 +1002,11 @@ function ReadingNavigation({
                 {renderInline(parseInline(activeSubsection.title))}
               </span>
             )}
+            {activeDetail && (
+              <span className="block truncate text-[0.69rem] text-[var(--ink-faint)]">
+                {renderInline(parseInline(activeDetail.title))}
+              </span>
+            )}
           </span>
           <span aria-hidden="true" className="font-mono text-sm text-[var(--ink-faint)]">
             {mobileOpen ? '−' : '+'}
@@ -964,6 +1028,7 @@ function ReadingNavigation({
               sections={sections}
               activeSectionId={activeSectionId}
               activeSubsectionId={activeSubsectionId}
+              activeDetailId={activeDetailId}
               onNavigate={handleNavigate}
             />
           </nav>
