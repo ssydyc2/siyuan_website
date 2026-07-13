@@ -2,8 +2,9 @@ import { readFileSync } from 'node:fs';
 
 const markdownPath = new URL('../src/content/blog/abel-ruffini-backwards.md', import.meta.url);
 const leanPath = new URL('../formal/abel-ruffini/AbelRuffini.lean', import.meta.url);
+const appendixLeanPath = new URL('../formal/abel-ruffini/MathlibAppendix.lean', import.meta.url);
 const markdown = readFileSync(markdownPath, 'utf8');
-const lean = readFileSync(leanPath, 'utf8');
+const lean = `${readFileSync(leanPath, 'utf8')}\n${readFileSync(appendixLeanPath, 'utf8')}`;
 
 function collectMatches(source, pattern, label) {
   const values = [];

@@ -34,6 +34,13 @@
   - [XII. Manufacture degree n from degree five](#xii-manufacture-degree-n-from-degree-five)
   - [XIII. The final theorem](#xiii-the-final-theorem)
 - [4. Sources](#4-sources)
+- [5. Appendix: why radicals imply a solvable Galois group](#5-appendix-why-radicals-imply-a-solvable-galois-group)
+  - [I. The radicals-to-Galois theorem](#i-the-radicals-to-galois-theorem)
+  - [II. Group-theoretic and splitting-field lemmas](#ii-group-theoretic-and-splitting-field-lemmas)
+  - [III. Lemma: induction on the radical closure](#iii-lemma-induction-on-the-radical-closure)
+  - [IV. Lemma: extracting one radical](#iv-lemma-extracting-one-radical)
+  - [V. Theorem: the minimal polynomial has solvable Galois group](#v-theorem-the-minimal-polynomial-has-solvable-galois-group)
+  - [VI. Proof of the radicals-to-Galois theorem](#vi-proof-of-the-radicals-to-galois-theorem)
 
 ## Overview and approach
 
@@ -661,7 +668,7 @@ where \(|X|\) denotes its cardinality, then the full permutation group \(\operat
 The four `#check` commands correspond, in order, to cited theorems 1–4. They introduce no proofs or new declarations: `#check` only asks Lean to elaborate and report the imported declaration's type. Thus the mathematics on the left states exactly the results cited by this Lean region and deliberately supplies no independent proofs.
 :::
 
-Cited theorems 1–4 remain imported without proof, exactly as they do in the displayed Lean file.
+Cited theorem 1 is proved in [Appendix 5](#5-appendix-why-radicals-imply-a-solvable-galois-group) by following the actual mathlib source from `solvableByRad` through `isSolvable_gal_minpoly` to `isSolvable_gal_of_irreducible`. Cited theorems 2–4 remain imported without proof, exactly as they do in the displayed Lean file.
 
 ### VIII. Why the Galois group is S5
 
@@ -808,3 +815,407 @@ The final Lean theorem is short because every difficult point has already been p
 - [Mathlib: Polynomial Galois groups](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/PolynomialGaloisGroup.html)
 - [Mathlib: Solvable groups and permutation groups](https://leanprover-community.github.io/mathlib4_docs/Mathlib/GroupTheory/Solvable.html)
 - The adapted companion code retains Thomas Browning's attribution and is distributed under mathlib's Apache-2.0 license.
+
+---
+
+## 5. Appendix: why radicals imply a solvable Galois group
+
+This appendix proves the first core lemma in substantially more detail. Its hypotheses match the mathlib theorem: no characteristic-zero assumption is needed. The Lean excerpts below are from `Mathlib.FieldTheory.AbelRuffini` in the mathlib version used by the companion project. They are library source code, not code written specifically for our quintic.
+
+### I. The radicals-to-Galois theorem
+
+**Theorem.** Let \(F\subseteq E\) be fields. Let \(q\in F[X]\) be irreducible, and suppose \(x\in E\) satisfies
+
+```latex
+q(x)=0
+\qquad\text{and}\qquad
+x\text{ is solvable by radicals over }F.
+```
+
+Then the Galois group of the splitting field of \(q\) over \(F\) is solvable:
+
+```latex
+\operatorname{Gal}(q/F)\text{ is solvable}.
+```
+
+The proof is given in Sections II–VI. The complete mathlib theorem body appears beside the final mathematical step in Section VI.
+
+### II. Group-theoretic and splitting-field lemmas
+
+::: proof-lean appendix-tower
+The Lean source imports the following four group-theoretic results. We cite them rather than replace them with a different proof.
+
+**Cited theorem A (injective transfer).** If \(i:G\to H\) is an injective group homomorphism and \(H\) is solvable, then \(G\) is solvable.
+
+**Cited theorem B (surjective transfer).** If \(r:G\to H\) is a surjective group homomorphism and \(G\) is solvable, then \(H\) is solvable.
+
+**Cited theorem C (solvability along a normal field tower).** Let \(F\subseteq K\subseteq L\), with \(K/F\) normal. If
+
+```latex
+\operatorname{Aut}_F(K)
+\quad\text{and}\quad
+\operatorname{Aut}_K(L)
+```
+
+are solvable, then \(\operatorname{Aut}_F(L)\) is solvable.
+
+**Cited theorem D (direct products).** If \(G\) and \(H\) are solvable groups, then \(G\times H\) is solvable.
+
+We now prove exactly the three polynomial lemmas used later.
+
+**Lemma 1 (a polynomial that splits in a solvable splitting field).** Let \(p,q\in F[X]\). Assume \(p\) splits over the splitting field \(L_q\) of \(q\), and \(\operatorname{Gal}(q/F)\) is solvable. Then \(\operatorname{Gal}(p/F)\) is solvable.
+
+**Proof.** The normal-extension restriction theorem gives a surjective homomorphism
+
+```latex
+\operatorname{Aut}_F(L_q)
+\twoheadrightarrow
+\operatorname{Gal}(p/F).
+```
+
+The domain is \(\operatorname{Gal}(q/F)\), which is solvable by assumption. Cited theorem B gives the conclusion. \(\square\)
+
+**Lemma 2 (splitting-field tower).** Let \(p,q\in F[X]\), let \(K=L_p\) be the splitting field of \(p\), and let \(L=L_q\) be the splitting field of \(q\). Assume:
+
+1. \(p\) splits over \(L\);
+2. \(\operatorname{Gal}(p/F)=\operatorname{Aut}_F(K)\) is solvable;
+3. the Galois group over \(K\) of the coefficient extension \(q_K\in K[X]\) is solvable.
+
+Then \(\operatorname{Gal}(q/F)=\operatorname{Aut}_F(L)\) is solvable.
+
+**Proof.** Since \(p\) splits over \(L\), the universal property of splitting fields identifies \(K\) with an intermediate field of \(L/F\). The same universal property gives an isomorphism
+
+```latex
+\operatorname{Aut}_K(L)
+\cong
+\operatorname{Gal}(q_K/K).
+```
+
+The group on the right is solvable by assumption. By cited theorem A, the isomorphic group \(\operatorname{Aut}_K(L)\) is solvable. The group \(\operatorname{Aut}_F(K)\) is solvable by assumption 2. Cited theorem C applied to \(F\subseteq K\subseteq L\) now proves that \(\operatorname{Aut}_F(L)\) is solvable. \(\square\)
+
+**Lemma 3 (product).** If \(p,q\in F[X]\) have solvable Galois groups, then \(pq\) has solvable Galois group.
+
+**Proof.** Restriction to the roots of the two factors gives an injective homomorphism
+
+```latex
+\operatorname{Gal}(pq/F)
+\hookrightarrow
+\operatorname{Gal}(p/F)\times\operatorname{Gal}(q/F).
+```
+
+The direct product on the right is solvable by cited theorem D. Cited theorem A gives the conclusion. \(\square\)
+
+::: lean-explanation
+The four cited results are `solvable_of_solvable_injective`, `solvable_of_surjective`, the `solvable_prod` instance, and `isSolvable_of_isScalarTower`. The displayed declarations follow the same order as the mathematics: `gal_mul_isSolvable` and `gal_prod_isSolvable` are Lemma 3; `gal_isSolvable_of_splits` is Lemma 1; and `gal_isSolvable_tower` is Lemma 2. In the tower proof, `ϕ` is exactly the splitting-field isomorphism in the mathematical proof, and the final line invokes cited theorem C.
+:::
+
+### III. Lemma: induction on the radical closure
+
+::: proof-lean appendix-solvable-by-rad
+Let \(\mathcal R(F,E)\) be the intersection of all intermediate fields \(K\) with
+
+```latex
+F\subseteq K\subseteq E
+```
+
+that are closed under extracting nonzero-degree roots. This family is nonempty because \(E\) itself has the required closure property. Equivalently, \(\mathcal R(F,E)\) is the smallest intermediate field satisfying
+
+
+```latex
+x^n\in K,\ n\ne0
+\quad\Longrightarrow\quad
+x\in K.
+```
+
+Because intersections of intermediate fields are intermediate fields, \(\mathcal R(F,E)\) contains \(F\) and is closed under addition, subtraction, multiplication, and inversion. By construction it is also closed under the displayed radical rule.
+
+Its minimality has the following precise form.
+
+**Radical-minimality lemma.** If \(T\) is an intermediate field with
+
+```latex
+y^n\in T,\ n\ge1\Longrightarrow y\in T,
+```
+
+then \(\mathcal R(F,E)\subseteq T\).
+
+**Proof.** The field \(T\) is one of the members of the family whose intersection defines \(\mathcal R(F,E)\). An intersection is contained in each member of the intersected family. Hence \(\mathcal R(F,E)\subseteq T\). \(\square\)
+
+**Lemma 4 (algebraicity).** Every element of \(\mathcal R(F,E)\) is algebraic over \(F\).
+
+**Proof.** Let \(A\subseteq E\) be the intermediate field of elements algebraic over \(F\). We show that \(A\) is closed under radicals. Suppose \(y^n\in A\), with \(n\ge1\). Choose a nonzero polynomial \(p\in F[X]\) with
+
+```latex
+p(y^n)=0.
+```
+
+Set \(r(X)=p(X^n)\). Then \(r(y)=p(y^n)=0\). Moreover, \(r\ne0\): since \(n\ge1\), \(X^n\) is nonconstant, and the leading coefficient of \(p(X^n)\) equals the nonzero leading coefficient of \(p\). Thus \(y\) is algebraic over \(F\), so \(y\in A\). The radical-minimality lemma gives \(\mathcal R(F,E)\subseteq A\). \(\square\)
+
+**Corollary.** Every element of \(\mathcal R(F,E)\) is integral over \(F\).
+
+**Justification.** Over a field, algebraicity and integrality are equivalent: divide a nonzero annihilating polynomial by its leading coefficient to obtain a monic annihilating polynomial. Apply Lemma 4. \(\square\)
+
+By a **predicate** on \(\mathcal R(F,E)\) we mean a function
+
+```latex
+P:\mathcal R(F,E)\longrightarrow\{\mathrm{true},\mathrm{false}\}.
+```
+
+The assertion \(P(x)\) means that this function takes the value \(\mathrm{true}\) at \(x\).
+
+**Lemma.** Let \(P\) be a predicate on \(\mathcal R(F,E)\). Suppose:
+
+1. \(P(a)\) holds for every \(a\in F\);
+2. for all \(x,y\in\mathcal R(F,E)\), \(P(x)\) and \(P(y)\) imply \(P(x+y)\) and \(P(xy)\);
+3. for \(x\in E\) and \(n\ge1\), if \(x^n\in\mathcal R(F,E)\) and \(P(x^n)\) holds, then \(P(x)\) holds. Here \(x\in\mathcal R(F,E)\) follows from radical closure, so the conclusion is well-defined.
+
+Then \(P(x)\) holds for every \(x\in\mathcal R(F,E)\).
+
+**Proof.** Define
+
+```latex
+S=\{x\in\mathcal R(F,E):P(x)\}.
+```
+
+The first two assumptions make \(S\) an \(F\)-subalgebra of \(E\): it contains \(F\) and is closed under addition and multiplication; it is closed under negation because \(-x=(-1)x\) and \(-1\in F\).
+
+By Lemma 4, every element of \(S\) is algebraic over \(F\). We now cite exactly the field-theoretic result used at this point:
+
+**Cited theorem E (algebraic subalgebra-to-field theorem).** An \(F\)-subalgebra of a field whose elements are all algebraic over \(F\) is an intermediate field.
+
+Applying cited theorem E promotes \(S\) to an intermediate field. The third assumption says that this intermediate field is closed under radicals. The radical-minimality lemma therefore gives
+
+```latex
+\mathcal R(F,E)\subseteq S.
+```
+
+The reverse inclusion is part of the definition of \(S\), so \(S=\mathcal R(F,E)\). Thus \(P\) holds throughout \(\mathcal R(F,E)\). \(\square\)
+
+::: lean-explanation
+`solvableByRad_le` is the radical-minimality lemma; its one-line proof is the infimum argument given on the left. `solvableByRad_le_algClosure` proves Lemma 4 with the same composed polynomial `p.comp (X ^ n)`. `isIntegral_of_mem_solvableByRad` is the stated corollary. `Subalgebra.IsAlgebraic.toIntermediateField` is cited theorem E. The body of `solvableByRad.induction` then follows the mathematical proof in the same order: construct `s`, promote it to `t`, prove `ht` (radical closure), and apply `solvableByRad_le`.
+:::
+
+### IV. Lemma: extracting one radical
+
+::: proof-lean appendix-radical-step
+The Lean proof first establishes three auxiliary results about binomials. We state and prove them in the same order.
+
+**Cited theorem G (automorphisms of roots of unity).** If \(a^n=1\) and \(\sigma\) is a field homomorphism, then \(\sigma(a)=a^m\) for some integer \(m\ge0\).
+
+**Lemma 5.** The Galois group of \(X^n-1\) is abelian, hence solvable.
+
+**Proof.** The case \(n=0\) is the zero polynomial, whose Galois group is trivial. Assume \(n\ge1\), and let \(a\) be any root of \(X^n-1\) in its splitting field. For every Galois automorphism \(\sigma\), cited theorem G gives an integer \(c\) such that
+
+```latex
+\sigma(a)=a^c.
+```
+
+Given \(\sigma,\tau\), choose \(c,d\) with \(\sigma(a)=a^c\) and \(\tau(a)=a^d\). Then
+
+```latex
+(\sigma\tau)(a)=(a^d)^c=a^{dc}=a^{cd}=(a^c)^d=(\tau\sigma)(a).
+```
+
+The two automorphisms agree on every root, and the roots generate the splitting field; therefore \(\sigma\tau=\tau\sigma\). \(\square\)
+
+**Lemma 6.** Suppose \(X^n-1\) splits over a field \(K\). Then, for every \(a\in K\), the Galois group over \(K\) of \(X^n-a\) is abelian.
+
+**Proof.** The cases \(a=0\) and \(n=0\) reduce respectively to \(X^n\) and a constant polynomial, whose Galois groups are trivial. Assume \(a\ne0\) and \(n\ge1\). Let \(b\) be a root of \(X^n-a\) in its splitting field, so \(b^n=a\) and \(b\ne0\). For an automorphism \(\sigma\),
+
+```latex
+\left(\frac{\sigma(b)}b\right)^n
+=\frac{\sigma(b^n)}{b^n}
+=\frac aa=1.
+```
+
+Because \(X^n-1\) splits over \(K\), this quotient lies in \(K\). Hence there is \(c_\sigma\in K\) with
+
+```latex
+\sigma(b)=b c_\sigma.
+```
+
+For \(\sigma,\tau\), both fix \(c_\sigma,c_\tau\), so
+
+```latex
+(\sigma\tau)(b)=b c_\tau c_\sigma
+=b c_\sigma c_\tau=(\tau\sigma)(b).
+```
+
+Again the automorphisms agree on every root, so they commute. \(\square\)
+
+**Lemma 7.** Let \(i:K\hookrightarrow M\) be a field embedding, let \(a\ne0\), and suppose \(X^n-a\) splits over \(M\). Then \(X^n-1\) also splits over \(M\).
+
+**Proof.** Choose a nonzero root \(b\) of \(X^n-i(a)\). If \(s\) is the multiset of all \(n\) roots of that polynomial, then
+
+```latex
+\{c/b:c\in s\}
+```
+
+is a multiset of \(n\)-th roots of unity. Conversely, multiplying these normalized roots by \(b\) recovers every root of \(X^n-i(a)\). Comparing the monic degree-\(n\) products gives
+
+```latex
+X^n-1=\prod_{c\in s}\left(X-\frac cb\right).
+```
+
+Thus \(X^n-1\) splits over \(M\). \(\square\)
+
+**Corollary.** For every \(a\in K\), the Galois group of \(X^n-a\) over \(K\) is solvable.
+
+**Proof.** The case \(a=0\) is trivial. Assume \(a\ne0\). Apply Lemma 2 with
+
+```latex
+p=X^n-1,
+\qquad
+q=X^n-a.
+```
+
+Lemma 7 supplies assumption 1 of Lemma 2; Lemma 5 supplies assumption 2; and, over the splitting field of \(p\), Lemma 6 supplies assumption 3. Therefore \(\operatorname{Gal}(X^n-a/K)\) is solvable. \(\square\)
+
+We now prove the radical step corresponding to `induction_rad`.
+
+**Lemma 8.** Let \(x\in\mathcal R(F,E)\), let \(n\ge1\), and suppose
+
+```latex
+\operatorname{Gal}(\operatorname{minpoly}_F(x^n)/F)
+\text{ is solvable}.
+```
+
+Then \(\operatorname{Gal}(\operatorname{minpoly}_F(x)/F)\) is solvable.
+
+**Proof.** Put \(p=\operatorname{minpoly}_F(x^n)\). The polynomial \(p(X^n)\) is nonzero: \(p\ne0\), \(n\ge1\), and composition with the nonconstant monomial \(X^n\) preserves the nonzero leading coefficient.
+
+Since
+
+```latex
+p(x^n)=0,
+```
+
+the minimal-polynomial divisibility theorem gives
+
+```latex
+\operatorname{minpoly}_F(x)\mid p(X^n).
+```
+
+Therefore Lemma 1 reduces the desired conclusion to proving that the Galois group of \(p(X^n)\) is solvable.
+
+Let \(K\) be the splitting field of \(p\). The polynomial \(p\) splits over the splitting field of \(p(X^n)\): every root \(a\) of \(p\) is \(b^n\) for some root \(b\) of \(p(X^n)\). Over \(K\), write
+
+```latex
+p(X)=c\prod_i(X-a_i).
+```
+
+After composition with \(X^n\),
+
+```latex
+p(X^n)=c\prod_i(X^n-a_i).
+```
+
+The constant factor has trivial Galois group. Each binomial factor has solvable Galois group by the corollary. Repeated application of Lemma 3 therefore shows that the Galois group over \(K\) of \(p(X^n)\) is solvable. The hypothesis gives solvability of \(\operatorname{Gal}(p/F)\). Lemma 2, applied to \(p\) and \(p(X^n)\), now gives solvability of \(\operatorname{Gal}(p(X^n)/F)\). Finally, Lemma 1 and the displayed divisibility give solvability of \(\operatorname{Gal}(\operatorname{minpoly}_F(x)/F)\). \(\square\)
+
+::: lean-explanation
+The right column now includes every helper proved in this mathlib file. `map_rootsOfUnity_eq_pow_self` is cited theorem G. `gal_X_pow_sub_one_isSolvable`, `gal_X_pow_sub_C_isSolvable_aux`, and `splits_X_pow_sub_one_of_X_pow_sub_C` are Lemmas 5–7. `gal_X_pow_sub_C_isSolvable` is their corollary and calls `gal_isSolvable_tower` exactly as on the left. `induction_rad` is Lemma 8: it checks nonzeroness, applies minimal-polynomial divisibility, factors `p.comp (X ^ n)`, calls `gal_prod_isSolvable` on the binomial factors, and finishes through `gal_isSolvable_tower` and `gal_isSolvable_of_splits`.
+:::
+
+### V. Theorem: the minimal polynomial has solvable Galois group
+
+::: proof-lean appendix-main-induction
+**Theorem.** If \(z\in\mathcal R(F,E)\), then
+
+```latex
+\operatorname{Gal}(\operatorname{minpoly}_F(z)/F)
+\text{ is solvable}.
+```
+
+**Proof.** Define a predicate \(P:\mathcal R(F,E)\to\{\mathrm{true},\mathrm{false}\}\) by
+
+```latex
+P(z):\Longleftrightarrow
+\operatorname{Gal}(\operatorname{minpoly}_F(z)/F)
+\text{ is solvable}.
+```
+
+We verify the three hypotheses of the radical-closure induction lemma.
+
+First, if \(z\in F\), then \(\operatorname{minpoly}_F(z)=X-z\), whose splitting field is \(F\); hence \(P(z)\) holds.
+
+For the addition and multiplication cases, we prove the exact auxiliary lemma used by the Lean code.
+
+**Cited theorem F (embedding an adjoin into a splitting field).** Let \(x,y\) be algebraic over \(F\), with minimal polynomials \(p,q\). If both \(p\) and \(q\) split over \(S\), then there exists an \(F\)-algebra homomorphism
+
+```latex
+f:F(x,y)\longrightarrow S.
+```
+
+**Lemma 9.** Suppose \(P(x)\), \(P(y)\), and \(z\in F(x,y)\). Then \(P(z)\).
+
+**Proof.** Put
+
+```latex
+p=\operatorname{minpoly}_F(x),
+\qquad
+q=\operatorname{minpoly}_F(y),
+```
+
+and let \(S\) be the splitting field of \(pq\). Then \(p\) and \(q\) both split in \(S\). Lemma 4 shows that \(x\) and \(y\) are algebraic, so cited theorem F gives an \(F\)-algebra homomorphism
+
+```latex
+f:F(x,y)\longrightarrow S.
+```
+
+Write \(z'=f(z)\). We claim that
+
+```latex
+\operatorname{minpoly}_F(z)=\operatorname{minpoly}_F(z').
+```
+
+Indeed, \(\operatorname{minpoly}_F(z)\) is monic and irreducible. Its value at \(z\) is zero. Applying the \(F\)-algebra homomorphism \(f\) to this equality shows that its value at \(z'=f(z)\) is also zero. The uniqueness theorem for monic irreducible polynomials annihilating an algebraic element therefore gives the claimed equality.
+
+The extension \(S/F\) is normal. Hence the minimal polynomial of \(z'\) splits in \(S\). By \(P(x)\), \(P(y)\), and Lemma 3, the Galois group of \(pq\) is solvable. Lemma 1 now shows that the Galois group of \(\operatorname{minpoly}_F(z')\), and therefore that of \(\operatorname{minpoly}_F(z)\), is solvable. Thus \(P(z)\). \(\square\)
+
+Now \(x+y\in F(x,y)\) and \(xy\in F(x,y)\). Applying Lemma 9 with \(z=x+y\) and \(z=xy\) proves the addition and multiplication clauses of the radical-closure induction lemma.
+
+Finally, if \(n\ge1\) and \(P(y^n)\) holds, Lemma 8 gives \(P(y)\).
+
+All hypotheses of the induction lemma are satisfied. Therefore \(P(z)\) holds for every \(z\in\mathcal R(F,E)\). \(\square\)
+
+::: lean-explanation
+`nonempty_algHom_adjoin_of_splits` is cited theorem F. `induction_step` is Lemma 9 and follows the same sequence: define `p` and `q`; obtain `f`; prove `key`, the equality of minimal polynomials; use normality to split the transported minimal polynomial; use `gal_mul_isSolvable`; then apply `gal_isSolvable_of_splits`. `isSolvable_gal_minpoly` performs the four induction cases in exactly the order stated on the left: base, addition, multiplication, radical.
+:::
+
+### VI. Proof of the radicals-to-Galois theorem
+
+::: proof-lean appendix-normalization
+**Proof of the theorem in Section I.** Since \(x\) is solvable by radicals, \(x\in\mathcal R(F,E)\). The theorem of the preceding section gives
+
+```latex
+\operatorname{Gal}(\operatorname{minpoly}_F(x)/F)
+\text{ is solvable}.
+```
+
+Because \(q\) is irreducible and \(q(x)=0\), the irreducible-root characterization of the minimal polynomial gives
+
+```latex
+\operatorname{minpoly}_F(x)=q\,\operatorname{lc}(q)^{-1},
+```
+
+where the scalar is regarded as a constant polynomial. Substituting this equality into the preceding solvability statement shows that
+
+```latex
+\operatorname{Gal}\bigl(q\,\operatorname{lc}(q)^{-1}/F\bigr)
+```
+
+is solvable.
+
+The polynomial \(q\) divides \(q\,\operatorname{lc}(q)^{-1}\), with quotient the nonzero constant polynomial \(\operatorname{lc}(q)^{-1}\). The restriction theorem for splitting fields of a divisor gives a surjective homomorphism
+
+```latex
+\operatorname{Gal}\bigl(q\,\operatorname{lc}(q)^{-1}/F\bigr)
+\twoheadrightarrow
+\operatorname{Gal}(q/F).
+```
+
+Cited theorem B transfers solvability through this surjection. Hence \(\operatorname{Gal}(q/F)\) is solvable. \(\square\)
+
+::: lean-explanation
+`minpoly.eq_of_irreducible` is the irreducible-root characterization used in the first displayed equality. `isSolvable_gal_minpoly` supplies solvability for the normalization. `Gal.restrictDvd_surjective` is the divisor restriction theorem in the final paragraph, and `solvable_of_surjective` is cited theorem B. Thus every mathematical step on the left corresponds to one line of the displayed theorem body.
+:::

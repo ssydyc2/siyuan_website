@@ -42,6 +42,7 @@ interface ListMatch {
 
 interface NavigationOptions {
   excludeHeadings?: string[];
+  progressEndHeadingId?: string;
 }
 
 interface NavigationSection {
@@ -700,6 +701,7 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
 function useReadingPosition(
   sections: NavigationSection[],
   articleRef: RefObject<HTMLElement | null>,
+  progressEndHeadingId?: string,
 ) {
   const flattenedHeadings = useMemo(
     () => sections.flatMap((section) => [
@@ -729,7 +731,13 @@ function useReadingPosition(
 
       const articleRect = article.getBoundingClientRect();
       const articleTop = window.scrollY + articleRect.top;
-      const readableDistance = Math.max(1, article.scrollHeight - window.innerHeight);
+      const progressEndHeading = progressEndHeadingId
+        ? document.getElementById(progressEndHeadingId)
+        : null;
+      const progressEnd = progressEndHeading
+        ? window.scrollY + progressEndHeading.getBoundingClientRect().top
+        : articleTop + article.scrollHeight - window.innerHeight;
+      const readableDistance = Math.max(1, progressEnd - articleTop);
       const nextProgress = Math.min(
         100,
         Math.max(0, ((window.scrollY - articleTop) / readableDistance) * 100),
@@ -771,7 +779,7 @@ function useReadingPosition(
         window.cancelAnimationFrame(frameId);
       }
     };
-  }, [articleRef, flattenedHeadings]);
+  }, [articleRef, flattenedHeadings, progressEndHeadingId]);
 
   return { activeSectionId, activeSubsectionId, progress };
 }
@@ -840,13 +848,16 @@ function NavigationLinks({
 function ReadingNavigation({
   sections,
   articleRef,
+  progressEndHeadingId,
 }: {
   sections: NavigationSection[];
   articleRef: RefObject<HTMLElement | null>;
+  progressEndHeadingId?: string;
 }) {
   const { activeSectionId, activeSubsectionId, progress } = useReadingPosition(
     sections,
     articleRef,
+    progressEndHeadingId,
   );
   const [mobileOpen, setMobileOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -1034,7 +1045,11 @@ export default function MarkdownDocument({
     return (
       <div className="mx-auto max-w-7xl">
         <div className="xl:grid xl:grid-cols-[13.5rem_minmax(0,1fr)] xl:items-start xl:gap-8">
-          <ReadingNavigation sections={navigationSections} articleRef={articleRef} />
+          <ReadingNavigation
+            sections={navigationSections}
+            articleRef={articleRef}
+            progressEndHeadingId={navigation.progressEndHeadingId}
+          />
           {article}
         </div>
       </div>

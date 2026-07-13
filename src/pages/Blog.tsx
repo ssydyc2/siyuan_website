@@ -11,6 +11,9 @@ import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
 import abelRuffiniMarkdown from '../content/blog/abel-ruffini-backwards.md?raw';
 import kernelBasicsMarkdown from '../content/blog/llm-kernel-runtime-basics.md?raw';
 import abelRuffiniLean from '../../formal/abel-ruffini/AbelRuffini.lean?raw';
+import abelRuffiniMathlibAppendix from '../../formal/abel-ruffini/MathlibAppendix.lean?raw';
+
+const abelRuffiniLeanSources = `${abelRuffiniLean}\n${abelRuffiniMathlibAppendix}`;
 
 interface Resource {
   title: string;
@@ -869,8 +872,11 @@ function AbelRuffiniDetail({ post }: { post: BlogPost }) {
       </div>
       <MarkdownDocument
         markdown={abelRuffiniMarkdown}
-        leanSource={abelRuffiniLean}
-        navigation={{ excludeHeadings: ['contents', 'overview-and-approach'] }}
+        leanSource={abelRuffiniLeanSources}
+        navigation={{
+          excludeHeadings: ['contents', 'overview-and-approach'],
+          progressEndHeadingId: '5-appendix-why-radicals-imply-a-solvable-galois-group',
+        }}
       />
     </div>
   );
