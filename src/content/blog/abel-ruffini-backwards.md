@@ -39,13 +39,15 @@
 
 ## Overview and approach
 
+When I was learning abstract algebra, one of my biggest frustrations was encountering an endless stream of definitions and concepts without understanding what they were trying to accomplish.
+
 This article explains why equations of degree five or higher cannot always be solved by radicals. It has two stages. First, we introduce the mathematical prerequisites—groups, fields, polynomials, field extensions, Galois groups, solvable groups, and radical towers. Then we build an explicit counterexample in dependency order, with each step supported by results already established.
 
 Each stage of the main argument presents a pure mathematical proof beside the exact compiled Lean code that verifies the same logical step. The explanation below the code shows how the formal statement corresponds to the mathematics.
 
 Why this approach?
 
-1. **It is more intuitive.** Starting from the result tells us why each abstract concept is needed before we introduce it.
+1. **It is more intuitive.** Each abstract concept appears where the proof needs it, so its purpose remains visible.
 2. **Lean checks the proof and its logical dependencies.** Every formal step beside the mathematics is compiled, so missing assumptions and invalid deductions cannot quietly slip through—which is especially comforting when most of this article was generated with the help of AI. Lean, fortunately, is less impressed by confident prose than we are.
 
 This article is written for readers learning abstract algebra who may otherwise lose the main argument behind a wall of definitions. Its aim is to make the purpose of each construction visible as it enters the proof, so that readers can understand what the mathematics is doing without giving up mathematical precision. The article gives the complete framework of the proof and fully verifies the explicit counterexample, but it does not re-prove every foundational theorem in Galois theory or mathlib from first principles; doing so would turn one article into a book. Those deeper results are stated precisely, linked to their formal sources, and used as named dependencies. Lean certifies the formal proof shown here; the surrounding explanations are still meant to be read critically by humans.
