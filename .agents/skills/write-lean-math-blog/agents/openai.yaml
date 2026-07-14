@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lean Math Blog"
+  short_description: "Align mathematical proofs with Lean 4 code"
+  default_prompt: "Use $write-lean-math-blog to audit this proof article against its Lean 4 source."

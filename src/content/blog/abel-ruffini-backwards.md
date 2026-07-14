@@ -103,6 +103,30 @@ A group is a tuple \((G,\star,e,(-)^{-1})\) consisting of a set \(G\), a binary 
 - **Identity:** \(e\star a=a=a\star e\).
 - **Inverses:** \(a^{-1}\star a=e=a\star a^{-1}\).
 
+Let \((G,\star)\) and \((H,\diamond)\) be groups. A **group homomorphism** is a function \(f:G\to H\) that preserves the group operation:
+
+```latex
+f(a\star b)=f(a)\diamond f(b)
+\qquad(a,b\in G).
+```
+
+It is **injective** if
+
+```latex
+f(a)=f(b)\Longrightarrow a=b,
+```
+
+and **surjective** if
+
+```latex
+\text{for every }h\in H\text{ there exists }g\in G
+\text{ such that }f(g)=h.
+```
+
+A function is **bijective** if it is both injective and surjective. A **group isomorphism** is a bijective group homomorphism. If one exists, we write \(G\cong H\); the two groups may have differently named elements, but they have the same group structure.
+
+A group is **cyclic** if all of its elements are integer powers of one element. Every cyclic group is abelian.
+
 ### II. Abelian group
 
 An abelian group, also called a commutative group, is a group whose operation is commutative:
@@ -123,6 +147,8 @@ A field is a set \(F\) with addition, multiplication, additive inverses, disting
 
 Examples include \(\mathbb Q\), \(\mathbb R\), and \(\mathbb C\). Division by a nonzero element is defined by \(a/b:=ab^{-1}\).
 
+A field has **characteristic zero** if no positive integer sum \(1+\cdots+1\) equals \(0\). Equivalently, the natural map \(\mathbb Z\to F\) is injective. The fields \(\mathbb Q\), \(\mathbb R\), and \(\mathbb C\) all have characteristic zero.
+
 ### IV. Polynomial
 
 Let \(F\) be a field. A polynomial over \(F\) is a finite formal sum
@@ -135,9 +161,27 @@ p(X)=a_0+a_1X+\cdots+a_nX^n
 
 The word **formal** matters: \(X\) is an indeterminate, not yet a number. Two polynomials are equal exactly when all corresponding coefficients are equal. The set of polynomials over \(F\), with coefficientwise addition and the usual convolution product, is denoted by \(F[X]\).
 
+For a nonzero polynomial \(p(X)=\sum_i a_iX^i\), its **degree** is the largest \(i\) for which \(a_i\ne0\), and its **leading coefficient**, written \(\operatorname{lc}(p)\), is that \(a_i\). The polynomial is **monic** if \(\operatorname{lc}(p)=1\). Lean's `natDegree` is the degree as a natural number; it agrees with the ordinary degree for nonzero polynomials and is defined to be \(0\) for the zero polynomial. Lean's `degree` instead gives the zero polynomial a special bottom value.
+
+If \(E/F\) is a field extension and \(\alpha\in E\), the **evaluation** of \(p\) at \(\alpha\) is
+
+```latex
+p(\alpha)=\sum_i a_i\alpha^i,
+```
+
+where each coefficient is viewed in \(E\). The element \(\alpha\) is a **root** if \(p(\alpha)=0\). The set of distinct roots in \(E\) is denoted by \(\operatorname{Roots}_E(p)\); when it is finite, \(|\operatorname{Roots}_E(p)|\) denotes its number of elements.
+
+The **formal derivative** of \(p\) is
+
+```latex
+p'(X)=\sum_{i\ge1} i\,a_iX^{i-1}.
+```
+
 ### V. Units and factorization
 
 A **unit** of \(F[X]\) is a polynomial \(u\) for which some \(v\in F[X]\) satisfies \(uv=1\). The units of \(F[X]\) are exactly the nonzero constant polynomials. Consequently, multiplying a polynomial by a nonzero scalar does not create a mathematically meaningful factorization.
+
+For \(p,q\in F[X]\), we say that \(p\) **divides** \(q\), written \(p\mid q\), if there is some \(r\in F[X]\) with \(q=pr\).
 
 A nonzero, nonunit polynomial \(p\in F[X]\) is **reducible over \(F\)** if there exist nonunit polynomials \(f,g\in F[X]\) such that
 
@@ -155,13 +199,7 @@ X^2-2=(X-\sqrt2)(X+\sqrt2).
 
 ### VI. Separable polynomial
 
-A nonzero polynomial is **separable over \(F\)** if, in a field where it splits completely into linear factors, no root occurs with multiplicity greater than one. Equivalently,
-
-```latex
-\gcd(p,p')=1,
-```
-
-where \(p'\) is the formal derivative. Every irreducible polynomial over a field of characteristic zero is separable. In particular, every irreducible polynomial in \(\mathbb Q[X]\) is separable.
+A nonzero polynomial is **separable over \(F\)** if, in a field where it splits completely into linear factors, no root occurs with multiplicity greater than one. Equivalently, \(p\) and its formal derivative \(p'\) have no common nonconstant factor. Every irreducible polynomial over a field of characteristic zero is separable. In particular, every irreducible polynomial in \(\mathbb Q[X]\) is separable.
 
 ### VII. Field extensions and Galois groups
 
@@ -173,7 +211,15 @@ F\subseteq E.
 
 We write \(E/F\), where \(F\) is the **base field** and \(E\) is the **extension field**. The slash records the inclusion and does not denote a quotient. For example, \(\mathbb C/\mathbb Q\) denotes the usual inclusion \(\mathbb Q\subseteq\mathbb C\). The more abstract formulation by a chosen field homomorphism, and the proof that it is equivalent to this concrete picture, are deferred to Appendix II.
 
+An **intermediate field** of \(E/F\) is a field \(K\) lying between them:
+
+```latex
+F\subseteq K\subseteq E.
+```
+
 An element \(\alpha\in E\) is **algebraic over \(F\)** if some nonzero polynomial \(p\in F[X]\) satisfies \(p(\alpha)=0\).
+
+A field \(E\) is **algebraically closed** if every nonconstant polynomial in \(E[X]\) has a root in \(E\). Equivalently, every polynomial in \(E[X]\) splits into linear factors over \(E\). The Fundamental Theorem of Algebra says precisely that \(\mathbb C\) is algebraically closed.
 
 Let \(p\in F[X]\). We say that \(p\) **splits over \(E\)** if it factors there entirely into linear terms:
 
@@ -223,6 +269,8 @@ So \(\sigma\) sends roots to roots. If \(R\) is the set of distinct roots, restr
 ```
 
 where \(\operatorname{Sym}(R)\) is the group of all permutations of \(R\). The map \(\rho\) is injective: an automorphism fixing every root fixes the field generated by those roots, which is all of \(L\). This is what it means for the action to be **faithful**.
+
+The notation \(\operatorname{Perm}(R)\) used later means the same permutation group as \(\operatorname{Sym}(R)\). When \(|R|=d\), this group is isomorphic to the usual symmetric group \(S_d\).
 
 Separability has a different role. If \(p\) is separable of degree \(d\), then it has exactly \(d\) distinct roots in its splitting field, so \(\operatorname{Sym}(R)\cong S_d\). If \(\rho\) is also **surjective**, every permutation of those roots comes from a field automorphism. Since \(\rho\) is then both injective and surjective,
 
@@ -332,7 +380,7 @@ By contrast,
 
 The second equality says that \(A_5\) is **perfect**: it equals its own commutator subgroup. The derived series therefore gets stuck at \(A_5\) and never reaches \(\{e\}\). This is why \(S_5\) is not solvable.
 
-Finally, solvability is preserved by subgroups and quotient groups. In particular, if \(f:G\to H\) is a surjective group homomorphism and \(G\) is solvable, then \(H\) is solvable: by the first isomorphism theorem, \(H\cong G/\ker f\). We will use the contrapositive later. Since \(S_5\) is not solvable, no solvable Galois group can map onto \(S_5\).
+Finally, solvability is preserved by subgroups and quotient groups. We will use the following imported consequence without proving it: if \(f:G\to H\) is a surjective group homomorphism and \(G\) is solvable, then \(H\) is solvable. This is cited theorem 3 in the main proof and is exactly the theorem `solvable_of_surjective` used by Lean. Its contrapositive says that no solvable group can map surjectively onto \(S_5\).
 
 ### IX. What solvable by radicals means
 
@@ -374,7 +422,31 @@ An element \(\alpha\in E\) is **solvable by radicals over \(F\)** if there exist
 \alpha\in K_r.
 ```
 
-The element does not have to be one of the generators \(\beta_i\); it may be any field expression made from them. A polynomial is called **solvable by radicals** if a radical extension contains all of its roots, or equivalently its splitting field embeds into such an extension.
+The element does not have to be one of the generators \(\beta_i\); it may be any field expression made from them.
+
+The set of all elements of \(E\) obtainable this way is the **radical closure of \(F\) inside \(E\)**, denoted
+
+```latex
+\mathcal R(F,E).
+```
+
+Equivalently, \(\mathcal R(F,E)\) is the smallest intermediate field \(K\), \(F\subseteq K\subseteq E\), that is closed under extracting radicals inside \(E\):
+
+```latex
+y\in E,\quad n\ge1,\quad y^n\in K
+\quad\Longrightarrow\quad
+y\in K.
+```
+
+Thus
+
+```latex
+\alpha\text{ is solvable by radicals over }F
+\quad\Longleftrightarrow\quad
+\alpha\in\mathcal R(F,E).
+```
+
+The detailed intersection construction of this smallest field appears in Appendix II. A polynomial is called **solvable by radicals** if a radical extension contains all of its roots, or equivalently its splitting field embeds into such an extension.
 
 The group-theoretic consequence needed later is:
 
@@ -431,7 +503,7 @@ For \(\Phi=X^5-4X+2\), choose \(p=2\). The prime divides every nonleading coeffi
 ::: lean-explanation
 Eisenstein's criterion is a statement about divisibility of integer coefficients, so the Lean proof temporarily defines `Φℤ : ℤ[X]` with the same expression. `Φℤ_degree` and `Φℤ_monic` record the two facts needed to apply the criterion.
 
-`hardQuintic_irreducible_aux` proves that mapping the integer coefficients into \(\mathbb Q\) recovers `Φ`, then applies Eisenstein with the prime ideal generated by \(2\). The coefficient cases are finite because the degree is five. Finally, `hardQuintic_irreducible` exposes the result in the simple form used by the rest of the article: `Irreducible Φ`.
+`hardQuintic_irreducible_aux` proves that mapping the integer coefficients into \(\mathbb Q\) recovers `Φ`, then applies mathlib's Eisenstein criterion at the prime \(2\). The coefficient cases are finite because the degree is five. Finally, `hardQuintic_irreducible` exposes the result in the simple form used by the rest of the article: `Irreducible Φ`.
 :::
 
 This is why the apparently arbitrary polynomial \(X^5-4X+2\) is such an efficient witness.
@@ -507,13 +579,13 @@ This is the formal location of the Fundamental Theorem of Algebra in the Galois-
 ::: proof-lean core-lemmas
 We use the following four theorems as cited results. Their precise statements are recorded here; their proofs are not part of the main argument.
 
-**Cited theorem 1 (radicals imply solvable Galois group).** Let \(F\) and \(E\) be fields with an \(F\)-algebra structure on \(E\). Let \(x\in E\) and \(q\in F[X]\). If
+**Cited theorem 1 (radicals imply solvable Galois group).** Let \(F\subseteq E\) be a field extension—equivalently, in Lean's abstract language, let \(E\) have an \(F\)-algebra structure as defined in Appendix II.F. Let \(x\in E\) and \(q\in F[X]\). If
 
 ```latex
 x\in\mathcal R(F,E),\qquad q\text{ is irreducible},\qquad q(x)=0,
 ```
 
-where \(\mathcal R(F,E)\) is the smallest intermediate field containing \(F\) with the following closure property: for every \(y\in E\) and every \(n\ge1\), if \(y^n\in\mathcal R(F,E)\), then \(y\in\mathcal R(F,E)\). Then
+where \(\mathcal R(F,E)\) is the radical closure defined in prerequisite IX. Then
 
 ```latex
 \operatorname{Gal}(q/F)\text{ is solvable}.
@@ -569,7 +641,7 @@ Let \(R_{\mathbb R}\) and \(R_{\mathbb C}\) be the real and complex root sets of
 3. \(|R_{\mathbb C}|=5\);
 4. \(2\le |R_{\mathbb R}|\le3\).
 
-Thus the number of complex roots is between one and three larger than the number of real roots. The prime-degree Galois criterion therefore makes the Galois action bijective. Since its target is the permutation group of five roots, the Galois group is isomorphic to \(S_5\).
+Thus the number of complex roots is between one and three larger than the number of real roots. Cited theorem 2 therefore makes the Galois action bijective. This bijectivity is the exact conclusion proved by the Lean declaration. Its target is the permutation group of a five-element root set, which is abstractly isomorphic to \(S_5\); the next step uses only the surjective half of the bijectivity statement.
 
 ::: lean-explanation
 `galActionHom_bijective_of_prime_degree'` packages the prime-degree criterion. The degree lemma reduces primality to the concrete fact that five is prime, which `decide` proves. Separability and algebraic closure supply the five complex roots, while the real-root lemmas supply the required inequalities.
@@ -577,7 +649,7 @@ Thus the number of complex roots is between one and three larger than the number
 `Bijective` packages injectivity and surjectivity. The Galois obstruction in the next step uses `.2`, the surjective half.
 :::
 
-Why does this criterion force all of \(S_5\)? Irreducibility makes the Galois action transitive. Prime degree strongly restricts transitive subgroups. A small number of nonreal roots supplies a transposition through complex conjugation. The resulting transitive subgroup contains enough cycles and a transposition to be the full symmetric group.
+The internal proof of the prime-degree criterion is not reproduced here, because the Lean region also imports `galActionHom_bijective_of_prime_degree'` rather than proving it. Both columns use that result as cited theorem 2.
 
 ### IX. The Galois obstruction
 
@@ -731,9 +803,26 @@ The proof is given in Sections III–VII. The complete mathlib theorem body appe
 
 ### II. Prerequisites for the Appendix
 
-The main proof in Sections 1–3 does not depend on this section. The definitions below are collected here because the more detailed radicals-to-Galois proof uses abstract field maps, intermediate fields, adjoining, and minimal polynomials.
+The main proof in Sections 1–3 does not depend on this section. The definitions below are collected here because the detailed radicals-to-Galois proof additionally uses abstract field maps, intermediate fields, adjoining, minimal polynomials, algebra homomorphisms, subalgebras, integrality, normal extensions, coefficient extension, roots of unity, multisets, and the formal construction of the radical closure.
 
-#### A. Semigroups, monoids, and rings
+#### A. Homomorphism arrow notation
+
+For a homomorphism \(f:G\to H\), we use the following arrow notation:
+
+```latex
+G\longrightarrow H
+\quad\text{for a homomorphism},
+\qquad
+G\hookrightarrow H
+\quad\text{for an injective homomorphism},
+\qquad
+G\twoheadrightarrow H
+\quad\text{for a surjective homomorphism}.
+```
+
+Thus a double-headed arrow \(G\twoheadrightarrow H\) asserts that every element of \(H\) is the image of at least one element of \(G\).
+
+#### B. Semigroups, monoids, and rings
 
 A **semigroup** is a set \(S\) with an associative binary operation \(\star\):
 
@@ -754,7 +843,7 @@ a(b+c)=ab+ac,
 
 A **commutative ring** is a ring whose multiplication is commutative. These definitions supply the ambient algebraic structure needed for ideals and kernels below.
 
-#### B. Ideals, kernels, and field homomorphisms
+#### C. Ideals, kernels, and field homomorphisms
 
 The purpose of this subsection is to prove that a field homomorphism places its domain inside its codomain as a subfield.
 
@@ -836,7 +925,7 @@ Thus every \(r\in F\) satisfies \(r=r\cdot1\in I\), so \(I=F\). If \(I\) contain
 
 If \(\iota(a)=\iota(b)\), then \(\iota(a-b)=0\), so \(a-b\in\ker(\iota)=\{0\}\). Therefore \(a=b\). \(\square\)
 
-#### C. Abstract field extensions, intermediate fields, and adjoining
+#### D. Abstract field extensions, intermediate fields, and adjoining
 
 Fix a field \(F\). An **abstract field extension of \(F\)** is a pair \((E,\iota)\), where \(E\) is a field and \(\iota:F\to E\) is a field homomorphism. The chosen map is part of the data: it specifies which element of \(E\) represents each scalar of \(F\). For example, there are two embeddings
 
@@ -862,21 +951,15 @@ is a subfield of \(E\). Indeed, preservation of the field operations gives closu
 
 so the image is closed under inverses of nonzero elements. Thus \(F\) is isomorphic to \(\iota(F)\subseteq E\), and after making this identification we may write \(F\subseteq E\). Conversely, an inclusion of fields is a field homomorphism. Hence the abstract and concrete definitions agree up to identifying \(F\) with its image.
 
-The field \(E\) is a vector space over \(F\), with scalar multiplication \(a\cdot x=\iota(a)x\). The **degree** of the extension is
-
-```latex
-[E:F]=\dim_F E.
-```
-
 An **intermediate field** is a field \(K\) satisfying \(F\subseteq K\subseteq E\). If \(S\subseteq E\), then \(F(S)\), read “\(F\) adjoin \(S\),” is the intersection of all intermediate fields containing \(S\). It is therefore the unique smallest intermediate field containing both \(F\) and \(S\). For one element, write \(F(\alpha)\). For example,
 
 ```latex
 \mathbb Q(\sqrt2)=\{a+b\sqrt2:a,b\in\mathbb Q\}.
 ```
 
-An extension \(E/F\) is **algebraic** if every element of \(E\) is algebraic over \(F\). It is **finite** if \([E:F]<\infty\); every finite extension is algebraic.
+An extension \(E/F\) is **algebraic** if every element of \(E\) is algebraic over \(F\).
 
-#### D. Minimal polynomials
+#### E. Minimal polynomials
 
 Let \(E/F\) be a field extension and let \(\alpha\in E\) be algebraic over \(F\). There is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
 
@@ -904,11 +987,135 @@ m_{\sqrt2,\mathbb R}(X)=X-\sqrt2.
 
 Thus the minimal polynomial depends on both the element and the chosen base field.
 
+The **conjugates of \(\alpha\) over \(F\)** are the roots of its minimal polynomial in a field where that polynomial splits. Thus, when we later factor
+
+```latex
+\operatorname{minpoly}_F(\alpha)
+=c\prod_i(X-\alpha_i),
+```
+
+the elements \(\alpha_i\) are precisely the conjugates of \(\alpha\), counted with multiplicity when a multiset is used.
+
+#### F. Algebra structures, algebra homomorphisms, and subalgebras
+
+For groups \(G\) and \(H\), the **direct product** \(G\times H\) is the group with coordinatewise multiplication:
+
+```latex
+(g_1,h_1)(g_2,h_2)=(g_1g_2,h_1h_2).
+```
+
+An **\(F\)-algebra structure** on a field \(E\) is the chosen field homomorphism \(\iota_E:F\to E\) that tells us how scalars from \(F\) live in \(E\). When we write an inclusion \(F\subseteq E\), this map is the inclusion.
+
+If \(K\) and \(S\) are fields with \(F\)-algebra structures, an **\(F\)-algebra homomorphism**
+
+```latex
+f:K\longrightarrow S
+```
+
+is a field homomorphism that fixes the chosen copy of \(F\):
+
+```latex
+f(\iota_K(a))=\iota_S(a)
+\qquad(a\in F).
+```
+
+Every field homomorphism is injective, so such a map is also called an \(F\)-**embedding**. An \(F\)-algebra isomorphism is a bijective \(F\)-algebra homomorphism.
+
+An **\(F\)-subalgebra** \(A\subseteq E\) is a subset containing the image of \(F\) and closed under \(0,1\), addition, subtraction, and multiplication. Unlike an intermediate field, a subalgebra is not initially required to contain the inverse of each nonzero element. This distinction is why Appendix IV needs a theorem to promote an algebraic subalgebra to an intermediate field.
+
+A **predicate** on a set \(S\) is a statement \(P(x)\) that is either true or false for each \(x\in S\). Equivalently, it is a function \(P:S\to\{\mathrm{true},\mathrm{false}\}\).
+
+#### G. Integral elements and normal extensions
+
+An element \(\alpha\in E\) is **integral over \(F\)** if it is a root of a monic polynomial in \(F[X]\). Over a field, integrality is equivalent to algebraicity: any nonzero annihilating polynomial can be divided by its leading coefficient to make it monic.
+
+An algebraic extension \(L/F\) is **normal** if every irreducible polynomial \(p\in F[X]\) having one root in \(L\) splits completely over \(L\). A splitting field is normal over its base field. Consequently, if \(L/F\) is normal and \(z\in L\), then the minimal polynomial of \(z\) over \(F\) splits over \(L\).
+
+If \(F\subseteq K\subseteq L\) and an \(F\)-automorphism \(\sigma:L\to L\) preserves \(K\), its **restriction** is the \(F\)-automorphism
+
+```latex
+\sigma|_K:K\longrightarrow K.
+```
+
+Restriction respects composition and therefore defines a group homomorphism. The surjectivity and injectivity properties of the particular restriction maps used later are cited theorems, not consequences of this definition alone.
+
+#### H. Coefficient extension, roots of unity, and multisets
+
+Given an embedding \(i:F\to K\) and a polynomial
+
+```latex
+q(X)=\sum_j a_jX^j\in F[X],
+```
+
+its **coefficient extension** or **map to \(K\)** is
+
+```latex
+q_K(X)=\sum_j i(a_j)X^j\in K[X].
+```
+
+This is the polynomial denoted by `q.map (algebraMap F K)` in Lean.
+
+For polynomials \(p,q\in F[X]\), the **composition** \(p\circ q\) is obtained by substituting \(q(X)\) for \(X\):
+
+```latex
+(p\circ q)(X)=p(q(X)).
+```
+
+Thus \(p(X^n)\) means \(p\circ X^n\).
+
+For the zero polynomial, a nonzero constant polynomial, and a monomial \(X^n\), mathlib's chosen splitting field adds no new elements to the base field; the corresponding Galois group is therefore trivial. These are the base cases used later when \(n=0\) or \(a=0\).
+
+For \(n\ge1\), an **\(n\)-th root of unity** is an element \(\zeta\) satisfying \(\zeta^n=1\). The roots of \(X^n-1\) are exactly the \(n\)-th roots of unity.
+
+A **multiset** is a finite collection in which order is ignored but repetition is retained. Polynomial roots are represented by a multiset when multiplicity matters: for example, \((X-a)^2\) has the root multiset \(\{a,a\}\), even though its set of distinct roots is only \(\{a\}\). Products indexed by a root multiset therefore reproduce the polynomial with the correct multiplicities.
+
+#### I. Extracting radicals and the radical closure
+
+Let \(K\) be an intermediate field between \(F\) and \(E\). To **extract an \(n\)-th root** of an element \(a\in K\), where \(n\ge1\), means to choose an element \(y\in E\) satisfying
+
+```latex
+y^n=a.
+```
+
+For example, starting from \(K=\mathbb Q\), extracting a square root of \(2\) permits us to add \(\sqrt2\), because \((\sqrt2)^2=2\in\mathbb Q\). If \(2+\sqrt2\) is available at a later stage, extracting a cube root permits us to add \(\sqrt[3]{2+\sqrt2}\).
+
+We say that \(K\) is **closed under extracting radicals inside \(E\)** if it never loses such a root: for every \(y\in E\) and every positive integer \(n\),
+
+```latex
+y^n\in K
+\quad\Longrightarrow\quad
+y\in K.
+```
+
+In words: if an element of the larger field \(E\) has a positive integer power already in \(K\), then that element itself must already be in \(K\). The phrase “positive integer” describes the exponent \(n\); it does not say that \(y\) or \(y^n\) must be a nonzero number. The case \(n=1\) adds nothing, while \(n=2,3,\ldots\) correspond to square roots, cube roots, and so on.
+
+This closure condition packages all possible choices of radicals. For instance, when \(E=\mathbb C\), a radical-closed field containing \(\mathbb Q\) must contain \(\sqrt2\), must then contain \(1+\sqrt2\), and must then contain every \(y\in\mathbb C\) with \(y^3=1+\sqrt2\). Because it is a field, it also contains every result of applying addition, subtraction, multiplication, and division by a nonzero element to things already constructed.
+
+The **radical closure** is defined formally by intersecting every intermediate field with this closure property:
+
+```latex
+\mathcal R(F,E)
+=
+\bigcap
+\left\{
+K:
+F\subseteq K\subseteq E,\quad
+\forall y\in E,\ \forall n\ge1,
+y^n\in K\Rightarrow y\in K
+\right\}.
+```
+
+The family being intersected is nonempty because \(E\) itself belongs to it. Intersections of intermediate fields are intermediate fields, so \(\mathcal R(F,E)\) is a field. It is contained in every radical-closed intermediate field and is therefore the unique smallest one. This is the formal version of the operational description in main prerequisite IX.
+
 ### III. Group-theoretic and splitting-field lemmas
 
-::: proof-lean appendix-tower
-The Lean source imports the following four group-theoretic results. We cite them rather than replace them with a different proof.
+Suppose, contrary to what we want to prove, that a root \(x\) of our quintic \(\Phi\) were given by a radical expression. That expression would not immediately tell us anything about \(\operatorname{Gal}(\Phi/\mathbb Q)\). Instead, it would produce several auxiliary fields and auxiliary polynomials—one for each radical introduced.
 
+This section supplies the bookkeeping that lets us return from those auxiliary objects to \(\Phi\). If a large splitting field contains the roots of a smaller polynomial, its automorphisms restrict to the smaller splitting field, so solvability can pass downward. If the construction passes through an intermediate field, we can analyze the symmetries below and above that field separately and then combine them. If an auxiliary polynomial factors, we can control its factors separately and then reassemble them.
+
+The practical effect is that later sections may replace the unknown minimal polynomial of \(x\) by larger polynomials that factor more conveniently. Once a larger polynomial has a solvable Galois group, the lemmas below carry solvability back down to the minimal polynomial of \(x\), and eventually to \(\Phi\).
+
+::: proof-lean appendix-tower
 **Cited theorem A (injective transfer).** If \(i:G\to H\) is an injective group homomorphism and \(H\) is solvable, then \(G\) is solvable.
 
 **Cited theorem B (surjective transfer).** If \(r:G\to H\) is a surjective group homomorphism and \(G\) is solvable, then \(H\) is solvable.
@@ -925,11 +1132,39 @@ are solvable, then \(\operatorname{Aut}_F(L)\) is solvable.
 
 **Cited theorem D (direct products).** If \(G\) and \(H\) are solvable groups, then \(G\times H\) is solvable.
 
-We now prove exactly the three polynomial lemmas used later.
+**Cited restriction theorem for a product.** Restricting an automorphism of the splitting field of \(pq\) to the splitting fields of \(p\) and \(q\) gives an injective homomorphism
+
+```latex
+\operatorname{Gal}(pq/F)
+\hookrightarrow
+\operatorname{Gal}(p/F)\times\operatorname{Gal}(q/F).
+```
+
+This is `Gal.restrictProd_injective` in the Lean proof.
+
+**Cited normal-restriction theorem.** If \(p\) splits over the splitting field \(L_q\), restriction gives a surjective homomorphism
+
+```latex
+\operatorname{Aut}_F(L_q)
+\twoheadrightarrow
+\operatorname{Gal}(p/F).
+```
+
+This is `AlgEquiv.restrictNormalHom_surjective` in the Lean proof.
+
+**Cited splitting-field identification.** Under the hypotheses of Lemma 2, the splitting-field universal property gives an isomorphism
+
+```latex
+\operatorname{Aut}_K(L)
+\cong
+\operatorname{Gal}(q_K/K).
+```
+
+This is the isomorphism constructed from `IsSplittingField.algEquiv` in Lean.
 
 **Lemma 1 (a polynomial that splits in a solvable splitting field).** Let \(p,q\in F[X]\). Assume \(p\) splits over the splitting field \(L_q\) of \(q\), and \(\operatorname{Gal}(q/F)\) is solvable. Then \(\operatorname{Gal}(p/F)\) is solvable.
 
-**Proof.** The normal-extension restriction theorem gives a surjective homomorphism
+**Proof.** The cited normal-restriction theorem gives a surjective homomorphism
 
 ```latex
 \operatorname{Aut}_F(L_q)
@@ -947,7 +1182,7 @@ The domain is \(\operatorname{Gal}(q/F)\), which is solvable by assumption. Cite
 
 Then \(\operatorname{Gal}(q/F)=\operatorname{Aut}_F(L)\) is solvable.
 
-**Proof.** Since \(p\) splits over \(L\), the universal property of splitting fields identifies \(K\) with an intermediate field of \(L/F\). The same universal property gives an isomorphism
+**Proof.** Since \(p\) splits over \(L\), the splitting-field universal property identifies \(K\) with an intermediate field of \(L/F\). The cited splitting-field identification gives an isomorphism
 
 ```latex
 \operatorname{Aut}_K(L)
@@ -959,7 +1194,7 @@ The group on the right is solvable by assumption. By cited theorem A, the isomor
 
 **Lemma 3 (product).** If \(p,q\in F[X]\) have solvable Galois groups, then \(pq\) has solvable Galois group.
 
-**Proof.** Restriction to the roots of the two factors gives an injective homomorphism
+**Proof.** The cited restriction theorem for a product gives an injective homomorphism
 
 ```latex
 \operatorname{Gal}(pq/F)
@@ -969,27 +1204,60 @@ The group on the right is solvable by assumption. By cited theorem A, the isomor
 
 The direct product on the right is solvable by cited theorem D. Cited theorem A gives the conclusion. \(\square\)
 
+**Finite-product corollary.** If every polynomial in a finite multiset \(p_1,\ldots,p_r\) has solvable Galois group, then \(\prod_i p_i\) has solvable Galois group.
+
+**Proof.** Induct on the number of factors. The empty product is \(1\), whose splitting field is \(F\) and whose Galois group is trivial. The induction step is Lemma 3. \(\square\)
+
 ::: lean-explanation
-The four cited results are `solvable_of_solvable_injective`, `solvable_of_surjective`, the `solvable_prod` instance, and `isSolvable_of_isScalarTower`. The displayed declarations follow the same order as the mathematics: `gal_mul_isSolvable` and `gal_prod_isSolvable` are Lemma 3; `gal_isSolvable_of_splits` is Lemma 1; and `gal_isSolvable_tower` is Lemma 2. In the tower proof, `ϕ` is exactly the splitting-field isomorphism in the mathematical proof, and the final line invokes cited theorem C.
+The four general solvability results are `solvable_of_solvable_injective`, `solvable_of_surjective`, the `solvable_prod` instance, and `isSolvable_of_isScalarTower`. The three restriction or identification results stated on the left correspond to `Gal.restrictProd_injective`, `AlgEquiv.restrictNormalHom_surjective`, and `IsSplittingField.algEquiv`. The displayed declarations follow the same order as the mathematics: `gal_mul_isSolvable` is Lemma 3, `gal_prod_isSolvable` is the finite-product corollary, `gal_isSolvable_of_splits` is Lemma 1, and `gal_isSolvable_tower` is Lemma 2. In the tower proof, `ϕ` is exactly the cited splitting-field identification, and the final line invokes cited theorem C.
 :::
 
 ### IV. Lemma: induction on the radical closure
 
+There are infinitely many possible radical formulas and many ways to arrange them into towers. Following one hypothetical formula for a root of \(\Phi\) would make the argument depend on arbitrary choices. Instead, \(\mathcal R(F,E)\) collects every element that can be built from \(F\) using field operations and finitely many radical extractions.
+
+Here is the operational picture. Begin with the elements of \(F\). At any stage, one may use the four field operations on elements already obtained, or add an element \(y\in E\) when \(y^n\) has already been obtained for some \(n\ge1\). Repeating these rules finitely many times produces exactly the elements represented by finite radical expressions. The resulting field is called the **radical closure of \(F\) inside \(E\)** and is denoted by \(\mathcal R(F,E)\).
+
+For example, when \(F=\mathbb Q\) and \(E=\mathbb C\),
+
+```latex
+\sqrt2\in\mathcal R(\mathbb Q,\mathbb C)
+\quad\text{because}\quad
+(\sqrt2)^2=2\in\mathbb Q,
+```
+
+and then
+
+```latex
+\sqrt[3]{1+\sqrt2}\in\mathcal R(\mathbb Q,\mathbb C)
+\quad\text{because}\quad
+\left(\sqrt[3]{1+\sqrt2}\right)^3=1+\sqrt2
+\in\mathcal R(\mathbb Q,\mathbb C).
+```
+
+This example also shows why the definition is recursive: a new radical may be taken from an expression that itself contains radicals.
+
+We want to attach one certificate to every \(z\in\mathcal R(F,E)\): the Galois group of \(\operatorname{minpoly}_F(z)\) is solvable. The induction principle says that we do not need to inspect every radical formula separately. It is enough to check the ways such a formula can be constructed: start with elements of \(F\), combine previously constructed elements by field operations, and extract a new radical.
+
+Algebraicity is essential here, not decorative. It guarantees that every \(z\in\mathcal R(F,E)\) has a minimal polynomial, so the certificate is even defined. The final effect of this section is that any property surviving those construction rules automatically holds for a hypothetical radical expression for a root of \(\Phi\), regardless of how deeply nested that expression is.
+
 ::: proof-lean appendix-solvable-by-rad
-Let \(\mathcal R(F,E)\) be the intersection of all intermediate fields \(K\) with
+Recall from Appendix II.I that \(\mathcal R(F,E)\) is defined as the intersection of all intermediate fields \(K\) with
 
 ```latex
 F\subseteq K\subseteq E
 ```
 
-that are closed under extracting nonzero-degree roots. This family is nonempty because \(E\) itself has the required closure property. Equivalently, \(\mathcal R(F,E)\) is the smallest intermediate field satisfying
+that are closed under extracting radicals inside \(E\). This family is nonempty because \(E\) itself has the required closure property: every \(y\) under consideration already belongs to \(E\). Equivalently, \(\mathcal R(F,E)\) is the smallest intermediate field satisfying
 
 
 ```latex
-x^n\in K,\ n\ne0
+x^n\in K,\ n\ge1
 \quad\Longrightarrow\quad
 x\in K.
 ```
+
+“Smallest” means that \(\mathcal R(F,E)\) contains only what every radical-closed intermediate field is forced to contain. The intersection definition is a concise, nonrecursive way to construct that field; the operational description above explains what its elements look like.
 
 Because intersections of intermediate fields are intermediate fields, \(\mathcal R(F,E)\) contains \(F\) and is closed under addition, subtraction, multiplication, and inversion. By construction it is also closed under the displayed radical rule.
 
@@ -1015,11 +1283,13 @@ p(y^n)=0.
 
 Set \(r(X)=p(X^n)\). Then \(r(y)=p(y^n)=0\). Moreover, \(r\ne0\): since \(n\ge1\), \(X^n\) is nonconstant, and the leading coefficient of \(p(X^n)\) equals the nonzero leading coefficient of \(p\). Thus \(y\) is algebraic over \(F\), so \(y\in A\). The radical-minimality lemma gives \(\mathcal R(F,E)\subseteq A\). \(\square\)
 
+**Cited algebraic-to-integral theorem.** Over a field, an element is integral if and only if it is algebraic.
+
 **Corollary.** Every element of \(\mathcal R(F,E)\) is integral over \(F\).
 
-**Justification.** Over a field, algebraicity and integrality are equivalent: divide a nonzero annihilating polynomial by its leading coefficient to obtain a monic annihilating polynomial. Apply Lemma 4. \(\square\)
+**Proof.** Apply the cited algebraic-to-integral theorem to Lemma 4. This is the imported implication `IsAlgebraic.isIntegral` used by Lean. \(\square\)
 
-By a **predicate** on \(\mathcal R(F,E)\) we mean a function
+Using the definition from Appendix II.F, a predicate on \(\mathcal R(F,E)\) is a function
 
 ```latex
 P:\mathcal R(F,E)\longrightarrow\{\mathrm{true},\mathrm{false}\}.
@@ -1056,15 +1326,23 @@ Applying cited theorem E promotes \(S\) to an intermediate field. The third assu
 The reverse inclusion is part of the definition of \(S\), so \(S=\mathcal R(F,E)\). Thus \(P\) holds throughout \(\mathcal R(F,E)\). \(\square\)
 
 ::: lean-explanation
-`solvableByRad_le` is the radical-minimality lemma; its one-line proof is the infimum argument given on the left. `solvableByRad_le_algClosure` proves Lemma 4 with the same composed polynomial `p.comp (X ^ n)`. `isIntegral_of_mem_solvableByRad` is the stated corollary. `Subalgebra.IsAlgebraic.toIntermediateField` is cited theorem E. The body of `solvableByRad.induction` then follows the mathematical proof in the same order: construct `s`, promote it to `t`, prove `ht` (radical closure), and apply `solvableByRad_le`.
+`solvableByRad_le` is the radical-minimality lemma; its one-line proof is the intersection argument given on the left. `solvableByRad_le_algClosure` proves Lemma 4 with the same composed polynomial `p.comp (X ^ n)`. `isIntegral_of_mem_solvableByRad` applies the cited algebraic-to-integral theorem to obtain the corollary. `Subalgebra.IsAlgebraic.toIntermediateField` is cited theorem E. The body of `solvableByRad.induction` then follows the mathematical proof in the same order: construct `s`, promote it to `t`, prove `ht` (radical closure), and apply `solvableByRad_le`.
 :::
 
 ### V. Lemma: extracting one radical
 
-::: proof-lean appendix-radical-step
-The Lean proof first establishes three auxiliary results about binomials. We state and prove them in the same order.
+This is where a radical extraction becomes a statement about a Galois group. Consider \(x=\sqrt[3]{2+\sqrt5}\). Once the preceding stage has constructed \(x^3=2+\sqrt5\), the new element \(x\) satisfies \(X^3-(2+\sqrt5)=0\). In general, adjoining an \(n\)-th root leads to a binomial \(X^n-a\).
 
-**Cited theorem G (automorphisms of roots of unity).** If \(a^n=1\) and \(\sigma\) is a field homomorphism, then \(\sigma(a)=a^m\) for some integer \(m\ge0\).
+Any two nonzero roots of \(X^n-a\) differ by an \(n\)-th root of unity. An automorphism therefore cannot move a chosen root arbitrarily: it can only multiply it by one of those roots of unity. Lemmas 5–7 show that these possible symmetries form a solvable group even when the base field did not initially contain the required roots of unity.
+
+For the induction, we know the minimal polynomial \(p\) of \(x^n\), rather than only the single value \(a=x^n\). If \(a_1,\ldots,a_r\) are the conjugates of \(x^n\), then \(p(X^n)=c\prod_i(X^n-a_i)\). Each factor is a binomial of the type just analyzed. The product and tower lemmas combine their solvable Galois groups, and minimal-polynomial divisibility passes the conclusion from \(p(X^n)\) down to \(\operatorname{minpoly}_F(x)\).
+
+Thus the entire section has one concrete effect: solvability for \(x^n\) implies solvability for \(x\). This is what allows each additional radical in a formula to preserve solvability.
+
+::: proof-lean appendix-radical-step
+**Cited theorem G (automorphisms of roots of unity).** If \(a^n=1\) and \(\sigma\) is a field homomorphism, then \(\sigma(a)=a^m\) for some natural number \(m\).
+
+**Cited abelian-to-solvable theorem.** Every abelian group is solvable. This is `isSolvable_of_comm` in Lean.
 
 **Lemma 5.** The Galois group of \(X^n-1\) is abelian, hence solvable.
 
@@ -1080,7 +1358,7 @@ Given \(\sigma,\tau\), choose \(c,d\) with \(\sigma(a)=a^c\) and \(\tau(a)=a^d\)
 (\sigma\tau)(a)=(a^d)^c=a^{dc}=a^{cd}=(a^c)^d=(\tau\sigma)(a).
 ```
 
-The two automorphisms agree on every root, and the roots generate the splitting field; therefore \(\sigma\tau=\tau\sigma\). \(\square\)
+The two automorphisms agree on every root, and the roots generate the splitting field; therefore \(\sigma\tau=\tau\sigma\). Thus the Galois group is abelian, and the cited abelian-to-solvable theorem makes it solvable. \(\square\)
 
 **Lemma 6.** Suppose \(X^n-1\) splits over a field \(K\). Then, for every \(a\in K\), the Galois group over \(K\) of \(X^n-a\) is abelian.
 
@@ -1105,11 +1383,11 @@ For \(\sigma,\tau\), both fix \(c_\sigma,c_\tau\), so
 =b c_\sigma c_\tau=(\tau\sigma)(b).
 ```
 
-Again the automorphisms agree on every root, so they commute. \(\square\)
+Again the automorphisms agree on every root, so they commute. Thus the Galois group is abelian, and the cited abelian-to-solvable theorem makes it solvable. \(\square\)
 
 **Lemma 7.** Let \(i:K\hookrightarrow M\) be a field embedding, let \(a\ne0\), and suppose \(X^n-a\) splits over \(M\). Then \(X^n-1\) also splits over \(M\).
 
-**Proof.** Choose a nonzero root \(b\) of \(X^n-i(a)\). If \(s\) is the multiset of all \(n\) roots of that polynomial, then
+**Proof.** If \(n=0\), then \(X^n-1=0\), which splits over every field; this is the first case split in the Lean proof. Now assume \(n\ge1\). Since \(X^n-i(a)\) has positive degree and splits over \(M\), it has a root \(b\in M\). The injectivity of \(i\) and the assumption \(a\ne0\) imply \(i(a)\ne0\), so \(b^n=i(a)\ne0\) and hence \(b\ne0\). If \(s\) is the multiset of all \(n\) roots of that polynomial, counted with multiplicity, then
 
 ```latex
 \{c/b:c\in s\}
@@ -1135,7 +1413,9 @@ q=X^n-a.
 
 Lemma 7 supplies assumption 1 of Lemma 2; Lemma 5 supplies assumption 2; and, over the splitting field of \(p\), Lemma 6 supplies assumption 3. Therefore \(\operatorname{Gal}(X^n-a/K)\) is solvable. \(\square\)
 
-We now prove the radical step corresponding to `induction_rad`.
+**Cited composition-splitting theorem.** If \(p,q\in F[X]\) and \(q\) is nonconstant, then \(p\) splits over the splitting field of \(p\circ q\). This is `Gal.splits_in_splittingField_of_comp` in Lean.
+
+We now prove the radical step.
 
 **Lemma 8.** Let \(x\in\mathcal R(F,E)\), let \(n\ge1\), and suppose
 
@@ -1162,7 +1442,7 @@ the minimal-polynomial divisibility theorem gives
 
 Therefore Lemma 1 reduces the desired conclusion to proving that the Galois group of \(p(X^n)\) is solvable.
 
-Let \(K\) be the splitting field of \(p\). The polynomial \(p\) splits over the splitting field of \(p(X^n)\): every root \(a\) of \(p\) is \(b^n\) for some root \(b\) of \(p(X^n)\). Over \(K\), write
+Let \(K\) be the splitting field of \(p\). Since \(n\ge1\), the monomial \(X^n\) is nonconstant, so the cited composition-splitting theorem says that \(p\) splits over the splitting field of \(p(X^n)\). Over \(K\), write
 
 ```latex
 p(X)=c\prod_i(X-a_i).
@@ -1174,13 +1454,21 @@ After composition with \(X^n\),
 p(X^n)=c\prod_i(X^n-a_i).
 ```
 
-The constant factor has trivial Galois group. Each binomial factor has solvable Galois group by the corollary. Repeated application of Lemma 3 therefore shows that the Galois group over \(K\) of \(p(X^n)\) is solvable. The hypothesis gives solvability of \(\operatorname{Gal}(p/F)\). Lemma 2, applied to \(p\) and \(p(X^n)\), now gives solvability of \(\operatorname{Gal}(p(X^n)/F)\). Finally, Lemma 1 and the displayed divisibility give solvability of \(\operatorname{Gal}(\operatorname{minpoly}_F(x)/F)\). \(\square\)
+The constant factor has trivial Galois group. Each binomial factor has solvable Galois group by the corollary. The finite-product corollary after Lemma 3 therefore shows that the Galois group over \(K\) of \(p(X^n)\) is solvable; this is the call to `gal_prod_isSolvable` in Lean. The hypothesis gives solvability of \(\operatorname{Gal}(p/F)\). Lemma 2, applied to \(p\) and \(p(X^n)\), now gives solvability of \(\operatorname{Gal}(p(X^n)/F)\). Finally, Lemma 1 and the displayed divisibility give solvability of \(\operatorname{Gal}(\operatorname{minpoly}_F(x)/F)\). \(\square\)
 
 ::: lean-explanation
 The right column now includes every helper proved in this mathlib file. `map_rootsOfUnity_eq_pow_self` is cited theorem G. `gal_X_pow_sub_one_isSolvable`, `gal_X_pow_sub_C_isSolvable_aux`, and `splits_X_pow_sub_one_of_X_pow_sub_C` are Lemmas 5–7. `gal_X_pow_sub_C_isSolvable` is their corollary and calls `gal_isSolvable_tower` exactly as on the left. `induction_rad` is Lemma 8: it checks nonzeroness, applies minimal-polynomial divisibility, factors `p.comp (X ^ n)`, calls `gal_prod_isSolvable` on the binomial factors, and finishes through `gal_isSolvable_tower` and `gal_isSolvable_of_splits`.
 :::
 
 ### VI. Theorem: the minimal polynomial has solvable Galois group
+
+We can now follow the way an actual radical expression is assembled. For example, \((1+\sqrt2)/\sqrt[3]{3}\) is built from rational numbers by two radical extractions and ordinary arithmetic.
+
+Let \(P(z)\) mean that the minimal polynomial of \(z\) has a solvable Galois group. Elements already in \(F\) satisfy \(P\) because their minimal polynomials are linear, and Section V shows that extracting a radical preserves \(P\).
+
+The remaining difficulty is arithmetic. Even if \(P(x)\) and \(P(y)\) are known, the minimal polynomial of \(x+y\) or \(xy\) is usually not visible from the two original minimal polynomials. Lemma 9 avoids computing it. It embeds the whole field \(F(x,y)\) into one splitting field containing all conjugates of both \(x\) and \(y\). Since that splitting field has a solvable Galois group, the elements formed inside \(F(x,y)\), including \(x+y\) and \(xy\), inherit the required certificate.
+
+The induction principle from Section IV now follows the construction process itself. Its payoff for our example is immediate: if a root \(x\) of \(\Phi\) had any radical expression over \(\mathbb Q\), however complicated, then \(\operatorname{Gal}(\operatorname{minpoly}_{\mathbb Q}(x)/\mathbb Q)\) would be solvable.
 
 ::: proof-lean appendix-main-induction
 **Theorem.** If \(z\in\mathcal R(F,E)\), then
@@ -1247,6 +1535,12 @@ All hypotheses of the induction lemma are satisfied. Therefore \(P(z)\) holds fo
 :::
 
 ### VII. Proof of the radicals-to-Galois theorem
+
+Section VI speaks about the minimal polynomial of the radical element, while the theorem in Section I starts with a given irreducible polynomial \(q\). These are nearly the same polynomial. Because \(q\) is irreducible and \(q(x)=0\), its monic normalization is exactly \(\operatorname{minpoly}_F(x)\). Multiplying by a nonzero constant does not change the roots, so it introduces no new splitting-field symmetries.
+
+For our quintic there is no normalization issue: \(\Phi(X)=X^5-4X+2\) is already monic and irreducible. Hence, for any root \(x\) of \(\Phi\), we have \(\operatorname{minpoly}_{\mathbb Q}(x)=\Phi\). Section VI would therefore say directly that a radical expression for \(x\) forces \(\operatorname{Gal}(\Phi/\mathbb Q)\) to be solvable.
+
+The proof below handles the slightly more general case in which \(q\) is not monic. It normalizes \(q\) and transfers solvability through the resulting restriction map. This is the final bridge from “the element is expressible by radicals” to “the Galois group of the original polynomial is solvable.”
 
 ::: proof-lean appendix-normalization
 **Proof of the theorem in Section I.** Since \(x\) is solvable by radicals, \(x\in\mathcal R(F,E)\). The theorem of the preceding section gives
