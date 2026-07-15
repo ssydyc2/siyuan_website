@@ -3,11 +3,13 @@ import aboutRestingTraveler from '../assets/hero/about-resting-traveler-v4.webp'
 import aboutRpgBackground from '../assets/hero/about-rpg-background-v5.webp';
 import aboutRpgBackground960 from '../assets/hero/about-rpg-background-v5-960w.webp';
 import aboutRpgBackground1440 from '../assets/hero/about-rpg-background-v5-1440w.webp';
-import blogRpgBackground from '../assets/hero/blog-rpg-background-v3.webp';
-import blogRpgBackground960 from '../assets/hero/blog-rpg-background-v3-960w.webp';
-import blogRpgBackground1440 from '../assets/hero/blog-rpg-background-v3-1440w.webp';
-import blogWritingStrip from '../assets/hero/blog-writing-strip-v3.webp';
-import readingBookStrip from '../assets/hero/reading-book-strip-v4.webp';
+import blogEnchantedPageStrip from '../assets/hero/blog-enchanted-page-strip-v1.webp';
+import blogMageBackground from '../assets/hero/blog-mage-background-v2.webp';
+import blogMageBackground960 from '../assets/hero/blog-mage-background-v2-960w.webp';
+import blogMageBackground1440 from '../assets/hero/blog-mage-background-v2-1440w.webp';
+import blogMageCastStrip from '../assets/hero/blog-mage-cast-strip-v1.webp';
+import readingArchiveFolio from '../assets/hero/reading-archive-folio.webp';
+import readingArchiveUnfoldStrip from '../assets/hero/reading-archive-unfold-strip.webp';
 import readingRpgBackground from '../assets/hero/reading-rpg-background-v3.webp';
 import readingRpgBackground960 from '../assets/hero/reading-rpg-background-v3-960w.webp';
 import readingRpgBackground1440 from '../assets/hero/reading-rpg-background-v3-1440w.webp';
@@ -35,14 +37,9 @@ const sceneSources: Record<RpgHeroSceneVariant, SceneSource> = {
     srcSet: `${readingRpgBackground960} 960w, ${readingRpgBackground1440} 1440w, ${readingRpgBackground} 1896w`,
   },
   study: {
-    src: blogRpgBackground,
-    srcSet: `${blogRpgBackground960} 960w, ${blogRpgBackground1440} 1440w, ${blogRpgBackground} 1896w`,
+    src: blogMageBackground,
+    srcSet: `${blogMageBackground960} 960w, ${blogMageBackground1440} 1440w, ${blogMageBackground} 1896w`,
   },
-};
-
-const subjectSources: Record<Exclude<RpgHeroSceneVariant, 'about'>, string> = {
-  reading: readingBookStrip,
-  study: blogWritingStrip
 };
 
 const ambientParticleCount = 8;
@@ -75,16 +72,70 @@ function AboutSubject() {
   );
 }
 
-function AnimatedSubject({ variant }: { variant: Exclude<RpgHeroSceneVariant, 'about'> }) {
+function ReadingArchiveSubject() {
   return (
-    <span className="rpg-hero__subject">
-      <img
-        src={subjectSources[variant]}
-        alt=""
-        className="rpg-hero__sprite-strip"
-        decoding="async"
-        draggable="false"
-      />
+    <span className="rpg-hero__archive">
+      <span className="rpg-hero__archive-shelf-glow" />
+      <span className="rpg-hero__archive-flight">
+        <img
+          src={readingArchiveFolio}
+          alt=""
+          className="rpg-hero__archive-folio"
+          decoding="async"
+          draggable="false"
+        />
+        <span className="rpg-hero__archive-motes">
+          {Array.from({ length: 4 }, (_, index) => (
+            <span key={index} />
+          ))}
+        </span>
+      </span>
+      <span className="rpg-hero__archive-landing">
+        <img
+          src={readingArchiveUnfoldStrip}
+          alt=""
+          className="rpg-hero__archive-unfold-strip"
+          decoding="async"
+          draggable="false"
+        />
+      </span>
+    </span>
+  );
+}
+
+function BlogSpellwritingSubject() {
+  return (
+    <span className="rpg-hero__spellwriting">
+      <span className="rpg-hero__spellwriting-mage">
+        <img
+          src={blogMageCastStrip}
+          alt=""
+          className="rpg-hero__spellwriting-mage-strip"
+          decoding="async"
+          draggable="false"
+        />
+      </span>
+      <span className="rpg-hero__spellwriting-page">
+        <img
+          src={blogEnchantedPageStrip}
+          alt=""
+          className="rpg-hero__spellwriting-page-strip rpg-hero__spellwriting-page-strip--base"
+          decoding="async"
+          draggable="false"
+        />
+        <img
+          src={blogEnchantedPageStrip}
+          alt=""
+          className="rpg-hero__spellwriting-page-strip rpg-hero__spellwriting-page-strip--progress"
+          decoding="async"
+          draggable="false"
+        />
+      </span>
+      <span className="rpg-hero__spellwriting-glyphs">
+        {Array.from({ length: 6 }, (_, index) => (
+          <span key={index} />
+        ))}
+      </span>
     </span>
   );
 }
@@ -106,12 +157,16 @@ export default function RpgHeroScene({ variant }: RpgHeroSceneProps) {
             draggable="false"
             fetchPriority="high"
           />
-          {variant === 'about' ? <AboutSubject /> : <AnimatedSubject variant={variant} />}
-          <span className="rpg-hero__particles">
-            {Array.from({ length: ambientParticleCount }, (_, index) => (
-              <span key={index} />
-            ))}
-          </span>
+          {variant === 'about' && <AboutSubject />}
+          {variant === 'reading' && <ReadingArchiveSubject />}
+          {variant === 'study' && <BlogSpellwritingSubject />}
+          {variant === 'about' && (
+            <span className="rpg-hero__particles">
+              {Array.from({ length: ambientParticleCount }, (_, index) => (
+                <span key={index} />
+              ))}
+            </span>
+          )}
         </div>
       </div>
       <span className="rpg-hero__glow" />
