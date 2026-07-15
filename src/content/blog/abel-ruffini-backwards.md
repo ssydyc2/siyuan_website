@@ -1362,7 +1362,9 @@ then \(\mathcal R(F,E)\subseteq T\).
 
 **Proof.** The field \(T\) is one of the members of the family whose intersection defines \(\mathcal R(F,E)\). An intersection is contained in each member of the intersected family. Hence \(\mathcal R(F,E)\subseteq T\). \(\square\)
 
-**Lemma 4 (algebraicity).** Every element of \(\mathcal R(F,E)\) is algebraic over \(F\).
+Here “algebraic over \(F\)” uses the definition from [Section 2.IX](#ix-field-extensions-and-galois-groups): an element of \(E\) is algebraic over \(F\) if it satisfies some nonzero polynomial with coefficients in \(F\).
+
+**Lemma 4 (radical closure contains only algebraic elements).** Every element of \(\mathcal R(F,E)\) is algebraic over \(F\).
 
 **Proof.** Let \(A\subseteq E\) be the intermediate field of elements algebraic over \(F\). We show that \(A\) is closed under radicals. Suppose \(y^n\in A\), with \(n\ge1\). Choose a nonzero polynomial \(p\in F[X]\) with
 
