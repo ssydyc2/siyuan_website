@@ -1041,7 +1041,34 @@ An **intermediate field** is a field \(K\) satisfying \(F\subseteq K\subseteq E\
 
 An extension \(E/F\) is **algebraic** if every element of \(E\) is algebraic over \(F\).
 
-#### D. Minimal polynomials
+#### D. Constant polynomials, monic normalization, and minimal polynomials
+
+For \(a\in F\), the notation \(C(a)\in F[X]\) means the **constant polynomial** whose constant coefficient is \(a\) and whose other coefficients are zero:
+
+```latex
+C(a)=a+0X+0X^2+\cdots.
+```
+
+Thus \(q\,C(a)\) is an ordinary product of two polynomials in \(F[X]\). It multiplies every coefficient of \(q\) by the scalar \(a\). Lean writes the same constant-polynomial embedding as `Polynomial.C`, abbreviated to `C` in the displayed code.
+
+If \(q\ne0\), then its leading coefficient \(\operatorname{lc}(q)\) is nonzero. Because \(F\) is a field, it therefore has a multiplicative inverse \(\operatorname{lc}(q)^{-1}\in F\). The polynomial
+
+```latex
+q^{\mathrm{mon}}
+=q\,C\!\left(\operatorname{lc}(q)^{-1}\right)
+```
+
+is called the **monic normalization** of \(q\). Its leading coefficient is
+
+```latex
+\operatorname{lc}(q)\operatorname{lc}(q)^{-1}=1,
+```
+
+so it is monic. Multiplication by this nonzero constant changes only the overall scale: \(q\) and \(q^{\mathrm{mon}}\) have exactly the same roots. For example, the monic normalization of \(2X^2-3\in\mathbb Q[X]\) is
+
+```latex
+(2X^2-3)C(2^{-1})=X^2-\frac32.
+```
 
 Let \(E/F\) be a field extension and let \(\alpha\in E\) be algebraic over \(F\). There is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
 
@@ -1052,7 +1079,8 @@ m_{\alpha,F}(\alpha)=0.
 It is called the **minimal polynomial** of \(\alpha\) over \(F\). It divides every polynomial \(q\in F[X]\) for which \(q(\alpha)=0\). Consequently, if an irreducible polynomial \(p\in F[X]\) has \(\alpha\) as a root, then
 
 ```latex
-m_{\alpha,F}=\frac{1}{\operatorname{leadingCoeff}(p)}p.
+m_{\alpha,F}
+=p\,C\!\left(\operatorname{lc}(p)^{-1}\right).
 ```
 
 The coefficients of the minimal polynomial must lie in the base field. For example, \(X-\sqrt2\notin\mathbb Q[X]\), whereas \(X^2-2\in\mathbb Q[X]\) is monic, irreducible, and vanishes at \(\sqrt2\). Hence
@@ -1196,11 +1224,7 @@ A **multiset** is a finite collection in which order is ignored but repetition i
 
 ### III. Group-theoretic and splitting-field lemmas
 
-Suppose, contrary to what we want to prove, that a root \(x\) of our quintic \(\Phi\) were given by a radical expression. That expression would not immediately tell us anything about \(\operatorname{Gal}(\Phi/\mathbb Q)\). Instead, it would produce several auxiliary fields and auxiliary polynomials—one for each radical introduced.
-
-This section supplies the bookkeeping that lets us return from those auxiliary objects to \(\Phi\). If a large splitting field contains the roots of a smaller polynomial, its automorphisms restrict to the smaller splitting field, so solvability can pass downward. If the construction passes through an intermediate field, we can analyze the symmetries below and above that field separately and then combine them. If an auxiliary polynomial factors, we can control its factors separately and then reassemble them.
-
-The practical effect is that later sections may replace the unknown minimal polynomial of \(x\) by larger polynomials that factor more conveniently. Once a larger polynomial has a solvable Galois group, the lemmas below carry solvability back down to the minimal polynomial of \(x\), and eventually to \(\Phi\).
+This section records the group-theoretic and splitting-field properties of Galois groups that the later proofs use.
 
 ::: proof-lean appendix-tower
 **Cited theorem A (injective transfer).** If \(i:G\to H\) is an injective group homomorphism and \(H\) is solvable, then \(G\) is solvable.
@@ -1301,34 +1325,7 @@ The four general solvability results are `solvable_of_solvable_injective`, `solv
 
 ### IV. Lemma: induction on the radical closure
 
-For the definition of \(\mathcal R(F,E)\), see [Section 2.XI](#xi-solvable-by-radicals-and-the-radical-closure). In this section we use that definition to prove an induction principle for all elements of the radical closure.
-
-There are infinitely many possible radical formulas and many ways to arrange them into towers. Following one hypothetical formula for a root of \(\Phi\) would make the argument depend on arbitrary choices. Instead, \(\mathcal R(F,E)\) collects every element that can be built from \(F\) using field operations and finitely many radical extractions.
-
-Here is the operational picture. Begin with the elements of \(F\). At any stage, one may use the four field operations on elements already obtained, or add an element \(y\in E\) when \(y^n\) has already been obtained for some \(n\ge1\). Repeating these rules finitely many times produces exactly the elements represented by finite radical expressions. The resulting field is called the **radical closure of \(F\) inside \(E\)** and is denoted by \(\mathcal R(F,E)\).
-
-For example, when \(F=\mathbb Q\) and \(E=\mathbb C\),
-
-```latex
-\sqrt2\in\mathcal R(\mathbb Q,\mathbb C)
-\quad\text{because}\quad
-(\sqrt2)^2=2\in\mathbb Q,
-```
-
-and then
-
-```latex
-\sqrt[3]{1+\sqrt2}\in\mathcal R(\mathbb Q,\mathbb C)
-\quad\text{because}\quad
-\left(\sqrt[3]{1+\sqrt2}\right)^3=1+\sqrt2
-\in\mathcal R(\mathbb Q,\mathbb C).
-```
-
-This example also shows why the definition is recursive: a new radical may be taken from an expression that itself contains radicals.
-
-We want to attach one certificate to every \(z\in\mathcal R(F,E)\): the Galois group of \(\operatorname{minpoly}_F(z)\) is solvable. The induction principle says that we do not need to inspect every radical formula separately. It is enough to check the ways such a formula can be constructed: start with elements of \(F\), combine previously constructed elements by field operations, and extract a new radical.
-
-Algebraicity is essential here, not decorative. It guarantees that every \(z\in\mathcal R(F,E)\) has a minimal polynomial, so the certificate is even defined. The final effect of this section is that any property surviving those construction rules automatically holds for a hypothetical radical expression for a root of \(\Phi\), regardless of how deeply nested that expression is.
+Using the definition from [Section 2.XI](#xi-solvable-by-radicals-and-the-radical-closure), this section proves the minimality, algebraicity, integrality, and induction properties of the radical closure \(\mathcal R(F,E)\) needed later.
 
 ::: proof-lean appendix-solvable-by-rad
 Recall from prerequisite XI that \(\mathcal R(F,E)\) is defined as the intersection of all intermediate fields \(K\) with
@@ -1420,13 +1417,7 @@ The reverse inclusion is part of the definition of \(S\), so \(S=\mathcal R(F,E)
 
 ### V. Lemma: extracting one radical
 
-This is where a radical extraction becomes a statement about a Galois group. Consider \(x=\sqrt[3]{2+\sqrt5}\). Once the preceding stage has constructed \(x^3=2+\sqrt5\), the new element \(x\) satisfies \(X^3-(2+\sqrt5)=0\). In general, adjoining an \(n\)-th root leads to a binomial \(X^n-a\).
-
-Any two nonzero roots of \(X^n-a\) differ by an \(n\)-th root of unity. An automorphism therefore cannot move a chosen root arbitrarily: it can only multiply it by one of those roots of unity. Lemmas 5–7 show that these possible symmetries form a solvable group even when the base field did not initially contain the required roots of unity.
-
-For the induction, we know the minimal polynomial \(p\) of \(x^n\), rather than only the single value \(a=x^n\). If \(a_1,\ldots,a_r\) are the conjugates of \(x^n\), then \(p(X^n)=c\prod_i(X^n-a_i)\). Each factor is a binomial of the type just analyzed. The product and tower lemmas combine their solvable Galois groups, and minimal-polynomial divisibility passes the conclusion from \(p(X^n)\) down to \(\operatorname{minpoly}_F(x)\).
-
-Thus the entire section has one concrete effect: solvability for \(x^n\) implies solvability for \(x\). This is what allows each additional radical in a formula to preserve solvability.
+This section proves the concrete effect needed for one radical extraction: solvability of the Galois group for \(\operatorname{minpoly}_F(x^n)\) implies solvability for \(\operatorname{minpoly}_F(x)\).
 
 ::: proof-lean appendix-radical-step
 **Cited theorem G (automorphisms of roots of unity).** If \(a^n=1\) and \(\sigma\) is a field homomorphism, then \(\sigma(a)=a^m\) for some natural number \(m\).
@@ -1551,13 +1542,7 @@ The right column now includes every helper proved in this mathlib file. `map_roo
 
 ### VI. Theorem: the minimal polynomial has solvable Galois group
 
-We can now follow the way an actual radical expression is assembled. For example, \((1+\sqrt2)/\sqrt[3]{3}\) is built from rational numbers by two radical extractions and ordinary arithmetic.
-
-Let \(P(z)\) mean that the minimal polynomial of \(z\) has a solvable Galois group. Elements already in \(F\) satisfy \(P\) because their minimal polynomials are linear, and Section V shows that extracting a radical preserves \(P\).
-
-The remaining difficulty is arithmetic. Even if \(P(x)\) and \(P(y)\) are known, the minimal polynomial of \(x+y\) or \(xy\) is usually not visible from the two original minimal polynomials. Lemma 9 avoids computing it. It embeds the whole field \(F(x,y)\) into one splitting field containing all conjugates of both \(x\) and \(y\). Since that splitting field has a solvable Galois group, the elements formed inside \(F(x,y)\), including \(x+y\) and \(xy\), inherit the required certificate.
-
-The induction principle from Section IV now follows the construction process itself. Its payoff for our example is immediate: if a root \(x\) of \(\Phi\) had any radical expression over \(\mathbb Q\), however complicated, then \(\operatorname{Gal}(\operatorname{minpoly}_{\mathbb Q}(x)/\mathbb Q)\) would be solvable.
+Combining the radical-closure induction principle with the one-radical step, this section proves that every \(z\in\mathcal R(F,E)\) has a minimal polynomial with solvable Galois group.
 
 ::: proof-lean appendix-main-induction
 **Theorem.** If \(z\in\mathcal R(F,E)\), then
@@ -1625,14 +1610,24 @@ All hypotheses of the induction lemma are satisfied. Therefore \(P(z)\) holds fo
 
 ### VII. Proof of the radicals-to-Galois theorem
 
-Section VI speaks about the minimal polynomial of the radical element, while the theorem in Section I starts with a given irreducible polynomial \(q\). These are nearly the same polynomial. Because \(q\) is irreducible and \(q(x)=0\), its monic normalization is exactly \(\operatorname{minpoly}_F(x)\). Multiplying by a nonzero constant does not change the roots, so it introduces no new splitting-field symmetries.
-
-For our quintic there is no normalization issue: \(\Phi(X)=X^5-4X+2\) is already monic and irreducible. Hence, for any root \(x\) of \(\Phi\), we have \(\operatorname{minpoly}_{\mathbb Q}(x)=\Phi\). Section VI would therefore say directly that a radical expression for \(x\) forces \(\operatorname{Gal}(\Phi/\mathbb Q)\) to be solvable.
-
-The proof below handles the slightly more general case in which \(q\) is not monic. It normalizes \(q\) and transfers solvability through the resulting restriction map. This is the final bridge from “the element is expressible by radicals” to “the Galois group of the original polynomial is solvable.”
+This final section passes from the minimal polynomial result to any irreducible \(q\) with \(q(x)=0\), using monic normalization to prove the theorem stated in Section I.
 
 ::: proof-lean appendix-normalization
-**Proof of the theorem in Section I.** Since \(x\) is solvable by radicals, \(x\in\mathcal R(F,E)\). The theorem of the preceding section gives
+**Theorem (radicals-to-Galois).** Let \(F\subseteq E\) be fields. Let \(q\in F[X]\) be irreducible, and suppose \(x\in E\) satisfies
+
+```latex
+q(x)=0
+\qquad\text{and}\qquad
+x\text{ is solvable by radicals over }F.
+```
+
+Then the Galois group of the splitting field of \(q\) over \(F\) is solvable:
+
+```latex
+\operatorname{Gal}(q/F)\text{ is solvable}.
+```
+
+**Proof.** Since \(x\) is solvable by radicals, \(x\in\mathcal R(F,E)\). The theorem of the preceding section gives
 
 ```latex
 \operatorname{Gal}(\operatorname{minpoly}_F(x)/F)
@@ -1642,21 +1637,26 @@ The proof below handles the slightly more general case in which \(q\) is not mon
 Because \(q\) is irreducible and \(q(x)=0\), the irreducible-root characterization of the minimal polynomial gives
 
 ```latex
-\operatorname{minpoly}_F(x)=q\,\operatorname{lc}(q)^{-1},
+\operatorname{minpoly}_F(x)
+=q\,C\!\left(\operatorname{lc}(q)^{-1}\right),
 ```
 
-where the scalar is regarded as a constant polynomial. Substituting this equality into the preceding solvability statement shows that
+where \(C\!\left(\operatorname{lc}(q)^{-1}\right)\) is the nonzero constant polynomial defined in Appendix II.D. Substituting this equality into the preceding solvability statement shows that
 
 ```latex
-\operatorname{Gal}\bigl(q\,\operatorname{lc}(q)^{-1}/F\bigr)
+\operatorname{Gal}\!\left(
+q\,C\!\left(\operatorname{lc}(q)^{-1}\right)/F
+\right)
 ```
 
 is solvable.
 
-The polynomial \(q\) divides \(q\,\operatorname{lc}(q)^{-1}\), with quotient the nonzero constant polynomial \(\operatorname{lc}(q)^{-1}\). The restriction theorem for splitting fields of a divisor gives a surjective homomorphism
+The polynomial \(q\) divides \(q\,C\!\left(\operatorname{lc}(q)^{-1}\right)\), with quotient the nonzero constant polynomial \(C\!\left(\operatorname{lc}(q)^{-1}\right)\). The restriction theorem for splitting fields of a divisor gives a surjective homomorphism
 
 ```latex
-\operatorname{Gal}\bigl(q\,\operatorname{lc}(q)^{-1}/F\bigr)
+\operatorname{Gal}\!\left(
+q\,C\!\left(\operatorname{lc}(q)^{-1}\right)/F
+\right)
 \twoheadrightarrow
 \operatorname{Gal}(q/F).
 ```
