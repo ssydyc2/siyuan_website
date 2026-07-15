@@ -669,7 +669,7 @@ This is the formal location of the Fundamental Theorem of Algebra in the Galois-
 ::: proof-lean core-lemmas
 We use the following four theorems as cited results. Their precise statements are recorded here; their proofs are not part of the main argument.
 
-**Cited theorem 1 (radicals imply solvable Galois group).** Let \(F\subseteq E\) be a field extension—equivalently, in Lean's abstract language, let \(E\) have an \(F\)-algebra structure as defined in Appendix II.F. Let \(x\in E\) and \(q\in F[X]\). If
+**Cited theorem 1 (radicals imply solvable Galois group).** Let \(F\subseteq E\) be a field extension—equivalently, in Lean's abstract language, let \(E\) have an \(F\)-algebra structure as defined in Appendix II.E. Let \(x\in E\) and \(q\in F[X]\). If
 
 ```latex
 x\in\mathcal R(F,E),\qquad q\text{ is irreducible},\qquad q(x)=0,
@@ -897,8 +897,6 @@ The proof is given in Sections III–VII. The complete mathlib theorem body appe
 
 ### II. Prerequisites for the Appendix
 
-The main proof in Sections 1–3 does not depend on this section. The definitions below are collected here because the detailed radicals-to-Galois proof additionally uses abstract field maps, intermediate fields, adjoining, minimal polynomials, algebra homomorphisms, subalgebras, integrality, normal extensions, coefficient extension, roots of unity, multisets, and the formal construction of the radical closure.
-
 #### A. Homomorphism arrow notation
 
 For a homomorphism \(f:G\to H\), we use the following arrow notation:
@@ -916,11 +914,7 @@ G\twoheadrightarrow H
 
 Thus a double-headed arrow \(G\twoheadrightarrow H\) asserts that every element of \(H\) is the image of at least one element of \(G\).
 
-#### B. Semigroups, monoids, and rings
-
-These basic definitions are part of the main mathematical prerequisites; see [Section 2.III](#iii-semigroups-monoids-and-rings). They are used here as the ambient algebraic structure for ideals and kernels below.
-
-#### C. Ideals, kernels, and field homomorphisms
+#### B. Ideals, kernels, and field homomorphisms
 
 The purpose of this subsection is to prove that a field homomorphism places its domain inside its codomain as a subfield.
 
@@ -1013,7 +1007,7 @@ Thus every \(r\in F\) satisfies \(r=r\cdot1\in I\), so \(I=F\). If \(I\) contain
 
 If \(\iota(a)=\iota(b)\), then \(\iota(a-b)=0\), so \(a-b\in\ker(\iota)=\{0\}\). Therefore \(a=b\). \(\square\)
 
-#### D. Abstract field extensions, intermediate fields, and adjoining
+#### C. Abstract field extensions, intermediate fields, and adjoining
 
 Fix a field \(F\). An **abstract field extension of \(F\)** is a pair \((E,\iota)\), where \(E\) is a field and \(\iota:F\to E\) is a field homomorphism. The chosen map is part of the data: it specifies which element of \(E\) represents each scalar of \(F\). For example, there are two embeddings
 
@@ -1047,7 +1041,7 @@ An **intermediate field** is a field \(K\) satisfying \(F\subseteq K\subseteq E\
 
 An extension \(E/F\) is **algebraic** if every element of \(E\) is algebraic over \(F\).
 
-#### E. Minimal polynomials
+#### D. Minimal polynomials
 
 Let \(E/F\) be a field extension and let \(\alpha\in E\) be algebraic over \(F\). There is a unique monic irreducible polynomial \(m_{\alpha,F}\in F[X]\) satisfying
 
@@ -1084,7 +1078,7 @@ The **conjugates of \(\alpha\) over \(F\)** are the roots of its minimal polynom
 
 the elements \(\alpha_i\) are precisely the conjugates of \(\alpha\), counted with multiplicity when a multiset is used.
 
-#### F. Algebra structures, algebra homomorphisms, and subalgebras
+#### E. Algebra structures, algebra homomorphisms, and subalgebras
 
 For groups \(G\) and \(H\), the **direct product** \(G\times H\) is the group with coordinatewise multiplication:
 
@@ -1113,7 +1107,7 @@ An **\(F\)-subalgebra** \(A\subseteq E\) is a subset containing the image of \(F
 
 A **predicate** on a set \(S\) is a statement \(P(x)\) that is either true or false for each \(x\in S\). Equivalently, it is a function \(P:S\to\{\mathrm{true},\mathrm{false}\}\).
 
-#### G. Integral elements and normal extensions
+#### F. Integral elements and normal extensions
 
 An element \(\alpha\in E\) is **integral over \(F\)** if it is a root of a monic polynomial in \(F[X]\). Over a field, integrality is equivalent to algebraicity: any nonzero annihilating polynomial can be divided by its leading coefficient to make it monic.
 
@@ -1170,7 +1164,7 @@ This is not automatic for every intermediate field. For example, inside \(\mathb
 
 **Where this is used later.** Restriction lets us compare symmetries of a large splitting field with symmetries of a smaller one. Later cited theorems say that particular restriction maps are injective or surjective; those facts are special theorems, not consequences of the definition alone. The basic definition only says what the map is once preservation of the smaller field is known.
 
-#### H. Coefficient extension, roots of unity, and multisets
+#### G. Coefficient extension, roots of unity, and multisets
 
 Given an embedding \(i:F\to K\) and a polynomial
 
@@ -1199,10 +1193,6 @@ For the zero polynomial, a nonzero constant polynomial, and a monomial \(X^n\), 
 For \(n\ge1\), an **\(n\)-th root of unity** is an element \(\zeta\) satisfying \(\zeta^n=1\). The roots of \(X^n-1\) are exactly the \(n\)-th roots of unity.
 
 A **multiset** is a finite collection in which order is ignored but repetition is retained. Polynomial roots are represented by a multiset when multiplicity matters: for example, \((X-a)^2\) has the root multiset \(\{a,a\}\), even though its set of distinct roots is only \(\{a\}\). Products indexed by a root multiset therefore reproduce the polynomial with the correct multiplicities.
-
-#### I. Extracting radicals and the radical closure
-
-The radical closure is part of the main mathematical prerequisites; see [Section 2.XI](#xi-solvable-by-radicals-and-the-radical-closure). In the appendix proofs below, \(\mathcal R(F,E)\) refers to that same intersection-defined smallest intermediate field closed under extracting radicals inside \(E\).
 
 ### III. Group-theoretic and splitting-field lemmas
 
@@ -1311,6 +1301,8 @@ The four general solvability results are `solvable_of_solvable_injective`, `solv
 
 ### IV. Lemma: induction on the radical closure
 
+For the definition of \(\mathcal R(F,E)\), see [Section 2.XI](#xi-solvable-by-radicals-and-the-radical-closure). In this section we use that definition to prove an induction principle for all elements of the radical closure.
+
 There are infinitely many possible radical formulas and many ways to arrange them into towers. Following one hypothetical formula for a root of \(\Phi\) would make the argument depend on arbitrary choices. Instead, \(\mathcal R(F,E)\) collects every element that can be built from \(F\) using field operations and finitely many radical extractions.
 
 Here is the operational picture. Begin with the elements of \(F\). At any stage, one may use the four field operations on elements already obtained, or add an element \(y\in E\) when \(y^n\) has already been obtained for some \(n\ge1\). Repeating these rules finitely many times produces exactly the elements represented by finite radical expressions. The resulting field is called the **radical closure of \(F\) inside \(E\)** and is denoted by \(\mathcal R(F,E)\).
@@ -1386,7 +1378,7 @@ Set \(r(X)=p(X^n)\). Then \(r(y)=p(y^n)=0\). Moreover, \(r\ne0\): since \(n\ge1\
 
 **Proof.** Apply the cited algebraic-to-integral theorem to Lemma 4. This is the imported implication `IsAlgebraic.isIntegral` used by Lean. \(\square\)
 
-Using the definition from Appendix II.F, a predicate on \(\mathcal R(F,E)\) is a function
+Using the definition from Appendix II.E, a predicate on \(\mathcal R(F,E)\) is a function
 
 ```latex
 P:\mathcal R(F,E)\longrightarrow\{\mathrm{true},\mathrm{false}\}.
