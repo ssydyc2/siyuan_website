@@ -1007,12 +1007,29 @@ export default function Blog() {
           className={`mx-auto px-6 py-12 ${usesLongFormNavigation ? 'max-w-7xl' : 'max-w-5xl'}`}
         >
           <div className="space-y-8">
-            <Link
-              to="/blog"
-              className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)] transition-colors hover:text-[var(--accent)]"
-            >
-              Back to blog
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/blog"
+                aria-label="Back to blog"
+                title="Back to blog"
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center border border-[var(--rule)] bg-[var(--paper-elevated)] text-[var(--ink-muted)] shadow-[2px_2px_0_var(--shadow-rule)] transition-colors hover:border-[var(--rule-strong)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.8"
+                >
+                  <path d="m9 14-5-5 5-5" />
+                  <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+                </svg>
+              </Link>
+              <ThemeToggle />
+            </div>
             <BlogPostDetail post={activePost} />
           </div>
         </main>
