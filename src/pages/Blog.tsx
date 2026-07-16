@@ -653,7 +653,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
       <ul className="mt-4 space-y-2.5">
         {resource.notes.map((note) => (
           <li key={note} className="flex gap-3 text-base leading-7 text-[var(--ink-muted)]">
-            <span className="mt-3 h-1 w-1 shrink-0 rounded-full bg-[var(--warm-accent)]" />
+            <span className="mt-3 h-1 w-1 shrink-0 rounded-full bg-[var(--secondary-accent)]" />
             <span>{note}</span>
           </li>
         ))}

@@ -535,7 +535,7 @@ function MarkdownList({
   return (
     <Tag className={listClass}>
       {block.items.map((item, index) => (
-        <li key={`${item.text}-${index}`} className="leading-7 marker:text-[var(--warm-accent)]">
+        <li key={`${item.text}-${index}`} className="leading-7 marker:text-[var(--secondary-accent)]">
           <span className={item.checked === undefined ? '' : 'flex gap-3'}>
             {item.checked !== undefined && (
               <input
