@@ -16,8 +16,8 @@
   --accent-decoration: #d99a88;
   --amber: #b7791f;
   --shadow-rule: #d8cec0;
-  --secondary-accent: #3572d4;
-  --secondary-accent-soft: #e2ebfb;
+  --secondary-accent: #4293cf;
+  --secondary-accent-soft: #e5f3fc;
   --rpg-shadow: color-mix(in srgb, var(--ink) 16%, transparent);
   --rpg-title-font: Georgia, 'Times New Roman', 'Noto Serif', serif;
   --rpg-menu-font: 'SFMono-Regular', 'Cascadia Mono', Consolas, monospace;
@@ -25,7 +25,7 @@
   --page-background-base: #f7f3ea;
   --page-background-bottom: #f2ecdf;
   --page-glow-primary: rgba(201, 111, 85, 0.09);
-  --page-glow-secondary: rgba(53, 114, 212, 0.075);
+  --page-glow-secondary: rgba(66, 147, 207, 0.085);
 }
 
 :root.dark {
