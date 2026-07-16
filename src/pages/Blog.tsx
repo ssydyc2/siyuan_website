@@ -546,8 +546,8 @@ const blogPostImages: Record<string, { src: string; alt: string }> = {
 function BlogPostVisual({ postId, compact = false }: { postId: string; compact?: boolean }) {
   const image = blogPostImages[postId] ?? blogPostImages['efficient-rl-for-llms'];
   const className = compact
-    ? 'blog-post-visual blog-post-visual--compact h-28 w-full border border-[var(--rule)] bg-[var(--paper-muted)]'
-    : 'blog-post-visual aspect-[16/9] w-full border border-[var(--rule)] bg-[var(--paper-muted)]';
+    ? 'blog-post-visual blog-post-visual--compact h-28 w-full rounded-xl bg-[var(--paper-muted)]'
+    : 'blog-post-visual aspect-[16/9] w-full rounded-2xl bg-[var(--paper-muted)]';
 
   return (
     <span className={className}>
@@ -607,10 +607,10 @@ function BlogPostPreview({ id, post }: { id: string; post: BlogPost }) {
   return (
     <div id={id} className="blog-post-preview" aria-label={`${post.title} preview`}>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="border border-[var(--rule)] bg-[var(--paper)] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--accent)]">
+        <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--accent-strong)]">
           {post.eyebrow}
         </span>
-        <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        <span className="text-xs font-medium text-[var(--ink-faint)]">
           Reading path
         </span>
       </div>
@@ -619,7 +619,7 @@ function BlogPostPreview({ id, post }: { id: string; post: BlogPost }) {
           <li key={`${item.label}-${item.title}`} className="blog-post-preview__item">
             <span className="blog-post-preview__marker" aria-hidden="true" />
             <div className="min-w-0">
-              <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+              <span className="text-xs font-medium text-[var(--ink-faint)]">
                 {item.label}
               </span>
               <p className="mt-1 text-sm font-medium leading-5 text-[var(--ink)]">{item.title}</p>
@@ -916,7 +916,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
       <header>
         <BlogHeroScene />
         <div className="flex items-center gap-3">
-          <h1 className="rpg-page-title font-serif text-4xl font-normal leading-tight text-[var(--ink)]">Blog</h1>
+          <h1 className="font-serif text-4xl font-normal leading-tight text-[var(--ink)] sm:text-5xl">Blog</h1>
           <ThemeToggle />
         </div>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
@@ -932,7 +932,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
         </p>
       </header>
 
-      <div className="rpg-panel blog-post-list border border-[var(--rule-strong)]">
+      <div className="blog-post-list">
         {posts.map((post) => {
           const isActive = expandedPostId === post.id;
           const previewId = `blog-preview-${post.id}`;
@@ -941,14 +941,10 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
           return (
             <motion.article
               key={post.id}
-              className="blog-post-list__item group grid gap-5 border-b border-[var(--rule)] py-8 transition-colors last:border-b-0 hover:bg-[var(--paper-elevated)] sm:grid-cols-[9rem_minmax(0,1fr)_4.5rem] sm:items-start sm:px-4"
+              className="blog-post-list__item group grid gap-5 px-3 py-8 sm:grid-cols-[10rem_minmax(0,1fr)_6rem] sm:items-start sm:px-5"
               data-active={isActive}
               animate={{
-                opacity: isActive ? 1 : 0.82,
-                backgroundColor: isActive ? 'var(--paper-elevated)' : 'transparent',
-                boxShadow: isActive
-                  ? '0 12px 28px color-mix(in srgb, var(--ink) 8%, transparent)'
-                  : '0 0 0 color-mix(in srgb, var(--ink) 0%, transparent)',
+                opacity: 1,
                 y: isActive && !prefersReducedMotion ? -2 : 0,
               }}
               transition={
@@ -983,10 +979,10 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
               <Link
                 to={`/blog/${post.id}`}
                 aria-labelledby={titleId}
-                className="inline-flex w-max items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)] transition-all hover:translate-x-1 hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] sm:justify-self-end"
+                className="inline-flex w-max items-center gap-2 text-sm font-medium text-[var(--ink-muted)] transition-all hover:translate-x-1 hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] sm:justify-self-end"
               >
-                <span>Read</span>
-                <span aria-hidden="true" className="text-2xl font-light leading-none">
+                <span>Read article</span>
+                <span aria-hidden="true" className="text-lg font-light leading-none">
                   &rarr;
                 </span>
               </Link>
