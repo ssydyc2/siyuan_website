@@ -10,10 +10,10 @@
   --ink-faint: #8a9188;
   --rule: #d8cec0;
   --rule-strong: #958979;
-  --accent: #3572d4;
-  --accent-strong: #2458ad;
-  --accent-soft: #e2ebfb;
-  --accent-decoration: #8fb1ed;
+  --accent: #c9365f;
+  --accent-strong: #9f2447;
+  --accent-soft: #f8e1e8;
+  --accent-decoration: #df91a8;
   --amber: #b7791f;
   --shadow-rule: #d8cec0;
   --secondary-accent: #c96f55;
@@ -24,7 +24,7 @@
   --page-background-top: #fbf8f1;
   --page-background-base: #f7f3ea;
   --page-background-bottom: #f2ecdf;
-  --page-glow-primary: rgba(53, 114, 212, 0.12);
+  --page-glow-primary: rgba(201, 54, 95, 0.105);
   --page-glow-secondary: rgba(201, 111, 85, 0.065);
 }
 
