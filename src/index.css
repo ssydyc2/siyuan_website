@@ -15,9 +15,10 @@
   --accent-soft: #dcebe6;
   --accent-decoration: #9cc8bf;
   --amber: #b7791f;
+  --warm-accent: #c96f55;
   --shadow-rule: #d8cec0;
-  --rpg-gold: #9a6a24;
-  --rpg-gold-soft: #e7d3a8;
+  --secondary-accent: #7161b8;
+  --secondary-accent-soft: #eae6f6;
   --rpg-shadow: color-mix(in srgb, var(--ink) 16%, transparent);
   --rpg-title-font: Georgia, 'Times New Roman', 'Noto Serif', serif;
   --rpg-menu-font: 'SFMono-Regular', 'Cascadia Mono', Consolas, monospace;
@@ -25,33 +26,34 @@
   --page-background-base: #f7f3ea;
   --page-background-bottom: #f2ecdf;
   --page-glow-teal: rgba(89, 163, 151, 0.13);
-  --page-glow-gold: rgba(190, 139, 58, 0.09);
+  --page-glow-secondary: rgba(113, 97, 184, 0.07);
 }
 
 :root.dark {
-  --paper: #141814;
-  --paper-elevated: #20261f;
-  --paper-muted: #2b332b;
-  --ink: #f3efe6;
-  --ink-soft: #d8d0c2;
-  --ink-muted: #bab2a4;
-  --ink-faint: #8f988b;
-  --rule: #3d473c;
-  --rule-strong: #6f7a6b;
-  --accent: #6fd0c7;
-  --accent-strong: #9ee7df;
-  --accent-soft: #173d3a;
-  --accent-decoration: #478e87;
+  --paper: #111417;
+  --paper-elevated: #1b1f23;
+  --paper-muted: #24292e;
+  --ink: #f2f0ec;
+  --ink-soft: #d3d5d6;
+  --ink-muted: #aeb3b7;
+  --ink-faint: #7d858c;
+  --rule: #30363d;
+  --rule-strong: #59616a;
+  --accent: #73d5ca;
+  --accent-strong: #9be8df;
+  --accent-soft: #173936;
+  --accent-decoration: #477c78;
   --amber: #e2b55f;
-  --shadow-rule: #3d473c;
-  --rpg-gold: #e2b55f;
-  --rpg-gold-soft: #6d572f;
+  --warm-accent: #ed9278;
+  --shadow-rule: #080a0c;
+  --secondary-accent: #a99ce8;
+  --secondary-accent-soft: #29263a;
   --rpg-shadow: rgba(0, 0, 0, 0.42);
-  --page-background-top: #182019;
-  --page-background-base: #141814;
-  --page-background-bottom: #0e120f;
-  --page-glow-teal: rgba(73, 157, 147, 0.12);
-  --page-glow-gold: rgba(201, 157, 82, 0.045);
+  --page-background-top: #171b20;
+  --page-background-base: #111417;
+  --page-background-bottom: #0b0d10;
+  --page-glow-teal: rgba(71, 145, 163, 0.11);
+  --page-glow-secondary: rgba(137, 112, 202, 0.055);
   color-scheme: dark;
 }
 
@@ -66,7 +68,7 @@ body {
   color: var(--ink);
   background:
     radial-gradient(ellipse 72rem 38rem at 8% -10rem, var(--page-glow-teal), transparent 72%),
-    radial-gradient(ellipse 58rem 34rem at calc(100% + 8rem) 54rem, var(--page-glow-gold), transparent 74%),
+    radial-gradient(ellipse 58rem 34rem at calc(100% + 8rem) 54rem, var(--page-glow-secondary), transparent 74%),
     linear-gradient(
       180deg,
       var(--page-background-top) 0,
@@ -93,7 +95,7 @@ body {
 .site-header {
   position: relative;
   background-image:
-    linear-gradient(90deg, transparent, color-mix(in srgb, var(--rpg-gold) 12%, transparent), transparent),
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--secondary-accent) 9%, transparent), transparent),
     linear-gradient(180deg, color-mix(in srgb, var(--paper-elevated) 94%, transparent), color-mix(in srgb, var(--paper) 86%, transparent));
   box-shadow: 0 3px 0 color-mix(in srgb, var(--rule) 64%, transparent);
 }
@@ -105,7 +107,7 @@ body {
   left: 0;
   height: 1px;
   content: '';
-  background: color-mix(in srgb, var(--rpg-gold) 32%, transparent);
+  background: color-mix(in srgb, var(--secondary-accent) 26%, transparent);
   pointer-events: none;
 }
 
@@ -132,8 +134,8 @@ body {
 
 .rpg-nav__item:hover,
 .rpg-nav__item[aria-current='page'] {
-  border-color: color-mix(in srgb, var(--rpg-gold) 46%, var(--rule));
-  background: color-mix(in srgb, var(--paper-elevated) 82%, var(--rpg-gold-soft));
+  border-color: color-mix(in srgb, var(--secondary-accent) 42%, var(--rule));
+  background: color-mix(in srgb, var(--paper-elevated) 84%, var(--secondary-accent-soft));
   box-shadow: 2px 2px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
   transform: translateY(-1px);
 }
@@ -142,7 +144,7 @@ body {
 .rpg-nav__item[aria-current='page']::before {
   opacity: 1;
   transform: translate(0, -50%) rotate(45deg);
-  background: var(--rpg-gold);
+  background: var(--secondary-accent);
 }
 
 .rpg-page-title {
@@ -158,9 +160,9 @@ body {
   width: 0.52rem;
   height: 0.52rem;
   content: '';
-  border: 1px solid var(--rpg-gold);
-  background: color-mix(in srgb, var(--rpg-gold) 76%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rpg-gold) 11%, transparent);
+  border: 1px solid var(--secondary-accent);
+  background: color-mix(in srgb, var(--secondary-accent) 76%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--secondary-accent) 11%, transparent);
   transform: rotate(45deg);
 }
 
@@ -171,13 +173,13 @@ body {
   left: 0;
   height: 1px;
   content: '';
-  background: linear-gradient(90deg, var(--rpg-gold), color-mix(in srgb, var(--rule) 78%, transparent), transparent);
+  background: linear-gradient(90deg, var(--secondary-accent), color-mix(in srgb, var(--rule) 78%, transparent), transparent);
 }
 
 .rpg-panel {
   position: relative;
   border-color: color-mix(in srgb, var(--rule-strong) 72%, transparent);
-  outline: 1px solid color-mix(in srgb, var(--rpg-gold) 22%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--secondary-accent) 18%, transparent);
   outline-offset: -4px;
   box-shadow: 4px 5px 0 var(--rpg-shadow);
 }
@@ -194,8 +196,8 @@ body {
 
 .reading-topics > div {
   border-left-width: 2px;
-  border-left-color: color-mix(in srgb, var(--rpg-gold) 48%, var(--rule));
-  background: linear-gradient(90deg, color-mix(in srgb, var(--rpg-gold-soft) 24%, transparent), transparent 72%);
+  border-left-color: color-mix(in srgb, var(--secondary-accent) 42%, var(--rule));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--secondary-accent-soft) 24%, transparent), transparent 72%);
 }
 
 .reading-book-card,
@@ -206,11 +208,11 @@ body {
 
 .reading-book-card:hover,
 .timeline-card-interactive:hover .timeline-card-panel {
-  border-color: color-mix(in srgb, var(--rpg-gold) 62%, var(--accent));
+  border-color: color-mix(in srgb, var(--secondary-accent) 52%, var(--accent));
 }
 
 .timeline-node--active > div {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rpg-gold) 20%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--secondary-accent) 18%, transparent);
 }
 
 .blog-post-list {
@@ -260,15 +262,15 @@ a:focus-visible {
 .rpg-panel::before {
   top: -2px;
   left: -2px;
-  border-top: 2px solid var(--rpg-gold);
-  border-left: 2px solid var(--rpg-gold);
+  border-top: 2px solid var(--secondary-accent);
+  border-left: 2px solid var(--secondary-accent);
 }
 
 .rpg-panel::after {
   right: -2px;
   bottom: -2px;
-  border-right: 2px solid var(--rpg-gold);
-  border-bottom: 2px solid var(--rpg-gold);
+  border-right: 2px solid var(--secondary-accent);
+  border-bottom: 2px solid var(--secondary-accent);
 }
 
 ::selection {
@@ -297,7 +299,7 @@ samp {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--rule-strong) 72%, transparent);
   border-radius: 2px;
-  outline: 1px solid color-mix(in srgb, var(--rpg-gold) 40%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--secondary-accent) 34%, transparent);
   outline-offset: -5px;
   background: var(--paper-elevated);
   box-shadow:

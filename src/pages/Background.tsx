@@ -145,7 +145,7 @@ function TimelineCard({
   const accentTransition = reduceMotion ? { duration: 0 } : { duration: 0.22, ease: 'easeOut' as const };
   const cardOpacity = isActive ? 1 : 0.42;
   const cardFilter = isActive ? 'grayscale(0) saturate(1.08)' : 'grayscale(0.72) saturate(0.58)';
-  const nodeColor = isActive ? 'var(--amber)' : 'var(--rule-strong)';
+  const nodeColor = isActive ? 'var(--warm-accent)' : 'var(--rule-strong)';
 
   return (
     <motion.div
@@ -235,7 +235,7 @@ function TimelineCard({
 
             {/* Period badge */}
             <div className="mb-2 inline-flex items-center border border-[var(--rule)] bg-[var(--paper-muted)] px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--accent)]">
-              <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--amber)]" />
+              <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-[var(--warm-accent)]" />
               {item.period}
             </div>
 
