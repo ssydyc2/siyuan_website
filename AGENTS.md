@@ -60,6 +60,16 @@ Tailwind CSS v4 is used for styling. The config uses `@tailwindcss/postcss` and 
 
 ## Pull Request Conventions
 
+### Branch Protection
+
+Treat `main` as read-only. Never commit or push changes directly to `main`, even
+when repository permissions allow branch-protection rules to be bypassed. Every
+change must be made on a separate branch and merged through a pull request.
+
+Before editing or committing, verify the current branch. If it is `main`, create
+and switch to a feature branch first. When asked to commit, push, or send changes,
+push the feature branch and open a pull request targeting `main`.
+
 When asked to create or prepare a pull request, try to create it with
 `gh pr create` by default after the branch has been committed and pushed.
 Do not use the GitHub API directly or drive a browser to submit the PR unless
