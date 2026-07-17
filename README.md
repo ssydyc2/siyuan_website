@@ -2,7 +2,7 @@
 
 A personal website built with Vite, React, TypeScript, and Tailwind CSS. It shares my background, reading list, and blog posts.
 
-**Live site:** [ssydyc2.github.io/personal_website](https://ssydyc2.github.io/personal_website)
+**Live site:** [ssydyc2.github.io/siyuan_website](https://ssydyc2.github.io/siyuan_website)
 
 ## Run Locally
 

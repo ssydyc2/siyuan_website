@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal website built with Vite + React 19 + TypeScript, documenting a journey to becoming a performance engineer. The site is deployed to GitHub Pages at ssydyc2.github.io/personal_website.
+This is a personal website built with Vite + React 19 + TypeScript, documenting a journey to becoming a performance engineer. The site is deployed to GitHub Pages at ssydyc2.github.io/siyuan_website.
 
 ## Commands
 
@@ -27,7 +27,7 @@ The app uses **React Router** with a simple two-page structure:
 
 ```
 src/
-├── App.tsx              # Router setup with BrowserRouter (base: /personal_website/)
+├── App.tsx              # Router setup with BrowserRouter (base: /siyuan_website/)
 ├── main.tsx             # Entry point
 ├── components/
 │   ├── Layout.tsx       # Main layout wrapper

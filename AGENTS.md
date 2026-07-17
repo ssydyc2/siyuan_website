@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Project Overview
 
-This is a personal website built with Vite + React 19 + TypeScript, sharing professional background, reading notes, and blog posts. The site is deployed to GitHub Pages at ssydyc2.github.io/personal_website.
+This is a personal website built with Vite + React 19 + TypeScript, sharing professional background, reading notes, and blog posts. The site is deployed to GitHub Pages at ssydyc2.github.io/siyuan_website.
 
 ## Commands
 
@@ -19,7 +19,7 @@ bun run preview    # Preview production build locally
 ## Architecture
 
 The app uses **React Router** with `BrowserRouter` and a GitHub Pages basename of
-`/personal_website/`. Routes are nested under `Layout`, which renders the shared
+`/siyuan_website/`. Routes are nested under `Layout`, which renders the shared
 site header, navigation, and page outlet.
 
 - **Background** (`/`) - Home page with an animated pixel journey scene,
@@ -37,7 +37,7 @@ site header, navigation, and page outlet.
 
 ```
 src/
-├── App.tsx              # Router setup with BrowserRouter (base: /personal_website/)
+    ├── App.tsx              # Router setup with BrowserRouter (base: /siyuan_website/)
 ├── main.tsx             # Entry point
 ├── index.css            # Tailwind import, theme tokens, global styles, pixel-scene CSS
 ├── assets/

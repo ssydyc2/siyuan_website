@@ -19,7 +19,7 @@ function PageTitle() {
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter basename="/personal_website">
+      <BrowserRouter basename="/siyuan_website">
         <PageTitle />
         <Routes>
           <Route path="/" element={<Layout />}>

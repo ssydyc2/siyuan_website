@@ -864,7 +864,7 @@ The final Lean theorem is short because every difficult point has already been p
 
 ## 4. Sources
 
-- [Companion Lean source for this article](https://github.com/ssydyc2/personal_website/tree/main/formal/abel-ruffini)
+- [Companion Lean source for this article](https://github.com/ssydyc2/siyuan_website/tree/main/formal/abel-ruffini)
 - [Mathlib: Construction of an algebraic number that is not solvable by radicals](https://leanprover-community.github.io/mathlib4_docs/Archive/Wiedijk100Theorems/AbelRuffini.html)
 - [Mathlib: The Abel–Ruffini theorem and solvability by radicals](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/AbelRuffini.html)
 - [Mathlib: Polynomial Galois groups](https://leanprover-community.github.io/mathlib4_docs/Mathlib/FieldTheory/PolynomialGaloisGroup.html)
