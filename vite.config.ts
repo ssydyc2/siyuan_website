@@ -5,4 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/siyuan_website/',
+  server: {
+    watch: {
+      ignored: ['**/formal/**/.lake/**'],
+    },
+  },
 })
