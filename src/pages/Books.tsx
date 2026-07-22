@@ -45,6 +45,14 @@ const books: Book[] = [
       'Must-read for reading books well, with innovative four levels of reading and a focus on active reading.',
     topics: ['self-improvement'],
   },
+  {
+    id: 'thinking-in-bets',
+    title: 'Thinking in Bets',
+    author: 'Annie Duke',
+    comment:
+      'Changed how I see uncertainty and make decisions. Its best advice: treat decisions as bets, challenge your beliefs, learn from outcomes without confusing luck with skill, and seek information rather than immediate success.',
+    topics: ['self-improvement'],
+  },
 ];
 
 function ReadingHeroScene() {
