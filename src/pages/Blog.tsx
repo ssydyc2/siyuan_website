@@ -3,13 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import abelRuffiniImage from '../assets/blog/abel-ruffini-backwards.webp';
 import rlForLlmsImage from '../assets/blog/efficient-rl-for-llms-2d-hd.webp';
-import kernelRuntimeImage from '../assets/blog/llm-kernel-runtime-basics-2d-hd.webp';
 import MarkdownDocument from '../components/MarkdownDocument';
 import RpgHeroScene from '../components/RpgHeroScene';
 import ThemeToggle from '../components/ThemeToggle';
 import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
 import abelRuffiniMarkdown from '../content/blog/abel-ruffini-backwards.md?raw';
-import kernelBasicsMarkdown from '../content/blog/llm-kernel-runtime-basics.md?raw';
 import abelRuffiniLean from '../../formal/abel-ruffini/AbelRuffini.lean?raw';
 import abelRuffiniMathlibAppendix from '../../formal/abel-ruffini/MathlibAppendix.lean?raw';
 
@@ -412,37 +410,6 @@ const keyConcepts = `Efficient RL for LLMs
 |-- Practical Stacks
     |-- verl, TRL, OpenRLHF, slime, AReaL`;
 
-const kernelRuntimePhases: Phase[] = [
-  {
-    title: 'Core LLM Performance Papers',
-    period: 'Phase 1',
-    label: 'Phase 1',
-    summary: 'Start with FlashAttention, PagedAttention, and SGLang to connect kernels with serving constraints.',
-    groups: [],
-  },
-  {
-    title: 'Kernel Programming Tools',
-    period: 'Phase 2',
-    label: 'Phase 2',
-    summary: 'Move into Triton and JAX after the papers define the memory movement and compiler/runtime problems that matter.',
-    groups: [],
-  },
-  {
-    title: 'Serving Frameworks',
-    period: 'Phase 3',
-    label: 'Phase 3',
-    summary: 'Study vLLM and SGLang to connect kernels, KV cache, scheduling, and structured serving.',
-    groups: [],
-  },
-  {
-    title: 'Practice & Further Reading',
-    period: 'Phase 4',
-    label: 'Phase 4',
-    summary: 'Implement core serving components, then read vLLM, SGLang, and LMSYS systems writing.',
-    groups: [],
-  },
-];
-
 const blogPosts: BlogPost[] = [
   {
     id: 'abel-ruffini-backwards',
@@ -494,20 +461,6 @@ const blogPosts: BlogPost[] = [
     topThree,
     keyConcepts,
   },
-  {
-    id: 'llm-kernel-runtime-basics',
-    title: 'Study Plan: LLM Kernel & Runtime Basics',
-    eyebrow: 'Learning map',
-    summary:
-      'A learning map that moves from attention and serving papers to kernel tools, serving frameworks, and practice.',
-    readingChecklist: [],
-    phases: kernelRuntimePhases,
-    frameworkRows: [],
-    practicePath: [],
-    minimalPath: [],
-    topThree: [],
-    keyConcepts: '',
-  },
 ];
 
 const blogPostImages: Record<string, { src: string; alt: string }> = {
@@ -518,10 +471,6 @@ const blogPostImages: Record<string, { src: string; alt: string }> = {
   'efficient-rl-for-llms': {
     src: rlForLlmsImage,
     alt: '2D illustration of an RL pipeline for LLM training systems',
-  },
-  'llm-kernel-runtime-basics': {
-    src: kernelRuntimeImage,
-    alt: '2D illustration of GPU kernels, attention tiles, and LLM runtime cache pages',
   },
 };
 
@@ -837,15 +786,6 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
   );
 }
 
-function KernelBasicsDetail({ post }: { post: BlogPost }) {
-  return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <BlogPostVisual postId={post.id} />
-      <MarkdownDocument markdown={kernelBasicsMarkdown} />
-    </div>
-  );
-}
-
 function AbelRuffiniDetail({ post }: { post: BlogPost }) {
   return (
     <div className="mx-auto max-w-none space-y-8">
@@ -871,10 +811,6 @@ function BlogPostDetail({ post }: { post: BlogPost }) {
 
   if (post.id === 'efficient-rl-for-llms') {
     return <EfficientRlDetail post={post} />;
-  }
-
-  if (post.id === 'llm-kernel-runtime-basics') {
-    return <KernelBasicsDetail post={post} />;
   }
 
   return <StructuredBlogPostDetail post={post} />;
