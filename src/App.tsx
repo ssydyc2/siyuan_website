@@ -5,6 +5,7 @@ import { ThemeProvider } from './components/ThemeToggle';
 import Background from './pages/Background';
 import Books from './pages/Books';
 import Blog from './pages/Blog';
+import Play from './pages/Play';
 
 function PageTitle() {
   const { pathname } = useLocation();
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="journey" element={<Navigate to="/blog" replace />} />
             <Route path="books" element={<Books />} />
             <Route path="reading-list" element={<Books />} />
+            <Route path="play" element={<Play />} />
           </Route>
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:postId" element={<Blog />} />
