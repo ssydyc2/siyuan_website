@@ -366,8 +366,8 @@ export default function TetrisGame() {
                   >
                     −
                   </button>
-                  <span className="font-mono text-lg tabular-nums text-[var(--ink)]" aria-live="polite">
-                    {formatStat(state.level, 2)}
+                  <span className="tetris-level-stepper__value" aria-live="polite">
+                    {state.level}
                   </span>
                   <button
                     type="button"
