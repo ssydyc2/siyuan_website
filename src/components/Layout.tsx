@@ -46,7 +46,7 @@ export default function Layout() {
                 }`
               }
             >
-              About Me
+              🏠 About Me
             </NavLink>
             <NavLink
               to="/reading-list"
@@ -58,7 +58,7 @@ export default function Layout() {
                 }`
               }
             >
-              Reading List
+              📚 Reading List
             </NavLink>
             <NavLink
               to="/play"
@@ -70,7 +70,7 @@ export default function Layout() {
                 }`
               }
             >
-              Play
+              🎮 Play
             </NavLink>
             <NavLink
               to="/blog"
