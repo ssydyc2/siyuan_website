@@ -2507,7 +2507,6 @@ samp {
   grid-column: 2;
   width: 100%;
   flex-direction: column;
-  gap: 0.9rem;
 }
 
 .tetris-well {
@@ -2515,22 +2514,30 @@ samp {
   padding: 0.55rem;
 }
 
-.tetris-status {
+.tetris-rail {
+  display: flex;
   grid-column: 3;
-  justify-self: start;
   width: 12.5rem;
+  flex-direction: column;
+  gap: 0.65rem;
+  justify-self: start;
+}
+
+.tetris-status {
+  width: 100%;
   padding: 1rem;
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--rpg-shadow) 72%, transparent);
 }
 
 .tetris-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
 .tetris-actions .tetris-action-btn {
-  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 48rem) {
@@ -2544,7 +2551,7 @@ samp {
     width: min(100%, 22rem);
   }
 
-  .tetris-status {
+  .tetris-rail {
     grid-column: 1;
     width: 12.5rem;
   }
