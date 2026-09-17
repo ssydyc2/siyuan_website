@@ -37,6 +37,7 @@ export default function Layout() {
           <nav className="rpg-nav flex flex-wrap gap-x-3 gap-y-3" aria-label="Primary navigation">
             <NavLink
               to="/"
+              end
               className={({ isActive }) =>
                 `rpg-nav__item font-hand text-base transition-colors ${
                   isActive
@@ -58,6 +59,18 @@ export default function Layout() {
               }
             >
               Reading List
+            </NavLink>
+            <NavLink
+              to="/play"
+              className={({ isActive }) =>
+                `rpg-nav__item font-hand text-base transition-colors ${
+                  isActive
+                    ? 'text-[var(--accent)]'
+                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
+                }`
+              }
+            >
+              Play
             </NavLink>
             <NavLink
               to="/blog"

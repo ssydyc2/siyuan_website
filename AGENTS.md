@@ -6,8 +6,8 @@ This file provides guidance to Codex when working in this repository.
 
 This is Siyuan Song's personal website, built with Vite, React 19, TypeScript,
 Tailwind CSS v4, React Router, Motion, and KaTeX. It contains the home/about
-page, reading notes, blog posts, generated hero artwork, and a Lean-backed math
-blog article.
+page, reading notes, blog posts, generated hero artwork, a Lean-backed math
+blog article, and a Tetris mini-game.
 
 The production site is deployed with GitHub Pages at:
 
@@ -54,11 +54,12 @@ Routes:
 
 - `/` - About/home page with the professional timeline.
 - `/reading-list` and `/books` - Reading list page.
+- `/play` - Tetris mini-game.
 - `/blog` - Blog index.
 - `/blog/:postId` - Blog post detail page.
 - `/journey` - Legacy redirect to `/blog`.
 
-The home and reading routes render inside `src/components/Layout.tsx`, which owns
+The home, reading, and play routes render inside `src/components/Layout.tsx`, which owns
 the shared header, avatar, navigation, and page outlet. The blog index/detail
 route renders through `src/pages/Blog.tsx` and owns its own blog layout.
 
@@ -74,15 +75,17 @@ src/
 │   ├── blog/                       # Blog card/detail images
 │   └── hero/                       # RPG-style hero scene assets and responsive variants
 ├── components/
-│   ├── Layout.tsx                  # Main site shell for home/reading pages
+│   ├── Layout.tsx                  # Main site shell for home/reading/play pages
 │   ├── MarkdownDocument.tsx        # Markdown renderer with KaTeX and proof/Lean blocks
 │   ├── RpgHeroScene.tsx            # Shared animated hero scene component
-│   └── ThemeToggle.tsx             # Light/dark theme provider and toggle
+│   ├── ThemeToggle.tsx             # Light/dark theme provider and toggle
+│   └── tetris/                     # Tetris engine and board UI for /play
 ├── content/
 │   └── blog/                       # Markdown blog source files
 └── pages/
     ├── Background.tsx              # About/home page
     ├── Books.tsx                   # Reading list page
+    ├── Play.tsx                    # Tetris mini-game page
     └── Blog.tsx                    # Blog index and detail pages
 
 formal/
