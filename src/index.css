@@ -2588,6 +2588,10 @@ samp {
   pointer-events: none;
 }
 
+.tetris-overlay .tetris-action-btn {
+  pointer-events: auto;
+}
+
 .tetris-overlay--static {
   transition: none;
 }
