@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useReducer, useRef, type PointerEvent } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { useReducedMotion } from 'motion/react';
 import {
+  MAX_LEVEL,
+  MIN_LEVEL,
   buildBoardCells,
   createIdleState,
   dropIntervalMs,
@@ -59,47 +61,6 @@ function NextPreview({ piece }: { piece: PieceId | null }) {
         );
       })}
     </div>
-  );
-}
-
-function PadButton({
-  label,
-  ariaLabel,
-  className = '',
-  onPress,
-  onRelease,
-}: {
-  label: string;
-  ariaLabel: string;
-  className?: string;
-  onPress: () => void;
-  onRelease?: () => void;
-}) {
-  const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    onPress();
-  };
-
-  const handlePointerUp = (event: PointerEvent<HTMLButtonElement>) => {
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-    onRelease?.();
-  };
-
-  return (
-    <button
-      type="button"
-      aria-label={ariaLabel}
-      className={`tetris-pad-btn ${className}`}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      onContextMenu={(event) => event.preventDefault()}
-    >
-      {label}
-    </button>
   );
 }
 
@@ -195,16 +156,6 @@ export default function TetrisGame() {
   const stopSoftDrop = () => {
     heldRef.current.down = false;
     clearSoftDropRepeat();
-  };
-
-  const pressLeft = () => {
-    heldRef.current.left = true;
-    startHorizontal(-1);
-  };
-
-  const pressRight = () => {
-    heldRef.current.right = true;
-    startHorizontal(1);
   };
 
   useEffect(() => {
@@ -345,21 +296,8 @@ export default function TetrisGame() {
           ? 'Game Over'
           : null;
 
-  const overlayHint =
-    state.status === 'idle'
-      ? 'Press Start or Enter'
-      : state.status === 'paused'
-        ? 'Press P or Resume'
-        : state.status === 'gameover'
-          ? 'Press Restart or Enter'
-          : null;
-
-  const primaryAction =
-    state.status === 'playing'
-      ? { type: 'PAUSE' as const, label: 'Pause' }
-      : state.status === 'paused'
-        ? { type: 'PAUSE' as const, label: 'Resume' }
-        : { type: 'START' as const, label: 'Start' };
+  const canAdjustLevel = state.status !== 'playing';
+  const canPause = state.status === 'playing' || state.status === 'paused';
 
   return (
     <div className="tetris-game grid gap-6 lg:grid-cols-[auto_minmax(0,16rem)] lg:items-start">
@@ -380,59 +318,30 @@ export default function TetrisGame() {
               role="status"
             >
               <p className="font-hand text-3xl text-[var(--ink)]">{overlayLabel}</p>
-              {overlayHint ? (
-                <p className="mt-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">
-                  {overlayHint}
-                </p>
-              ) : null}
-              {state.status === 'idle' || state.status === 'gameover' ? (
-                <button
-                  type="button"
-                  className="tetris-action-btn tetris-action-btn--primary mt-4"
-                  onClick={() => dispatch({ type: state.status === 'gameover' ? 'RESTART' : 'START' })}
-                >
-                  {state.status === 'gameover' ? 'Restart' : 'Start'}
-                </button>
-              ) : null}
             </div>
           ) : null}
         </div>
 
-        <div
-          className="tetris-pad"
-          onContextMenu={(event) => event.preventDefault()}
-          aria-label="Touch controls"
-        >
-          <PadButton
-            className="col-span-3"
-            label="Rotate"
-            ariaLabel="Rotate"
-            onPress={() => dispatch({ type: 'ROTATE' })}
-          />
-          <PadButton label="Left" ariaLabel="Move left" onPress={pressLeft} onRelease={() => releaseHorizontal(-1)} />
-          <PadButton label="Down" ariaLabel="Soft drop" onPress={startSoftDrop} onRelease={stopSoftDrop} />
-          <PadButton label="Right" ariaLabel="Move right" onPress={pressRight} onRelease={() => releaseHorizontal(1)} />
-          <PadButton
-            className="col-span-3"
-            label="Hard Drop"
-            ariaLabel="Hard drop"
-            onPress={() => dispatch({ type: 'HARD_DROP' })}
-          />
-          <PadButton
-            label={state.status === 'paused' ? 'Resume' : 'Pause'}
-            ariaLabel={state.status === 'paused' ? 'Resume' : 'Pause'}
-            onPress={() => dispatch({ type: 'PAUSE' })}
-          />
-          <PadButton
-            className="col-span-2"
-            label={state.status === 'idle' ? 'Start' : 'Restart'}
-            ariaLabel={state.status === 'idle' ? 'Start game' : 'Restart game'}
-            onPress={() => dispatch({ type: state.status === 'idle' ? 'START' : 'RESTART' })}
-          />
+        <div className="flex w-full max-w-[18.75rem] flex-wrap gap-2">
+          <button
+            type="button"
+            className={`tetris-action-btn ${canPause ? 'tetris-action-btn--primary' : ''}`}
+            onClick={() => dispatch({ type: 'PAUSE' })}
+            disabled={!canPause}
+          >
+            {state.status === 'paused' ? 'Resume' : 'Pause'}
+          </button>
+          <button
+            type="button"
+            className={`tetris-action-btn ${canPause ? '' : 'tetris-action-btn--primary'}`}
+            onClick={() => dispatch({ type: state.status === 'idle' ? 'START' : 'RESTART' })}
+          >
+            {state.status === 'idle' ? 'Start' : 'Restart'}
+          </button>
         </div>
       </div>
 
-      <aside className="space-y-4">
+      <aside>
         <section className="rpg-panel border border-[var(--rule)] bg-[var(--paper-elevated)] p-5">
           <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Status</p>
           <dl className="mt-4 space-y-3">
@@ -444,9 +353,33 @@ export default function TetrisGame() {
               <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Lines</dt>
               <dd className="font-mono text-lg tabular-nums text-[var(--ink)]">{formatStat(state.lines, 3)}</dd>
             </div>
-            <div className="flex items-baseline justify-between gap-4">
+            <div className="flex items-center justify-between gap-4">
               <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Level</dt>
-              <dd className="font-mono text-lg tabular-nums text-[var(--ink)]">{formatStat(state.level, 2)}</dd>
+              <dd>
+                <div className="tetris-level-stepper">
+                  <button
+                    type="button"
+                    className="tetris-level-stepper__btn"
+                    aria-label="Decrease level"
+                    disabled={!canAdjustLevel || state.level <= MIN_LEVEL}
+                    onClick={() => dispatch({ type: 'SET_LEVEL', level: state.level - 1 })}
+                  >
+                    −
+                  </button>
+                  <span className="font-mono text-lg tabular-nums text-[var(--ink)]" aria-live="polite">
+                    {formatStat(state.level, 2)}
+                  </span>
+                  <button
+                    type="button"
+                    className="tetris-level-stepper__btn"
+                    aria-label="Increase level"
+                    disabled={!canAdjustLevel || state.level >= MAX_LEVEL}
+                    onClick={() => dispatch({ type: 'SET_LEVEL', level: state.level + 1 })}
+                  >
+                    +
+                  </button>
+                </div>
+              </dd>
             </div>
           </dl>
 
@@ -456,36 +389,6 @@ export default function TetrisGame() {
               <NextPreview piece={state.next} />
             </div>
           </div>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="tetris-action-btn tetris-action-btn--primary"
-              onClick={() => dispatch({ type: primaryAction.type })}
-            >
-              {primaryAction.label}
-            </button>
-            <button
-              type="button"
-              className="tetris-action-btn"
-              onClick={() => dispatch({ type: 'RESTART' })}
-              disabled={state.status === 'idle'}
-            >
-              Restart
-            </button>
-          </div>
-        </section>
-
-        <section className="rpg-panel border border-[var(--rule)] bg-[var(--paper-elevated)] p-5">
-          <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Controls</p>
-          <ul className="mt-3 space-y-1.5 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-[var(--ink-muted)]">
-            <li>Left / Right or A / D — move</li>
-            <li>Down or S — soft drop</li>
-            <li>Up, W, or X — rotate</li>
-            <li>Space — hard drop</li>
-            <li>P — pause</li>
-            <li>Enter — start / resume</li>
-          </ul>
         </section>
       </aside>
     </div>
