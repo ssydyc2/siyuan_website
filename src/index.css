@@ -2483,6 +2483,14 @@ samp {
   --tetris-J: #3d6cb5;
   --tetris-L: #c46b2d;
   --tetris-empty: color-mix(in srgb, var(--ink) 8%, var(--paper));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem 1.25rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
 }
 
 :root.dark .tetris-game {
@@ -2496,9 +2504,42 @@ samp {
   --tetris-empty: color-mix(in srgb, var(--ink) 10%, var(--paper-muted));
 }
 
+.tetris-stage {
+  display: flex;
+  width: min(100%, 25.5rem);
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
 .tetris-well {
-  width: min(100%, 18.75rem);
+  width: 100%;
   padding: 0.55rem;
+}
+
+.tetris-status {
+  width: min(100%, 10.75rem);
+  padding: 0.85rem 0.9rem;
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--rpg-shadow) 72%, transparent);
+}
+
+.tetris-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tetris-actions .tetris-action-btn {
+  flex: 1 1 0;
+}
+
+@media (max-width: 42rem) {
+  .tetris-game {
+    width: min(100%, 25.5rem);
+  }
+
+  .tetris-status {
+    width: 100%;
+  }
 }
 
 .tetris-board,
@@ -2520,7 +2561,7 @@ samp {
 .tetris-next {
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  width: 6.5rem;
+  width: 5rem;
   aspect-ratio: 1;
   padding: 3px;
 }

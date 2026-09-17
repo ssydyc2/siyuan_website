@@ -300,8 +300,8 @@ export default function TetrisGame() {
   const canPause = state.status === 'playing' || state.status === 'paused';
 
   return (
-    <div className="tetris-game grid gap-6 lg:grid-cols-[auto_minmax(0,16rem)] lg:items-start">
-      <div className="space-y-4">
+    <div className="tetris-game">
+      <div className="tetris-stage">
         <div className="tetris-well rpg-panel relative border border-[var(--rule)] bg-[var(--paper-elevated)]">
           <div
             className="tetris-board"
@@ -322,7 +322,7 @@ export default function TetrisGame() {
           ) : null}
         </div>
 
-        <div className="flex w-full max-w-[18.75rem] flex-wrap gap-2">
+        <div className="tetris-actions">
           <button
             type="button"
             className={`tetris-action-btn ${canPause ? 'tetris-action-btn--primary' : ''}`}
@@ -341,55 +341,53 @@ export default function TetrisGame() {
         </div>
       </div>
 
-      <aside>
-        <section className="rpg-panel border border-[var(--rule)] bg-[var(--paper-elevated)] p-5">
-          <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Status</p>
-          <dl className="mt-4 space-y-3">
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Score</dt>
-              <dd className="font-mono text-lg tabular-nums text-[var(--ink)]">{formatStat(state.score)}</dd>
-            </div>
-            <div className="flex items-baseline justify-between gap-4">
-              <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Lines</dt>
-              <dd className="font-mono text-lg tabular-nums text-[var(--ink)]">{formatStat(state.lines, 3)}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Level</dt>
-              <dd>
-                <div className="tetris-level-stepper">
-                  <button
-                    type="button"
-                    className="tetris-level-stepper__btn"
-                    aria-label="Decrease level"
-                    disabled={!canAdjustLevel || state.level <= MIN_LEVEL}
-                    onClick={() => dispatch({ type: 'SET_LEVEL', level: state.level - 1 })}
-                  >
-                    −
-                  </button>
-                  <span className="tetris-level-stepper__value" aria-live="polite">
-                    {state.level}
-                  </span>
-                  <button
-                    type="button"
-                    className="tetris-level-stepper__btn"
-                    aria-label="Increase level"
-                    disabled={!canAdjustLevel || state.level >= MAX_LEVEL}
-                    onClick={() => dispatch({ type: 'SET_LEVEL', level: state.level + 1 })}
-                  >
-                    +
-                  </button>
-                </div>
-              </dd>
-            </div>
-          </dl>
-
-          <div className="mt-5 border-t border-[var(--rule)] pt-4">
-            <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Next</p>
-            <div className="mt-3">
-              <NextPreview piece={state.next} />
-            </div>
+      <aside className="tetris-status rpg-panel border border-[var(--rule)] bg-[var(--paper-elevated)]">
+        <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Status</p>
+        <dl className="mt-3 space-y-2.5">
+          <div className="flex items-baseline justify-between gap-3">
+            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Score</dt>
+            <dd className="font-mono text-base tabular-nums text-[var(--ink)]">{formatStat(state.score)}</dd>
           </div>
-        </section>
+          <div className="flex items-baseline justify-between gap-3">
+            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Lines</dt>
+            <dd className="font-mono text-base tabular-nums text-[var(--ink)]">{formatStat(state.lines, 3)}</dd>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Level</dt>
+            <dd>
+              <div className="tetris-level-stepper">
+                <button
+                  type="button"
+                  className="tetris-level-stepper__btn"
+                  aria-label="Decrease level"
+                  disabled={!canAdjustLevel || state.level <= MIN_LEVEL}
+                  onClick={() => dispatch({ type: 'SET_LEVEL', level: state.level - 1 })}
+                >
+                  −
+                </button>
+                <span className="tetris-level-stepper__value" aria-live="polite">
+                  {state.level}
+                </span>
+                <button
+                  type="button"
+                  className="tetris-level-stepper__btn"
+                  aria-label="Increase level"
+                  disabled={!canAdjustLevel || state.level >= MAX_LEVEL}
+                  onClick={() => dispatch({ type: 'SET_LEVEL', level: state.level + 1 })}
+                >
+                  +
+                </button>
+              </div>
+            </dd>
+          </div>
+        </dl>
+
+        <div className="mt-4 border-t border-[var(--rule)] pt-3">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Next</p>
+          <div className="mt-2">
+            <NextPreview piece={state.next} />
+          </div>
+        </div>
       </aside>
     </div>
   );
