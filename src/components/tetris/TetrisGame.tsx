@@ -302,6 +302,9 @@ export default function TetrisGame() {
   return (
     <div className="tetris-game">
       <div className="tetris-stage">
+        <header className="flex justify-center">
+          <h1 className="rpg-page-title font-hand text-3xl font-normal text-[var(--ink)]">Play</h1>
+        </header>
         <div className="tetris-well rpg-panel relative border border-[var(--rule)] bg-[var(--paper-elevated)]">
           <div
             className="tetris-board"
@@ -342,18 +345,18 @@ export default function TetrisGame() {
       </div>
 
       <aside className="tetris-status rpg-panel border border-[var(--rule)] bg-[var(--paper-elevated)]">
-        <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Status</p>
-        <dl className="mt-3 space-y-2.5">
+        <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Status</p>
+        <dl className="mt-3 space-y-3">
           <div className="flex items-baseline justify-between gap-3">
-            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Score</dt>
-            <dd className="font-mono text-base tabular-nums text-[var(--ink)]">{formatStat(state.score)}</dd>
+            <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Score</dt>
+            <dd className="font-mono text-lg tabular-nums text-[var(--ink)]">{formatStat(state.score)}</dd>
           </div>
           <div className="flex items-baseline justify-between gap-3">
-            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Lines</dt>
-            <dd className="font-mono text-base tabular-nums text-[var(--ink)]">{formatStat(state.lines, 3)}</dd>
+            <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Lines</dt>
+            <dd className="font-mono text-lg tabular-nums text-[var(--ink)]">{formatStat(state.lines, 3)}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <dt className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Level</dt>
+            <dt className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-muted)]">Level</dt>
             <dd>
               <div className="tetris-level-stepper">
                 <button
@@ -383,7 +386,7 @@ export default function TetrisGame() {
         </dl>
 
         <div className="mt-4 border-t border-[var(--rule)] pt-3">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Next</p>
+          <p className="font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Next</p>
           <div className="mt-2">
             <NextPreview piece={state.next} />
           </div>
