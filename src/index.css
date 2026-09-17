@@ -2588,25 +2588,12 @@ samp {
   pointer-events: none;
 }
 
-.tetris-overlay .tetris-action-btn {
-  pointer-events: auto;
-}
-
 .tetris-overlay--static {
   transition: none;
 }
 
-.tetris-pad {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.55rem;
-  width: min(100%, 18.75rem);
-  user-select: none;
-  touch-action: none;
-}
-
-.tetris-pad-btn,
 .tetris-action-btn {
+  min-width: 6.5rem;
   min-height: 2.7rem;
   padding: 0.55rem 0.7rem;
   border: 1px solid color-mix(in srgb, var(--rule-strong) 72%, transparent);
@@ -2620,13 +2607,11 @@ samp {
   transition: transform 120ms ease, box-shadow 120ms ease, color 120ms ease, background-color 120ms ease;
 }
 
-.tetris-pad-btn:hover,
 .tetris-action-btn:hover:not(:disabled) {
   color: var(--ink);
   border-color: color-mix(in srgb, var(--secondary-accent) 42%, var(--rule));
 }
 
-.tetris-pad-btn:active,
 .tetris-action-btn:active:not(:disabled) {
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
@@ -2643,18 +2628,43 @@ samp {
   background: color-mix(in srgb, var(--accent-soft) 58%, var(--paper-elevated));
 }
 
-.tetris-action-btn {
-  min-width: 6.5rem;
+.tetris-level-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tetris-level-stepper__btn {
+  display: inline-flex;
+  width: 1.7rem;
+  height: 1.7rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--rule-strong) 72%, transparent);
+  background: color-mix(in srgb, var(--paper-elevated) 88%, transparent);
+  color: var(--ink-muted);
+  box-shadow: 1px 1px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
+  font-family: var(--rpg-menu-font);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.tetris-level-stepper__btn:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--secondary-accent) 42%, var(--rule));
+}
+
+.tetris-level-stepper__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tetris-pad-btn,
   .tetris-action-btn,
   .tetris-overlay {
     transition: none;
   }
 
-  .tetris-pad-btn:active,
   .tetris-action-btn:active:not(:disabled) {
     transform: none;
   }

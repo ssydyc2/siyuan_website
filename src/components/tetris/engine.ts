@@ -13,6 +13,9 @@ export interface ActivePiece {
   y: number;
 }
 
+export const MIN_LEVEL = 1;
+export const MAX_LEVEL = 15;
+
 export interface GameState {
   board: Cell[][];
   active: ActivePiece | null;
@@ -21,6 +24,8 @@ export interface GameState {
   score: number;
   lines: number;
   level: number;
+  startLevel: number;
+  progressLines: number;
   status: GameStatus;
 }
 
@@ -28,6 +33,7 @@ export type TetrisAction =
   | { type: 'START' }
   | { type: 'PAUSE' }
   | { type: 'RESTART' }
+  | { type: 'SET_LEVEL'; level: number }
   | { type: 'MOVE'; dx: number }
   | { type: 'ROTATE' }
   | { type: 'SOFT_DROP' }
@@ -381,6 +387,14 @@ function takeFromBag(bag: PieceId[]): { piece: PieceId; bag: PieceId[] } {
   return { piece, bag: nextBag.slice(1) };
 }
 
+export function clampLevel(level: number): number {
+  return Math.min(MAX_LEVEL, Math.max(MIN_LEVEL, Math.round(level)));
+}
+
+function levelFromProgress(startLevel: number, progressLines: number): number {
+  return clampLevel(startLevel + Math.floor(progressLines / 10));
+}
+
 export function createIdleState(): GameState {
   return {
     board: emptyBoard(),
@@ -389,7 +403,9 @@ export function createIdleState(): GameState {
     bag: [],
     score: 0,
     lines: 0,
-    level: 1,
+    level: MIN_LEVEL,
+    startLevel: MIN_LEVEL,
+    progressLines: 0,
     status: 'idle',
   };
 }
@@ -403,12 +419,13 @@ function spawnActive(id: PieceId): ActivePiece {
   };
 }
 
-function createPlayingState(): GameState {
+function createPlayingState(startLevel: number): GameState {
   const first = takeFromBag([]);
   const second = takeFromBag(first.bag);
   const active = spawnActive(first.piece);
   const board = emptyBoard();
   const blocked = collides(board, active);
+  const level = clampLevel(startLevel);
 
   return {
     board,
@@ -417,7 +434,9 @@ function createPlayingState(): GameState {
     bag: second.bag,
     score: 0,
     lines: 0,
-    level: 1,
+    level,
+    startLevel: level,
+    progressLines: 0,
     status: blocked ? 'gameover' : 'playing',
   };
 }
@@ -519,8 +538,9 @@ function lockPiece(state: GameState): GameState {
 
   const { board: clearedBoard, cleared } = clearLines(board);
   const lines = state.lines + cleared;
+  const progressLines = state.progressLines + cleared;
   const scored = state.score + (LINE_SCORES[cleared] ?? 0) * state.level;
-  const level = 1 + Math.floor(lines / 10);
+  const level = levelFromProgress(state.startLevel, progressLines);
 
   return spawnNext({
     ...state,
@@ -529,6 +549,7 @@ function lockPiece(state: GameState): GameState {
     score: scored,
     lines,
     level,
+    progressLines,
   });
 }
 
@@ -570,7 +591,7 @@ function ghostPiece(board: Cell[][], piece: ActivePiece): ActivePiece {
 
 export function dropIntervalMs(level: number): number {
   const table = [800, 720, 640, 550, 470, 380, 300, 220, 160, 120, 100, 85, 70, 60, 50];
-  const index = Math.min(Math.max(level, 1), table.length) - 1;
+  const index = clampLevel(level) - 1;
   return table[index] ?? 50;
 }
 
@@ -614,7 +635,7 @@ export function tetrisReducer(state: GameState, action: TetrisAction): GameState
         return { ...state, status: 'playing' };
       }
       if (state.status === 'idle' || state.status === 'gameover') {
-        return createPlayingState();
+        return createPlayingState(state.startLevel);
       }
       return state;
     case 'PAUSE':
@@ -626,7 +647,20 @@ export function tetrisReducer(state: GameState, action: TetrisAction): GameState
       }
       return state;
     case 'RESTART':
-      return createPlayingState();
+      return createPlayingState(state.startLevel);
+    case 'SET_LEVEL': {
+      if (state.status === 'playing') {
+        return state;
+      }
+
+      const startLevel = clampLevel(action.level);
+      return {
+        ...state,
+        startLevel,
+        level: startLevel,
+        progressLines: 0,
+      };
+    }
     case 'MOVE': {
       if (state.status !== 'playing' || !state.active) {
         return state;
