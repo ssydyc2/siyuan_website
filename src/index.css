@@ -2631,21 +2631,32 @@ samp {
 .tetris-level-stepper {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.45rem;
+}
+
+.tetris-level-stepper__value {
+  min-width: 1.5rem;
+  font-family: var(--rpg-menu-font);
+  font-size: 1.125rem;
+  line-height: 1;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
 
 .tetris-level-stepper__btn {
   display: inline-flex;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--rule-strong) 72%, transparent);
-  background: color-mix(in srgb, var(--paper-elevated) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rule-strong) 80%, transparent);
+  background: var(--paper-elevated);
   color: var(--ink-muted);
   box-shadow: 1px 1px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
   font-family: var(--rpg-menu-font);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1;
 }
 
