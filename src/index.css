@@ -2484,11 +2484,11 @@ samp {
   --tetris-L: #c46b2d;
   --tetris-empty: color-mix(in srgb, var(--ink) 8%, var(--paper));
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 1rem 1.25rem;
-  width: fit-content;
+  gap: 1.15rem 1.35rem;
+  width: max-content;
   max-width: 100%;
   margin-inline: auto;
 }
@@ -2506,7 +2506,10 @@ samp {
 
 .tetris-stage {
   display: flex;
-  width: min(100%, 25.5rem);
+  width: 27rem;
+  min-width: 16rem;
+  max-width: 100%;
+  flex: 1 1 16rem;
   flex-direction: column;
   gap: 0.9rem;
 }
@@ -2517,7 +2520,9 @@ samp {
 }
 
 .tetris-status {
-  width: min(100%, 10.75rem);
+  width: 10.5rem;
+  flex: 0 0 10.5rem;
+  min-width: 10.5rem;
   padding: 0.85rem 0.9rem;
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--rpg-shadow) 72%, transparent);
 }
@@ -2532,13 +2537,17 @@ samp {
   flex: 1 1 0;
 }
 
-@media (max-width: 42rem) {
+@media (max-width: 40rem) {
   .tetris-game {
-    width: min(100%, 25.5rem);
+    flex-wrap: wrap;
+    width: min(100%, 27rem);
   }
 
+  .tetris-stage,
   .tetris-status {
+    flex: 1 1 100%;
     width: 100%;
+    min-width: 0;
   }
 }
 
