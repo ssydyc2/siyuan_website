@@ -385,26 +385,17 @@ export default function TetrisGame() {
                   {overlayHint}
                 </p>
               ) : null}
+              {state.status === 'idle' || state.status === 'gameover' ? (
+                <button
+                  type="button"
+                  className="tetris-action-btn tetris-action-btn--primary mt-4"
+                  onClick={() => dispatch({ type: state.status === 'gameover' ? 'RESTART' : 'START' })}
+                >
+                  {state.status === 'gameover' ? 'Restart' : 'Start'}
+                </button>
+              ) : null}
             </div>
           ) : null}
-        </div>
-
-        <div className="flex w-full max-w-[18.75rem] flex-wrap gap-2">
-          <button
-            type="button"
-            className="tetris-action-btn tetris-action-btn--primary"
-            onClick={() => dispatch({ type: primaryAction.type })}
-          >
-            {primaryAction.label}
-          </button>
-          <button
-            type="button"
-            className="tetris-action-btn"
-            onClick={() => dispatch({ type: 'RESTART' })}
-            disabled={state.status === 'idle'}
-          >
-            Restart
-          </button>
         </div>
 
         <div
@@ -413,7 +404,7 @@ export default function TetrisGame() {
           aria-label="Touch controls"
         >
           <PadButton
-            className="col-start-2"
+            className="col-span-3"
             label="Rotate"
             ariaLabel="Rotate"
             onPress={() => dispatch({ type: 'ROTATE' })}
@@ -426,6 +417,17 @@ export default function TetrisGame() {
             label="Hard Drop"
             ariaLabel="Hard drop"
             onPress={() => dispatch({ type: 'HARD_DROP' })}
+          />
+          <PadButton
+            label={state.status === 'paused' ? 'Resume' : 'Pause'}
+            ariaLabel={state.status === 'paused' ? 'Resume' : 'Pause'}
+            onPress={() => dispatch({ type: 'PAUSE' })}
+          />
+          <PadButton
+            className="col-span-2"
+            label={state.status === 'idle' ? 'Start' : 'Restart'}
+            ariaLabel={state.status === 'idle' ? 'Start game' : 'Restart game'}
+            onPress={() => dispatch({ type: state.status === 'idle' ? 'START' : 'RESTART' })}
           />
         </div>
       </div>
@@ -453,6 +455,24 @@ export default function TetrisGame() {
             <div className="mt-3">
               <NextPreview piece={state.next} />
             </div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="tetris-action-btn tetris-action-btn--primary"
+              onClick={() => dispatch({ type: primaryAction.type })}
+            >
+              {primaryAction.label}
+            </button>
+            <button
+              type="button"
+              className="tetris-action-btn"
+              onClick={() => dispatch({ type: 'RESTART' })}
+              disabled={state.status === 'idle'}
+            >
+              Restart
+            </button>
           </div>
         </section>
 
