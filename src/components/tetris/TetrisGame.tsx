@@ -15,7 +15,6 @@ import {
 const DAS_DELAY_MS = 160;
 const ARR_MS = 45;
 const SOFT_DROP_MS = 50;
-const TAP_MAX_PX = 16;
 const SWIPE_AXIS_PX = 24;
 const HARD_DROP_VY = 0.55;
 
@@ -37,6 +36,7 @@ interface BoardGesture {
   cell: number;
   movedCells: number;
   soft: boolean;
+  rotated: boolean;
 }
 
 function formatStat(value: number, digits = 6): string {
@@ -210,6 +210,7 @@ export default function TetrisGame() {
       cell: Math.max(width / 10, 18),
       movedCells: 0,
       soft: false,
+      rotated: false,
     };
   };
 
@@ -239,6 +240,10 @@ export default function TetrisGame() {
 
     const dx = event.clientX - gesture.startX;
     const dy = event.clientY - gesture.startY;
+    if (!gesture.rotated && dy < -SWIPE_AXIS_PX && Math.abs(dy) > Math.abs(dx)) {
+      gesture.rotated = true;
+      dispatch({ type: 'ROTATE' });
+    }
     if (!gesture.soft && dy > SWIPE_AXIS_PX && Math.abs(dy) > Math.abs(dx)) {
       gesture.soft = true;
       startSoftDrop();
@@ -263,14 +268,8 @@ export default function TetrisGame() {
     const dx = event.clientX - gesture.startX;
     const dy = event.clientY - gesture.startY;
     const dt = Math.max(event.timeStamp - gesture.startTime, 1);
-    const dist = Math.hypot(dx, dy);
 
-    if (dist < TAP_MAX_PX) {
-      dispatch({ type: 'ROTATE' });
-      return;
-    }
-
-    if (Math.abs(dy) > Math.abs(dx) && dy < -SWIPE_AXIS_PX) {
+    if (!gesture.rotated && Math.abs(dy) > Math.abs(dx) && dy < -SWIPE_AXIS_PX) {
       dispatch({ type: 'ROTATE' });
       return;
     }
@@ -444,7 +443,7 @@ export default function TetrisGame() {
             ref={boardRef}
             className="tetris-board"
             role="img"
-            aria-label="Tetris board, ten columns by twenty rows. On touch screens, swipe to move, tap or swipe up to rotate, swipe down to drop."
+            aria-label="Tetris board, ten columns by twenty rows. On touch screens, swipe to move, swipe up to rotate, swipe down to drop."
             onPointerDown={onBoardPointerDown}
             onPointerMove={onBoardPointerMove}
             onPointerUp={onBoardPointerUp}
@@ -471,7 +470,7 @@ export default function TetrisGame() {
             <NextPanel piece={state.next} />
           </div>
         </div>
-        <p className="tetris-swipe-hint">Swipe ← → to move · Tap or swipe up to rotate · Swipe down to drop</p>
+        <p className="tetris-swipe-hint">Swipe ← → to move · Swipe up to rotate · Swipe down to drop</p>
       </div>
 
       <div className="tetris-rail">
