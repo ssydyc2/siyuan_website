@@ -2529,6 +2529,25 @@ samp {
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--rpg-shadow) 72%, transparent);
 }
 
+.tetris-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.tetris-stat--level {
+  align-items: center;
+}
+
+.tetris-next-dock--board {
+  display: none;
+}
+
+.tetris-next-dock--rail .tetris-next-panel__label {
+  margin-bottom: 0.5rem;
+}
+
 .tetris-actions {
   display: flex;
   flex-direction: column;
@@ -2540,20 +2559,120 @@ samp {
   min-width: 0;
 }
 
+.tetris-swipe-hint {
+  display: none;
+}
+
+.tetris-overlay__hint {
+  display: none;
+}
+
 @media (max-width: 48rem) {
   .tetris-game {
     grid-template-columns: minmax(0, 22rem);
-    justify-items: center;
-  }
-
-  .tetris-stage {
-    grid-column: 1;
-    width: min(100%, 22rem);
+    justify-items: stretch;
+    row-gap: 0.5rem;
   }
 
   .tetris-rail {
     grid-column: 1;
-    width: 12.5rem;
+    grid-row: 1;
+    width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.45rem;
+  }
+
+  .tetris-stage {
+    grid-column: 1;
+    grid-row: 2;
+    width: min(100%, 22rem);
+    justify-self: center;
+  }
+
+  .tetris-status {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .tetris-status__label {
+    display: none;
+  }
+
+  .tetris-status__stats {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem;
+    margin-top: 0;
+  }
+
+  .tetris-status__stats > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0;
+  }
+
+  .tetris-stat {
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.12rem;
+  }
+
+  .tetris-stat dt {
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+  }
+
+  .tetris-stat dd,
+  .tetris-status__stats dd {
+    font-size: 0.92rem;
+    line-height: 1.1;
+  }
+
+  .tetris-stat--level {
+    align-items: flex-start;
+  }
+
+  .tetris-next-dock--rail {
+    display: none;
+  }
+
+  .tetris-actions {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .tetris-actions .tetris-action-btn {
+    min-width: 5.2rem;
+    min-height: 2.15rem;
+    padding: 0.4rem 0.45rem;
+  }
+}
+
+@media (max-width: 48rem), (pointer: coarse) {
+  .tetris-board {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .tetris-overlay__hint,
+  .tetris-swipe-hint {
+    display: block;
+  }
+
+  .tetris-swipe-hint {
+    margin: 0.45rem 0 0;
+    text-align: center;
+    font-family: var(--rpg-menu-font);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
   }
 }
 
@@ -2579,6 +2698,42 @@ samp {
   width: 6.5rem;
   aspect-ratio: 1;
   padding: 3px;
+}
+
+@media (max-width: 48rem) {
+  .tetris-next-dock--board {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.18rem;
+    padding: 0.32rem 0.36rem 0.38rem;
+    border: 1px solid color-mix(in srgb, var(--rule) 82%, transparent);
+    background: color-mix(in srgb, var(--paper-elevated) 90%, transparent);
+    box-shadow: 2px 2px 0 color-mix(in srgb, var(--rpg-shadow) 50%, transparent);
+    pointer-events: none;
+  }
+
+  .tetris-next-dock--board .tetris-next-panel__label {
+    font-size: 0.52rem;
+    letter-spacing: 0.14em;
+  }
+
+  .tetris-next-dock--board .tetris-next {
+    width: 2.7rem;
+  }
+
+  .tetris-level-stepper {
+    gap: 0.28rem;
+  }
+
+  .tetris-level-stepper__btn {
+    width: 1.55rem;
+    height: 1.55rem;
+  }
 }
 
 .tetris-cell {
@@ -2639,9 +2794,29 @@ samp {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.45rem;
+  padding: 0;
+  border: 0;
   background: color-mix(in srgb, var(--paper-elevated) 78%, transparent);
+  color: inherit;
+  font: inherit;
   text-align: center;
   pointer-events: none;
+}
+
+.tetris-overlay--interactive {
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tetris-overlay__hint {
+  margin: 0;
+  font-family: var(--rpg-menu-font);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
 }
 
 .tetris-overlay--static {
