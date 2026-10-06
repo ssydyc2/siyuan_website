@@ -66,9 +66,7 @@ export default function WealthLab() {
   const invalidInflation = !Number.isFinite(inflation) || inflation < 0 || inflation > 0.2;
   const invalidReturn = !Number.isFinite(projectionReturn) || projectionReturn < -1 || projectionReturn > 1;
   const invalidSpending = mode === 'manual' && (!Number.isFinite(readNumber(manualSpending)) || readNumber(manualSpending) < 0);
-  const selectedSolution = scenario?.solutions[targetKind];
   const simulation = scenario?.simulation;
-  const targetMet = simulation && selectedSolution ? simulation.finalBalance + 0.01 >= selectedSolution.target : false;
 
   return (
     <div className="wealth-lab">
@@ -143,17 +141,9 @@ export default function WealthLab() {
         </>}
       </section>
 
-      {scenario && simulation && selectedSolution && <>
+      {scenario && simulation && <>
         {scenario.showingBaseline && <p className="wealth-notice wealth-notice--warning" role="status">This target cannot be reached, even with no withdrawals. The chart and table show the zero-spending baseline.</p>}
-        <section className="wealth-panel wealth-outcome" aria-labelledby="wealth-outcome-title">
-          <div className="wealth-section-heading"><h2 id="wealth-outcome-title" className="wealth-section-title">At the end of {horizon} years</h2><span className={`wealth-badge ${targetMet ? 'wealth-badge--success' : 'wealth-badge--warning'}`}>{targetMet ? 'Target met on this path' : 'Below selected target'}</span></div>
-          <dl className="wealth-summary-grid">
-            <div><dt>Final balance</dt><dd title={exactMoney(simulation.finalBalance)}>{money(simulation.finalBalance)}</dd><span>Target: {money(selectedSolution.target)}</span></div>
-            <div><dt>In starting-year dollars</dt><dd title={exactMoney(simulation.finalRealBalance)}>{money(simulation.finalRealBalance)}</dd><span>After {percentage(inflation)} annual inflation</span></div>
-            <div><dt>Total actually spent</dt><dd title={exactMoney(simulation.totalWithdrawn)}>{money(simulation.totalWithdrawn)}</dd><span>First year: {money(scenario.initialSpending)}</span></div>
-          </dl>
-          {simulation.depletionYear !== null && <p className="wealth-notice wealth-notice--warning" role="status">Portfolio depleted in {simulation.depletionYear} (year {simulation.depletionYear - WEALTH_HISTORY.startYear + 1}).{simulation.totalShortfall > 0 ? ` Unfunded planned spending: ${money(simulation.totalShortfall)}.` : ''} No further spending or investment returns can be funded.</p>}
-        </section>
+        {simulation.depletionYear !== null && <p className="wealth-notice wealth-notice--warning" role="status">Portfolio depleted in {simulation.depletionYear} (year {simulation.depletionYear - WEALTH_HISTORY.startYear + 1}).{simulation.totalShortfall > 0 ? ` Unfunded planned spending: ${money(simulation.totalShortfall)}.` : ''} No further spending or investment returns can be funded.</p>}
 
         <WealthChart simulation={simulation} principal={principal} />
 

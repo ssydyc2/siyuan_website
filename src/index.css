@@ -13,8 +13,6 @@
 .wealth-section-title { margin: 0; color: var(--ink); font-family: var(--rpg-title-font); font-size: 1.3rem; font-weight: 400; line-height: 1.4; }
 .wealth-eyebrow + .wealth-section-title { margin-top: 0.25rem; }
 .wealth-badge { display: inline-block; padding: 0.3rem 0.5rem; border: 1px solid var(--rule); color: var(--ink-muted); background: var(--paper-muted); font-family: var(--rpg-menu-font); font-size: 0.62rem; line-height: 1.5; }
-.wealth-badge--success { color: var(--accent); border-color: var(--accent-decoration); background: var(--accent-soft); }
-.wealth-badge--warning { color: var(--wealth-loss); background: transparent; border-color: var(--wealth-loss); }
 .wealth-input-grid { display: grid; grid-template-columns: 1.1fr 0.8fr 1.35fr 1.35fr; gap: 1.5rem; }
 .wealth-field { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
 .wealth-field > label { color: var(--ink-soft); font-size: 0.82rem; font-weight: 600; }
@@ -52,13 +50,8 @@
 .wealth-budget-footer strong { color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
 .wealth-budget-footer > span { color: var(--accent); }
 .wealth-budget-caption { margin: 0.85rem 0 0; color: var(--ink-muted); font-size: 0.76rem; line-height: 1.7; }
-.wealth-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin: 0; }
-.wealth-summary-grid dt { margin-bottom: 0.6rem; color: var(--ink-muted); font-size: 0.75rem; }
-.wealth-summary-grid dd { margin: 0; font-family: var(--rpg-title-font); font-size: clamp(1.35rem, 2.5vw, 1.85rem); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.wealth-summary-grid span { display: block; margin-top: 0.5rem; color: var(--ink-muted); font-size: 0.7rem; line-height: 1.6; }
 .wealth-notice { margin: 0; padding: 1rem; border: 1px solid var(--rule); background: var(--paper-elevated); color: var(--ink-soft); font-size: 0.83rem; line-height: 1.7; }
 .wealth-notice--warning { border-color: var(--wealth-loss); color: var(--wealth-loss); }
-.wealth-outcome .wealth-notice { margin-top: 1.25rem; }
 .wealth-mode-section > .wealth-notice { margin-top: 1rem; }
 .wealth-legend { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; color: var(--ink-muted); font-size: 0.72rem; }
 .wealth-legend > span { display: inline-flex; gap: 0.4rem; align-items: center; }
@@ -119,12 +112,10 @@
   .wealth-lab { gap: 1.5rem; }
   .wealth-panel { padding: 1rem; }
   .wealth-input-grid { grid-template-columns: 1fr; }
-  .wealth-budget-grid, .wealth-summary-grid { grid-template-columns: 1fr; }
+  .wealth-budget-grid { grid-template-columns: 1fr; }
   .wealth-budget { padding: 1.25rem; }
   .wealth-budget-amount { font-size: 2.5rem; }
   .wealth-budget-footer { flex-direction: row; }
-  .wealth-summary-grid > div + div { padding-top: 1rem; border-top: 1px solid var(--rule); }
-  .wealth-summary-grid dd { font-size: 1.75rem; }
   .wealth-section-title { font-size: 1.2rem; }
   .wealth-mode-switch { width: 100%; }
   .wealth-mode-switch button { flex: 1; }
