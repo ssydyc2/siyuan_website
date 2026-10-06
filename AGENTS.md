@@ -55,7 +55,7 @@ Routes:
 
 - `/` - About/home page with the professional timeline.
 - `/reading-list` and `/books` - Reading list page.
-- `/wealth-lab` - Historical S&P 500 withdrawal calculator and projection.
+- `/wealth-lab` - Withdrawal calculator with fixed returns or historical replay.
 - `/blog` - Blog index.
 - `/blog/:postId` - Blog post detail page.
 - `/journey` - Legacy redirect to `/blog`.
@@ -100,12 +100,15 @@ scripts/
 
 ## Wealth Lab Notes
 
-Wealth Lab replays the fixed 1996–2025 annual total-return series from NYU Stern,
-including dividends. Longer horizons append the selected projection return,
-defaulting to its full-precision compound annual return (displayed as 10.26%).
-Users can select 5%, 7%, 10%, or a custom rate from −100% to 100%; this affects
-only years 31 onward. Extreme projections that cannot be solved within a cent
-report a calculation error instead of showing an inaccurate budget. The
+Wealth Lab defaults to a fixed annual return for every year, using the
+full-precision 1996–2025 S&P 500 compound average (displayed as 10.26%). The
+replay checkbox switches to the NYU Stern annual total-return series, including
+dividends, for the first 30 years and the selected return for additional years.
+The projection return is disabled for a 30-year historical replay. Users can
+select 5%, 7%, 10%, or a custom rate from −100% to 100%. Fixed-return rows use
+an illustrative timeline and are labeled separately from history/projection.
+Every input change derives a fresh simulation. Extreme projections that cannot
+be solved within a cent report a calculation error instead of showing an inaccurate budget. The
 selected inflation rate is constant across history and projection; the default
 uses the Minneapolis Fed's 1995 and 2025 annual-average CPI-U endpoints. Withdrawals
 occur at the start of each year. Budget solving preserves full precision, and

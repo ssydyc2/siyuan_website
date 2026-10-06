@@ -16,8 +16,11 @@ export default function WealthChart({ simulation, principal }: { simulation: Sim
   const x = (index: number) => 1000 * index / rows.length;
   const y = (balance: number) => 300 * (1 - balance / ceiling);
   const line = (real: boolean) => points.map((point, index) => `${x(index)},${y(real ? point.realBalance : point.balance)}`).join(' ');
-  const projected = rows.length > 30;
-  const boundary = x(30);
+  const projectionIndex = rows.findIndex((row) => row.source !== 'historical');
+  const projected = projectionIndex !== -1;
+  const fixed = rows[0].source === 'fixed';
+  const boundary = x(Math.max(0, projectionIndex));
+  const sourceLabel = (source: string) => source === 'fixed' ? 'fixed return' : source;
 
   function moveCursor(event: PointerEvent<SVGSVGElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -38,7 +41,7 @@ export default function WealthChart({ simulation, principal }: { simulation: Sim
         </div>
       </div>
       {projected && (
-        <p className="wealth-chart-note">Shaded area: projection begins in 2026, after 30 historical years, at {percentage(rows[30].rate)} annually.</p>
+        <p className="wealth-chart-note">{fixed ? `All ${rows.length} years use a fixed annual return of ${percentage(rows[0].rate)}. The timeline is illustrative.` : `Shaded area: projection begins in ${rows[projectionIndex].year}, after ${projectionIndex} historical years, at ${percentage(rows[projectionIndex].rate)} annually.`}</p>
       )}
       <div className="wealth-chart">
         <div className="wealth-chart-axis" aria-hidden="true">
@@ -55,7 +58,7 @@ export default function WealthChart({ simulation, principal }: { simulation: Sim
             {projected && <rect x={boundary} y="0" width={1000 - boundary} height="300" className="wealth-chart-forecast" />}
             {[0, 75, 150, 225, 300].map((height) => <line key={height} x1="0" x2="1000" y1={height} y2={height} className="wealth-chart-grid" vectorEffect="non-scaling-stroke" />)}
             <polygon points={`0,300 ${line(false)} 1000,300`} className="wealth-chart-fill" />
-            {projected && <line x1={boundary} x2={boundary} y1="0" y2="300" className="wealth-chart-boundary" vectorEffect="non-scaling-stroke" />}
+            {projectionIndex > 0 && <line x1={boundary} x2={boundary} y1="0" y2="300" className="wealth-chart-boundary" vectorEffect="non-scaling-stroke" />}
             <polyline points={line(false)} className="wealth-chart-line" vectorEffect="non-scaling-stroke" />
             <polyline points={line(true)} className="wealth-chart-line wealth-chart-line--real" vectorEffect="non-scaling-stroke" />
             <line x1={x(selectedIndex)} x2={x(selectedIndex)} y1="0" y2="300" className="wealth-chart-cursor" vectorEffect="non-scaling-stroke" />
@@ -63,7 +66,7 @@ export default function WealthChart({ simulation, principal }: { simulation: Sim
           <span className="wealth-chart-point" style={{ left: `${selectedIndex / rows.length * 100}%`, top: `${(1 - selected.balance / ceiling) * 100}%` }} aria-hidden="true" />
           <div className="wealth-chart-years" aria-hidden="true">
             <span>{points[0].year} · Start</span>
-            {projected && <span className="wealth-chart-year-boundary" style={{ left: `${30 / rows.length * 100}%` }}>2025</span>}
+            {projectionIndex > 0 && <span className="wealth-chart-year-boundary" style={{ left: `${projectionIndex / rows.length * 100}%` }}>{points[projectionIndex].year}</span>}
             <span>{points[points.length - 1].year}</span>
           </div>
         </div>
@@ -72,10 +75,10 @@ export default function WealthChart({ simulation, principal }: { simulation: Sim
       <input
         id={`${id}-year`} className="wealth-chart-slider" type="range" min="0" max={rows.length}
         value={selectedIndex} onChange={(event) => setCursor(Number(event.target.value))}
-        aria-valuetext={`${selected.year}, ${selected.source === 'start' ? 'starting portfolio' : selected.source}, balance ${exactMoney(selected.balance)}, purchasing power ${exactMoney(selected.realBalance)}`}
+        aria-valuetext={`${selected.year}, ${selected.source === 'start' ? 'starting portfolio' : sourceLabel(selected.source)}, balance ${exactMoney(selected.balance)}, purchasing power ${exactMoney(selected.realBalance)}`}
       />
       <div className="wealth-chart-readout" aria-live="polite" aria-atomic="true">
-        <span><strong>{selected.year}</strong><span className="wealth-badge">{selected.source}</span></span>
+        <span><strong>{selected.year}</strong><span className="wealth-badge">{sourceLabel(selected.source)}</span></span>
         <span>Balance <strong title={exactMoney(selected.balance)}>{money(selected.balance)}</strong></span>
         <span>Purchasing power <strong title={exactMoney(selected.realBalance)}>{money(selected.realBalance)}</strong></span>
       </div>

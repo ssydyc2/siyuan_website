@@ -2,11 +2,12 @@ import { HISTORICAL_CAGR, HISTORICAL_RETURNS, WEALTH_HISTORY } from '../data/wea
 
 export type TargetKind = 'nominal' | 'real';
 export type SpendingMode = 'automatic' | 'manual';
+export type ReturnModel = 'historical' | 'fixed';
 
 export interface AnnualReturn {
   year: number;
   rate: number;
-  source: 'historical' | 'projection';
+  source: 'historical' | 'projection' | 'fixed';
 }
 
 export interface WealthInputs {
@@ -75,16 +76,17 @@ function validateInputs({ principal, inflation, path }: WealthInputs) {
   }
 }
 
-export function buildAnnualPath(horizon: number, projectionReturn = HISTORICAL_CAGR): AnnualReturn[] {
+export function buildAnnualPath(horizon: number, annualReturn = HISTORICAL_CAGR, model: ReturnModel = 'historical'): AnnualReturn[] {
   if (!Number.isInteger(horizon) || horizon < 30 || horizon > 100) throw new RangeError('Enter a whole number of years from 30 to 100.');
-  if (!Number.isFinite(projectionReturn) || projectionReturn < -1 || projectionReturn > 1) {
-    throw new RangeError('Enter a projection return from −100% to 100%.');
+  if (model !== 'historical' && model !== 'fixed') throw new RangeError('Choose a historical or fixed return path.');
+  if ((model === 'fixed' || horizon > HISTORICAL_RETURNS.length) && (!Number.isFinite(annualReturn) || annualReturn < -1 || annualReturn > 1)) {
+    throw new RangeError('Enter an annual return from −100% to 100%.');
   }
   return Array.from({ length: horizon }, (_, index) => {
-    const historical = HISTORICAL_RETURNS[index];
+    const historical = model === 'historical' ? HISTORICAL_RETURNS[index] : undefined;
     return historical
       ? { ...historical, source: 'historical' }
-      : { year: WEALTH_HISTORY.startYear + index, rate: projectionReturn, source: 'projection' };
+      : { year: WEALTH_HISTORY.startYear + index, rate: annualReturn, source: model === 'fixed' ? 'fixed' : 'projection' };
   });
 }
 
