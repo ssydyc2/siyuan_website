@@ -61,7 +61,7 @@ export default function Layout() {
               📚 Reading List
             </NavLink>
             <NavLink
-              to="/play"
+              to="/wealth-lab"
               className={({ isActive }) =>
                 `rpg-nav__item font-hand text-base transition-colors ${
                   isActive
@@ -70,7 +70,7 @@ export default function Layout() {
                 }`
               }
             >
-              🎮 Play
+              📈 Wealth Lab
             </NavLink>
             <NavLink
               to="/blog"

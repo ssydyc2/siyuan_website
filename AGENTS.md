@@ -7,7 +7,7 @@ This file provides guidance to Codex when working in this repository.
 This is Siyuan Song's personal website, built with Vite, React 19, TypeScript,
 Tailwind CSS v4, React Router, Motion, and KaTeX. It contains the home/about
 page, reading notes, blog posts, generated hero artwork, a Lean-backed math
-blog article, and a Tetris mini-game.
+blog article, and an interactive Wealth Lab.
 
 The production site is deployed with GitHub Pages at:
 
@@ -22,6 +22,7 @@ bun install                 # Install dependencies
 bun run dev                 # Start Vite dev server at http://localhost:5173
 bun run build               # Type-check, build production assets, then copy 404.html
 bun run lint                # Run ESLint
+bun run test:wealth          # Test Wealth Lab calculations and historical data
 bun run verify:lean-regions # Verify markdown proof-lean blocks match Lean regions
 bun run preview             # Preview the production build locally
 ```
@@ -54,12 +55,12 @@ Routes:
 
 - `/` - About/home page with the professional timeline.
 - `/reading-list` and `/books` - Reading list page.
-- `/play` - Tetris mini-game.
+- `/wealth-lab` - Historical S&P 500 withdrawal calculator and projection.
 - `/blog` - Blog index.
 - `/blog/:postId` - Blog post detail page.
 - `/journey` - Legacy redirect to `/blog`.
 
-The home, reading, and play routes render inside `src/components/Layout.tsx`, which owns
+The home, reading, and wealth routes render inside `src/components/Layout.tsx`, which owns
 the shared header, avatar, navigation, and page outlet. The blog index/detail
 route renders through `src/pages/Blog.tsx` and owns its own blog layout.
 
@@ -75,17 +76,19 @@ src/
 │   ├── blog/                       # Blog card/detail images
 │   └── hero/                       # RPG-style hero scene assets and responsive variants
 ├── components/
-│   ├── Layout.tsx                  # Main site shell for home/reading/play pages
+│   ├── Layout.tsx                  # Main site shell for home/reading/wealth pages
 │   ├── MarkdownDocument.tsx        # Markdown renderer with KaTeX and proof/Lean blocks
 │   ├── RpgHeroScene.tsx            # Shared animated hero scene component
 │   ├── ThemeToggle.tsx             # Light/dark theme provider and toggle
-│   └── tetris/                     # Tetris engine and board UI for /play
+│   └── WealthChart.tsx             # Interactive portfolio balance chart
+├── data/wealth-history.ts          # Offline 1996–2025 total returns and CPI sources
+├── lib/wealth.ts                   # Pure withdrawal simulation and budget solver
 ├── content/
 │   └── blog/                       # Markdown blog source files
 └── pages/
     ├── Background.tsx              # About/home page
     ├── Books.tsx                   # Reading list page
-    ├── Play.tsx                    # Tetris mini-game page
+    ├── WealthLab.tsx               # Portfolio inputs, targets, chart, and annual ledger
     └── Blog.tsx                    # Blog index and detail pages
 
 formal/
@@ -94,6 +97,18 @@ formal/
 scripts/
 └── verify-lean-regions.mjs         # Checks proof-lean markdown blocks against Lean regions
 ```
+
+## Wealth Lab Notes
+
+Wealth Lab replays the fixed 1996–2025 annual total-return series from NYU Stern,
+including dividends. Longer horizons append its compound annual return. The
+selected inflation rate is constant across history and projection; the default
+uses the Minneapolis Fed's 1995 and 2025 annual-average CPI-U endpoints. Withdrawals
+occur at the start of each year. Budget solving preserves full precision, and
+manual spending is capped at available assets with unfunded amounts recorded.
+Data sources, dates, and assumptions are shown on the page. Run `bun run test:wealth`
+when changing the data or calculations. Updating the fixed dataset requires
+updating its metadata and boundary tests together.
 
 ## Blog And Lean Notes
 
