@@ -1,5 +1,144 @@
 @import "tailwindcss";
 
+/* Wealth Lab uses the site's paper, ink, and pixel-border palette. */
+.wealth-lab { --wealth-loss: #a83a30; display: grid; gap: 2rem; min-width: 0; }
+:root.dark .wealth-lab { --wealth-loss: #f0a194; }
+.wealth-intro { padding: 0.75rem 0 0.5rem; text-align: center; }
+.wealth-eyebrow { margin: 0; color: var(--ink-muted); font-family: var(--rpg-menu-font); font-size: 0.64rem; letter-spacing: 0.14em; line-height: 1.7; text-transform: uppercase; }
+.wealth-title { margin: 0.85rem 0 1rem; font-family: var(--hand-font); font-size: clamp(2.75rem, 6vw, 4rem); line-height: 1.15; }
+.wealth-intro > p:not(.wealth-eyebrow) { margin: 0.5rem auto; max-width: 42rem; font-size: 1.1rem; line-height: 1.7; }
+.wealth-intro > .wealth-intro-detail { color: var(--ink-muted); font-size: 0.9rem; }
+.wealth-panel { min-width: 0; padding: 1.5rem; border: 1px solid var(--rule-strong); background: var(--paper-elevated); box-shadow: 4px 4px 0 var(--rpg-shadow); }
+.wealth-section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; }
+.wealth-section-title { margin: 0; color: var(--ink); font-family: var(--rpg-title-font); font-size: 1.3rem; font-weight: 400; line-height: 1.4; }
+.wealth-eyebrow + .wealth-section-title { margin-top: 0.25rem; }
+.wealth-badge { display: inline-block; padding: 0.3rem 0.5rem; border: 1px solid var(--rule); color: var(--ink-muted); background: var(--paper-muted); font-family: var(--rpg-menu-font); font-size: 0.62rem; line-height: 1.5; }
+.wealth-badge--success { color: var(--accent); border-color: var(--accent-decoration); background: var(--accent-soft); }
+.wealth-badge--warning { color: var(--wealth-loss); background: transparent; border-color: var(--wealth-loss); }
+.wealth-input-grid { display: grid; grid-template-columns: 1.15fr 0.8fr 1.3fr; gap: 1.5rem; }
+.wealth-field { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
+.wealth-field > label { color: var(--ink-soft); font-size: 0.82rem; font-weight: 600; }
+.wealth-input-unit { display: flex; align-items: center; gap: 0.5rem; min-height: 3rem; padding: 0 0.8rem; border: 1px solid var(--rule-strong); background: var(--paper); }
+.wealth-input-unit > span { color: var(--ink-muted); font-family: var(--rpg-menu-font); font-size: 0.8rem; }
+.wealth-input-unit input { width: 100%; min-width: 0; padding: 0.7rem 0; border: 0; background: transparent; color: var(--ink); font-family: var(--rpg-menu-font); font-size: 1rem; font-variant-numeric: tabular-nums; }
+.wealth-field select { width: 100%; min-height: 3rem; padding: 0.65rem 0.6rem; border: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink); font-size: 0.85rem; }
+.wealth-field-hint { margin: 0; color: var(--ink-muted); font-size: 0.73rem; line-height: 1.6; }
+.wealth-custom-inflation { max-width: 10rem; }
+.wealth-presets { display: flex; gap: 0.35rem; }
+.wealth-presets button { min-width: 2.8rem; min-height: 2rem; padding: 0.3rem 0.5rem; border: 1px solid var(--rule); color: var(--ink-muted); background: var(--paper); font-family: var(--rpg-menu-font); font-size: 0.72rem; cursor: pointer; }
+.wealth-presets button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.wealth-lab button:focus-visible, .wealth-lab input:focus-visible, .wealth-lab select:focus-visible, .wealth-table-scroll:focus-visible, .wealth-lab a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wealth-input-unit:has([aria-invalid="true"]) { border-color: var(--wealth-loss); }
+.wealth-assumptions-strip { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); color: var(--ink-muted); font-size: 0.76rem; line-height: 1.7; }
+.wealth-assumptions-strip strong { color: var(--ink-soft); font-weight: 600; }
+.wealth-mode-section { min-width: 0; }
+.wealth-mode-switch { display: inline-flex; flex-wrap: wrap; gap: 0.2rem; padding: 0.25rem; border: 1px solid var(--rule); background: var(--paper-muted); }
+.wealth-mode-switch button { min-height: 2.4rem; padding: 0.5rem 0.8rem; border: 1px solid transparent; color: var(--ink-muted); background: transparent; font-size: 0.78rem; cursor: pointer; }
+.wealth-mode-switch button[aria-pressed="true"] { color: var(--ink); border-color: var(--rule-strong); background: var(--paper-elevated); box-shadow: 2px 2px 0 var(--rpg-shadow); }
+.wealth-manual-input { padding: 1rem; margin-bottom: 1.25rem; border: 1px solid var(--rule); background: var(--paper-elevated); }
+.wealth-manual-input .wealth-input-unit { max-width: 18rem; }
+.wealth-budget-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.wealth-budget { display: flex; min-width: 0; flex-direction: column; padding: 1.5rem; text-align: left; border: 1px solid var(--rule-strong); color: var(--ink); background: var(--paper-elevated); box-shadow: 3px 3px 0 var(--rpg-shadow); cursor: pointer; transition: border-color 120ms ease, background-color 120ms ease; }
+.wealth-budget:hover { border-color: var(--accent); }
+.wealth-budget--selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 24%, var(--paper-elevated)); box-shadow: 3px 3px 0 var(--accent-decoration); }
+.wealth-budget-heading { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+.wealth-budget-radio { color: var(--accent); font-size: 1.1rem; }
+.wealth-budget-title { margin-top: 0.6rem; font-family: var(--rpg-title-font); font-size: 1.25rem; }
+.wealth-budget-amount { display: block; margin-top: 1.5rem; color: var(--accent); font-family: var(--rpg-title-font); font-size: clamp(1.9rem, 3.5vw, 2.65rem); font-variant-numeric: tabular-nums; line-height: 1.2; overflow-wrap: anywhere; }
+.wealth-budget-amount > span { display: inline-block; color: var(--ink-muted); font-family: inherit; font-size: 0.85rem; }
+.wealth-budget-monthly { margin-top: 0.55rem; color: var(--ink-muted); font-size: 0.8rem; }
+.wealth-budget-unreachable { margin-top: 1.5rem; color: var(--wealth-loss); font-family: var(--rpg-title-font); font-size: 1.6rem; }
+.wealth-budget-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; margin-top: auto; padding-top: 1.5rem; color: var(--ink-muted); font-size: 0.72rem; }
+.wealth-budget-footer strong { color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
+.wealth-budget-footer > span { color: var(--accent); }
+.wealth-budget-caption { margin: 0.85rem 0 0; color: var(--ink-muted); font-size: 0.76rem; line-height: 1.7; }
+.wealth-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin: 0; }
+.wealth-summary-grid dt { margin-bottom: 0.6rem; color: var(--ink-muted); font-size: 0.75rem; }
+.wealth-summary-grid dd { margin: 0; font-family: var(--rpg-title-font); font-size: clamp(1.35rem, 2.5vw, 1.85rem); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.wealth-summary-grid span { display: block; margin-top: 0.5rem; color: var(--ink-muted); font-size: 0.7rem; line-height: 1.6; }
+.wealth-notice { margin: 0; padding: 1rem; border: 1px solid var(--rule); background: var(--paper-elevated); color: var(--ink-soft); font-size: 0.83rem; line-height: 1.7; }
+.wealth-notice--warning { border-color: var(--wealth-loss); color: var(--wealth-loss); }
+.wealth-outcome .wealth-notice { margin-top: 1.25rem; }
+.wealth-mode-section > .wealth-notice { margin-top: 1rem; }
+.wealth-legend { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; color: var(--ink-muted); font-size: 0.72rem; }
+.wealth-legend > span { display: inline-flex; gap: 0.4rem; align-items: center; }
+.wealth-legend-line { display: inline-block; width: 1.2rem; border-top: 3px solid var(--accent); }
+.wealth-legend-line--real { border-top: 2px dashed var(--secondary-accent); }
+.wealth-chart-note { margin: -0.5rem 0 1rem; color: var(--ink-muted); font-size: 0.74rem; line-height: 1.6; }
+.wealth-chart { display: grid; grid-template-columns: 3.75rem minmax(0, 1fr); gap: 0.65rem; padding-top: 0.5rem; }
+.wealth-chart-axis { display: flex; height: 16rem; flex-direction: column; justify-content: space-between; color: var(--ink-muted); font-family: var(--rpg-menu-font); font-size: 0.65rem; text-align: right; }
+.wealth-chart-axis > span { transform: translateY(-50%); }
+.wealth-chart-axis > span:last-child { transform: translateY(50%); }
+.wealth-chart-plot { position: relative; height: 16rem; margin-bottom: 2rem; }
+.wealth-chart svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.wealth-chart-grid { stroke: var(--rule); stroke-width: 1; }
+.wealth-chart-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+.wealth-chart-line--real { stroke: var(--secondary-accent); stroke-width: 2; stroke-dasharray: 6 4; }
+.wealth-chart-fill { fill: var(--accent); opacity: 0.06; }
+.wealth-chart-forecast { fill: var(--secondary-accent); opacity: 0.08; }
+.wealth-chart-boundary { stroke: var(--secondary-accent); stroke-width: 1; stroke-dasharray: 4 4; }
+.wealth-chart-cursor { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 2 4; }
+.wealth-chart-point { position: absolute; width: 0.6rem; height: 0.6rem; border: 2px solid var(--paper-elevated); background: var(--accent); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.wealth-chart-years { position: relative; display: flex; justify-content: space-between; margin-top: 0.75rem; color: var(--ink-muted); font-family: var(--rpg-menu-font); font-size: 0.65rem; }
+.wealth-chart-year-boundary { position: absolute; transform: translateX(-50%); }
+.wealth-chart-slider { display: block; width: calc(100% - 4.4rem); height: 1.5rem; margin: 0.5rem 0 0.75rem auto; accent-color: var(--accent); cursor: pointer; }
+.wealth-chart-readout { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.25rem; min-height: 3.5rem; padding: 0.75rem 1rem; border: 1px solid var(--rule); background: var(--paper); color: var(--ink-muted); font-size: 0.75rem; }
+.wealth-chart-readout > span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.wealth-chart-readout strong { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.wealth-chart-readout .wealth-badge { text-transform: capitalize; }
+.wealth-table-panel { padding-bottom: 0; }
+.wealth-table-help { margin: -0.35rem 0 1.25rem; color: var(--ink-muted); font-size: 0.74rem; line-height: 1.7; }
+.wealth-table-scroll { max-height: 36rem; overflow: auto; margin: 0 -1.5rem; border-top: 1px solid var(--rule); overscroll-behavior-x: contain; }
+.wealth-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.wealth-table th, .wealth-table td { padding: 0.9rem 1rem; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.wealth-table thead th { position: sticky; top: 0; z-index: 2; border-bottom-color: var(--rule-strong); color: var(--ink-muted); background: var(--paper-muted); font-family: var(--rpg-menu-font); font-size: 0.62rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+.wealth-table tr > :first-child { position: sticky; left: 0; z-index: 1; text-align: left; background: var(--paper-elevated); border-right: 1px solid var(--rule); }
+.wealth-table thead tr > :first-child { z-index: 3; background: var(--paper-muted); }
+.wealth-table tbody th { font-weight: 500; }
+.wealth-table small { display: block; margin-top: 0.2rem; color: var(--ink-muted); font-size: 0.61rem; font-weight: 400; line-height: 1.6; }
+.wealth-table .wealth-table-closing { color: var(--accent); font-weight: 600; }
+.wealth-table .wealth-negative { color: var(--wealth-loss); }
+.wealth-table-projection > :first-child { background: color-mix(in srgb, var(--secondary-accent-soft) 40%, var(--paper-elevated)); }
+.wealth-table-projection td { background: color-mix(in srgb, var(--secondary-accent-soft) 20%, var(--paper-elevated)); }
+.wealth-table .wealth-projection-divider td { position: static; padding: 0.8rem 1rem; border-right: 0; color: var(--secondary-accent); background: var(--secondary-accent-soft); font-size: 0.7rem; }
+.wealth-table-shortfall td { background: color-mix(in srgb, var(--wealth-loss) 4%, var(--paper-elevated)); }
+.wealth-method { padding: 0.5rem 0; }
+.wealth-method p { margin: 0.8rem 0 0; max-width: 55rem; color: var(--ink-muted); font-size: 0.8rem; line-height: 1.9; }
+.wealth-method .wealth-source-links { font-size: 0.72rem; }
+.wealth-source-links a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.wealth-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+@media (max-width: 48rem) {
+  .wealth-input-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .wealth-input-grid > :last-child { grid-column: 1 / -1; }
+  .wealth-budget { padding: 1.2rem; }
+  .wealth-budget-footer { flex-direction: column; }
+}
+@media (max-width: 36rem) {
+  .wealth-lab { gap: 1.5rem; }
+  .wealth-panel { padding: 1rem; }
+  .wealth-input-grid { grid-template-columns: 1fr; }
+  .wealth-budget-grid, .wealth-summary-grid { grid-template-columns: 1fr; }
+  .wealth-budget { padding: 1.25rem; }
+  .wealth-budget-amount { font-size: 2.5rem; }
+  .wealth-budget-footer { flex-direction: row; }
+  .wealth-summary-grid > div + div { padding-top: 1rem; border-top: 1px solid var(--rule); }
+  .wealth-summary-grid dd { font-size: 1.75rem; }
+  .wealth-section-title { font-size: 1.2rem; }
+  .wealth-mode-switch { width: 100%; }
+  .wealth-mode-switch button { flex: 1; }
+  .wealth-chart, .wealth-chart-axis, .wealth-chart-plot { font-size: 0.6rem; }
+  .wealth-chart { grid-template-columns: 3rem minmax(0, 1fr); gap: 0.5rem; }
+  .wealth-chart-axis, .wealth-chart-plot { height: 12rem; }
+  .wealth-chart-year-boundary { display: none; }
+  .wealth-chart-slider { width: calc(100% - 3.5rem); }
+  .wealth-chart-readout { align-items: flex-start; flex-direction: column; }
+  .wealth-table-scroll { margin: 0 -1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wealth-budget { transition: none; }
+}
+
 /* Subset of Ma Shan Zheng covering Chinese titles and the header name. */
 @font-face {
   font-family: 'Ma Shan Zheng';
@@ -2471,443 +2610,5 @@ samp {
   .pixel-study__arm,
   .pixel-study__cursor {
     animation: none;
-  }
-}
-
-.tetris-game {
-  --tetris-I: #3e8cbf;
-  --tetris-O: #c4922a;
-  --tetris-T: #7a5bb5;
-  --tetris-S: #3f8f6d;
-  --tetris-Z: var(--accent);
-  --tetris-J: #3d6cb5;
-  --tetris-L: #c46b2d;
-  --tetris-empty: color-mix(in srgb, var(--ink) 8%, var(--paper));
-  display: grid;
-  grid-template-columns: 12.5rem minmax(0, 22rem) 12.5rem;
-  justify-content: center;
-  align-items: start;
-  column-gap: 1rem;
-  width: 100%;
-}
-
-:root.dark .tetris-game {
-  --tetris-I: #6ec4e0;
-  --tetris-O: var(--amber);
-  --tetris-T: #b5a0ea;
-  --tetris-S: #73d5ca;
-  --tetris-Z: #e08a7a;
-  --tetris-J: #7aa2e3;
-  --tetris-L: #e09a5a;
-  --tetris-empty: color-mix(in srgb, var(--ink) 10%, var(--paper-muted));
-}
-
-.tetris-stage {
-  display: flex;
-  grid-column: 2;
-  width: 100%;
-  flex-direction: column;
-}
-
-.tetris-well {
-  width: 100%;
-  padding: 0.55rem;
-}
-
-.tetris-rail {
-  display: flex;
-  grid-column: 3;
-  width: 12.5rem;
-  flex-direction: column;
-  gap: 0.65rem;
-  justify-self: start;
-}
-
-.tetris-status {
-  width: 100%;
-  padding: 1rem;
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--rpg-shadow) 72%, transparent);
-}
-
-.tetris-stat {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.tetris-stat--level {
-  align-items: center;
-}
-
-.tetris-next-dock--board {
-  display: none;
-}
-
-.tetris-next-dock--rail .tetris-next-panel__label {
-  margin-bottom: 0.5rem;
-}
-
-.tetris-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.tetris-actions .tetris-action-btn {
-  width: 100%;
-  min-width: 0;
-}
-
-.tetris-swipe-hint {
-  display: none;
-}
-
-.tetris-overlay__hint {
-  display: none;
-}
-
-@media (max-width: 48rem) {
-  .tetris-game {
-    grid-template-columns: minmax(0, 22rem);
-    justify-items: stretch;
-    row-gap: 0.5rem;
-  }
-
-  .tetris-rail {
-    grid-column: 1;
-    grid-row: 1;
-    width: 100%;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 0.45rem;
-  }
-
-  .tetris-stage {
-    grid-column: 1;
-    grid-row: 2;
-    width: min(100%, 22rem);
-    justify-self: center;
-  }
-
-  .tetris-status {
-    flex: 1;
-    min-width: 0;
-    padding: 0.5rem 0.65rem;
-  }
-
-  .tetris-status__label {
-    display: none;
-  }
-
-  .tetris-status__stats {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.45rem;
-    margin-top: 0;
-  }
-
-  .tetris-status__stats > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 0;
-  }
-
-  .tetris-stat {
-    min-width: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.12rem;
-  }
-
-  .tetris-stat dt {
-    font-size: 0.55rem;
-    letter-spacing: 0.12em;
-  }
-
-  .tetris-stat dd,
-  .tetris-status__stats dd {
-    font-size: 0.92rem;
-    line-height: 1.1;
-  }
-
-  .tetris-stat--level {
-    align-items: flex-start;
-  }
-
-  .tetris-next-dock--rail {
-    display: none;
-  }
-
-  .tetris-actions {
-    width: auto;
-    flex-shrink: 0;
-  }
-
-  .tetris-actions .tetris-action-btn {
-    min-width: 5.2rem;
-    min-height: 2.15rem;
-    padding: 0.4rem 0.45rem;
-  }
-}
-
-@media (max-width: 48rem), (pointer: coarse) {
-  .tetris-board {
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-  }
-
-  .tetris-overlay__hint,
-  .tetris-swipe-hint {
-    display: block;
-  }
-
-  .tetris-swipe-hint {
-    margin: 0.45rem 0 0;
-    text-align: center;
-    font-family: var(--rpg-menu-font);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-}
-
-.tetris-board,
-.tetris-next {
-  display: grid;
-  gap: 2px;
-  background: color-mix(in srgb, var(--ink) 14%, var(--paper-muted));
-}
-
-.tetris-board {
-  position: relative;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(20, 1fr);
-  aspect-ratio: 10 / 20;
-  width: 100%;
-  padding: 3px;
-}
-
-.tetris-next {
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  width: 6.5rem;
-  aspect-ratio: 1;
-  padding: 3px;
-}
-
-@media (max-width: 48rem) {
-  .tetris-next-dock--board {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.18rem;
-    padding: 0.32rem 0.36rem 0.38rem;
-    border: 1px solid color-mix(in srgb, var(--rule) 82%, transparent);
-    background: color-mix(in srgb, var(--paper-elevated) 90%, transparent);
-    box-shadow: 2px 2px 0 color-mix(in srgb, var(--rpg-shadow) 50%, transparent);
-    pointer-events: none;
-  }
-
-  .tetris-next-dock--board .tetris-next-panel__label {
-    font-size: 0.52rem;
-    letter-spacing: 0.14em;
-  }
-
-  .tetris-next-dock--board .tetris-next {
-    width: 2.7rem;
-  }
-
-  .tetris-level-stepper {
-    gap: 0.28rem;
-  }
-
-  .tetris-level-stepper__btn {
-    width: 1.55rem;
-    height: 1.55rem;
-  }
-}
-
-.tetris-cell {
-  min-width: 0;
-  min-height: 0;
-  border-radius: 1px;
-}
-
-.tetris-cell--empty {
-  background: var(--tetris-empty);
-}
-
-.tetris-cell--filled {
-  box-shadow:
-    inset 1px 1px 0 color-mix(in srgb, white 34%, transparent),
-    inset -1px -1px 0 color-mix(in srgb, black 22%, transparent);
-}
-
-.tetris-cell--ghost {
-  background: transparent;
-  box-shadow: none;
-  outline: 1px dashed color-mix(in srgb, var(--ink-muted) 55%, transparent);
-  outline-offset: -2px;
-}
-
-.tetris-cell--I { background: var(--tetris-I); }
-.tetris-cell--O { background: var(--tetris-O); }
-.tetris-cell--T { background: var(--tetris-T); }
-.tetris-cell--S { background: var(--tetris-S); }
-.tetris-cell--Z { background: var(--tetris-Z); }
-.tetris-cell--J { background: var(--tetris-J); }
-.tetris-cell--L { background: var(--tetris-L); }
-
-.tetris-cell--ghost.tetris-cell--I,
-.tetris-cell--ghost.tetris-cell--O,
-.tetris-cell--ghost.tetris-cell--T,
-.tetris-cell--ghost.tetris-cell--S,
-.tetris-cell--ghost.tetris-cell--Z,
-.tetris-cell--ghost.tetris-cell--J,
-.tetris-cell--ghost.tetris-cell--L {
-  background: transparent;
-  box-shadow: none;
-}
-
-.tetris-cell--ghost.tetris-cell--I { outline-color: var(--tetris-I); }
-.tetris-cell--ghost.tetris-cell--O { outline-color: var(--tetris-O); }
-.tetris-cell--ghost.tetris-cell--T { outline-color: var(--tetris-T); }
-.tetris-cell--ghost.tetris-cell--S { outline-color: var(--tetris-S); }
-.tetris-cell--ghost.tetris-cell--Z { outline-color: var(--tetris-Z); }
-.tetris-cell--ghost.tetris-cell--J { outline-color: var(--tetris-J); }
-.tetris-cell--ghost.tetris-cell--L { outline-color: var(--tetris-L); }
-
-.tetris-overlay {
-  position: absolute;
-  inset: 0.55rem;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 0;
-  border: 0;
-  background: color-mix(in srgb, var(--paper-elevated) 78%, transparent);
-  color: inherit;
-  font: inherit;
-  text-align: center;
-  pointer-events: none;
-}
-
-.tetris-overlay--interactive {
-  pointer-events: auto;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.tetris-overlay__hint {
-  margin: 0;
-  font-family: var(--rpg-menu-font);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-
-.tetris-overlay--static {
-  transition: none;
-}
-
-.tetris-action-btn {
-  min-width: 6.5rem;
-  min-height: 2.7rem;
-  padding: 0.55rem 0.7rem;
-  border: 1px solid color-mix(in srgb, var(--rule-strong) 72%, transparent);
-  background: color-mix(in srgb, var(--paper-elevated) 88%, transparent);
-  color: var(--ink-muted);
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
-  font-family: var(--rpg-menu-font);
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: transform 120ms ease, box-shadow 120ms ease, color 120ms ease, background-color 120ms ease;
-}
-
-.tetris-action-btn:hover:not(:disabled) {
-  color: var(--ink);
-  border-color: color-mix(in srgb, var(--secondary-accent) 42%, var(--rule));
-}
-
-.tetris-action-btn:active:not(:disabled) {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
-}
-
-.tetris-action-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.tetris-action-btn--primary {
-  color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--rule));
-  background: color-mix(in srgb, var(--accent-soft) 58%, var(--paper-elevated));
-}
-
-.tetris-level-stepper {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.tetris-level-stepper__value {
-  min-width: 1.5rem;
-  font-family: var(--rpg-menu-font);
-  font-size: 1.125rem;
-  line-height: 1;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink);
-}
-
-.tetris-level-stepper__btn {
-  display: inline-flex;
-  width: 1.85rem;
-  height: 1.85rem;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--rule-strong) 80%, transparent);
-  background: var(--paper-elevated);
-  color: var(--ink-muted);
-  box-shadow: 1px 1px 0 color-mix(in srgb, var(--shadow-rule) 70%, transparent);
-  font-family: var(--rpg-menu-font);
-  font-size: 0.95rem;
-  line-height: 1;
-}
-
-.tetris-level-stepper__btn:hover:not(:disabled) {
-  color: var(--ink);
-  border-color: color-mix(in srgb, var(--secondary-accent) 42%, var(--rule));
-}
-
-.tetris-level-stepper__btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tetris-action-btn,
-  .tetris-overlay {
-    transition: none;
-  }
-
-  .tetris-action-btn:active:not(:disabled) {
-    transform: none;
   }
 }
