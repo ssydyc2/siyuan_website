@@ -5,6 +5,7 @@ import { buildAnnualPath, calculateScenario, type SpendingMode, type SpendingSol
 import { exactMoney, money, percentage } from '../lib/wealth-format';
 
 type InflationPreset = 'history' | '3' | '4' | '5' | 'custom';
+type ReturnPreset = 'history' | '5' | '7' | '10' | 'custom';
 
 function readNumber(value: string) {
   return value.trim() === '' ? NaN : Number(value);
@@ -41,6 +42,8 @@ export default function WealthLab() {
   const [horizonText, setHorizonText] = useState('30');
   const [inflationPreset, setInflationPreset] = useState<InflationPreset>('history');
   const [customInflation, setCustomInflation] = useState('3');
+  const [returnPreset, setReturnPreset] = useState<ReturnPreset>('history');
+  const [customReturn, setCustomReturn] = useState('7');
   const [mode, setMode] = useState<SpendingMode>('automatic');
   const [targetKind, setTargetKind] = useState<TargetKind>('nominal');
   const [manualSpending, setManualSpending] = useState('50000');
@@ -48,17 +51,20 @@ export default function WealthLab() {
   const horizon = readNumber(horizonText);
   const inflation = inflationPreset === 'history' ? HISTORICAL_INFLATION
     : readNumber(inflationPreset === 'custom' ? customInflation : inflationPreset) / 100;
+  const projectionReturn = returnPreset === 'history' ? HISTORICAL_CAGR
+    : readNumber(returnPreset === 'custom' ? customReturn : returnPreset) / 100;
 
   let error: string | null = null;
   let scenario: ReturnType<typeof calculateScenario> | null = null;
   try {
-    scenario = calculateScenario({ principal, inflation, path: buildAnnualPath(horizon) }, mode, targetKind, readNumber(manualSpending));
+    scenario = calculateScenario({ principal, inflation, path: buildAnnualPath(horizon, projectionReturn) }, mode, targetKind, readNumber(manualSpending));
   } catch (caught) {
     error = caught instanceof Error ? caught.message : 'Please check your inputs.';
   }
   const invalidPrincipal = !Number.isFinite(principal) || principal <= 0;
   const invalidHorizon = !Number.isInteger(horizon) || horizon < 30 || horizon > 100;
   const invalidInflation = !Number.isFinite(inflation) || inflation < 0 || inflation > 0.2;
+  const invalidReturn = !Number.isFinite(projectionReturn) || projectionReturn < -1 || projectionReturn > 1;
   const invalidSpending = mode === 'manual' && (!Number.isFinite(readNumber(manualSpending)) || readNumber(manualSpending) < 0);
   const selectedSolution = scenario?.solutions[targetKind];
   const simulation = scenario?.simulation;
@@ -98,10 +104,19 @@ export default function WealthLab() {
             {inflationPreset === 'custom' ? <div className="wealth-input-unit wealth-custom-inflation"><label className="wealth-sr-only" htmlFor="wealth-custom-inflation">Custom inflation rate (%)</label><input id="wealth-custom-inflation" type="number" inputMode="decimal" min="0" max="20" step="any" value={customInflation} onChange={(event) => setCustomInflation(event.target.value)} aria-invalid={invalidInflation} aria-describedby={invalidInflation ? 'wealth-input-error' : undefined} /><span aria-hidden="true">%</span></div> : null}
             <span className="wealth-field-hint">One fixed rate across the entire journey</span>
           </div>
+          <div className="wealth-field">
+            <label htmlFor="wealth-return">Projection annual return</label>
+            <select id="wealth-return" value={returnPreset} onChange={(event) => setReturnPreset(event.target.value as ReturnPreset)}>
+              <option value="history">Historical average · {percentage(HISTORICAL_CAGR)}</option>
+              <option value="5">5%</option><option value="7">7%</option><option value="10">10%</option><option value="custom">Custom rate</option>
+            </select>
+            {returnPreset === 'custom' && <div className="wealth-input-unit wealth-custom-return"><label className="wealth-sr-only" htmlFor="wealth-custom-return">Custom projection return (%)</label><input id="wealth-custom-return" type="number" inputMode="decimal" min="-100" max="100" step="any" value={customReturn} onChange={(event) => setCustomReturn(event.target.value)} aria-invalid={invalidReturn} aria-describedby={invalidReturn ? 'wealth-input-error' : 'wealth-return-help'} /><span aria-hidden="true">%</span></div>}
+            <span id="wealth-return-help" className="wealth-field-hint">Applies from year 31. {horizon === 30 ? 'Add years to see its effect.' : 'Historical years keep their actual returns.'}</span>
+          </div>
         </div>
         <div className="wealth-assumptions-strip">
           <span><strong>1996–2025</strong> actual annual returns</span>
-          <span><strong>{percentage(HISTORICAL_CAGR)}</strong> compound annual return thereafter</span>
+          <span><strong>{invalidReturn ? '—' : percentage(projectionReturn)}</strong> assumed compound annual return thereafter</span>
         </div>
       </section>
 
@@ -150,7 +165,7 @@ export default function WealthLab() {
               <caption className="wealth-sr-only">Annual portfolio simulation in USD. Spending grows at {percentage(inflation)} per year.</caption>
               <thead><tr><th scope="col">Year</th><th scope="col">Return</th><th scope="col">Opening</th><th scope="col">Spending</th><th scope="col">Gain / loss</th><th scope="col">Closing</th><th scope="col">Real value</th></tr></thead>
               <tbody>{simulation.rows.map((row) => <Fragment key={row.year}>
-                {row.index === 31 && <tr className="wealth-projection-divider"><td colSpan={7}>Projection begins · {percentage(HISTORICAL_CAGR)} assumed annual return from here</td></tr>}
+                {row.index === 31 && <tr className="wealth-projection-divider"><td colSpan={7}>Projection begins · {percentage(row.rate)} assumed annual return from here</td></tr>}
                 <tr className={`${row.source === 'projection' ? 'wealth-table-projection' : ''} ${row.shortfall > 0 ? 'wealth-table-shortfall' : ''}`}>
                   <th scope="row"><span>{row.year}</span><small>Year {row.index} · {row.source === 'historical' ? 'History' : 'Projection'}</small></th>
                   <td className={row.rate < 0 ? 'wealth-negative' : ''}>{percentage(row.rate)}</td>
@@ -168,7 +183,7 @@ export default function WealthLab() {
 
       <section className="wealth-method" aria-labelledby="wealth-method-title">
         <h2 id="wealth-method-title" className="wealth-section-title">Behind the numbers</h2>
-        <p>The first 30 years replay annual S&amp;P 500 returns, including dividends, from 1996 through 2025. This is a 30-year period from the end of 1995 to the end of 2025. Additional years repeat the historical compound annual return of {percentage(HISTORICAL_CAGR)}.</p>
+        <p>The first 30 years replay annual S&amp;P 500 returns, including dividends, from 1996 through 2025. This is a 30-year period from the end of 1995 to the end of 2025. Additional years use your selected annual return. The default historical option uses the full-precision compound annual return from these 30 years, displayed as {percentage(HISTORICAL_CAGR)}.</p>
         <p>Annual spending = first-year spending × (1 + inflation)<sup>year − 1</sup>. Closing balance = (opening balance − withdrawal) × (1 + annual return). The selected inflation rate stays constant throughout. The monthly figure is the first-year budget divided by 12; withdrawals are modeled annually.</p>
         <p>Preserving principal keeps the initial dollar amount. Preserving purchasing power increases the terminal target by inflation over the full period. Historical average inflation is calculated as (321.9 / 152.4)<sup>1/30</sup> − 1, using annual-average US CPI-U for 1995 and 2025.</p>
         <p>These results describe this historical path and a constant-return projection, not a guarantee of future returns. Taxes, investment fees, exchange rates, and fund tracking differences are excluded.</p>

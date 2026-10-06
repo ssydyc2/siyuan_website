@@ -1,6 +1,6 @@
 import { useId, useState, type PointerEvent } from 'react';
 import type { Simulation } from '../lib/wealth';
-import { compactMoney, exactMoney, money } from '../lib/wealth-format';
+import { compactMoney, exactMoney, money, percentage } from '../lib/wealth-format';
 
 export default function WealthChart({ simulation, principal }: { simulation: Simulation; principal: number }) {
   const id = useId();
@@ -38,7 +38,7 @@ export default function WealthChart({ simulation, principal }: { simulation: Sim
         </div>
       </div>
       {projected && (
-        <p className="wealth-chart-note">Shaded area: projection begins in 2026, after 30 historical years.</p>
+        <p className="wealth-chart-note">Shaded area: projection begins in 2026, after 30 historical years, at {percentage(rows[30].rate)} annually.</p>
       )}
       <div className="wealth-chart">
         <div className="wealth-chart-axis" aria-hidden="true">
