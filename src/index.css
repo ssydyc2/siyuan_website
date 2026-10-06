@@ -14,12 +14,17 @@
 .wealth-eyebrow + .wealth-section-title { margin-top: 0.25rem; }
 .wealth-badge { display: inline-block; padding: 0.3rem 0.5rem; border: 1px solid var(--rule); color: var(--ink-muted); background: var(--paper-muted); font-family: var(--rpg-menu-font); font-size: 0.62rem; line-height: 1.5; }
 .wealth-input-grid { display: grid; grid-template-columns: 1.1fr 0.8fr 1.35fr 1.35fr; gap: 1.5rem; }
+.wealth-return-model { margin-bottom: 1.5rem; }
+.wealth-replay-option { display: flex; align-items: flex-start; gap: 0.65rem; color: var(--ink-soft); font-size: 0.85rem; line-height: 1.6; cursor: pointer; }
+.wealth-replay-option input { flex-shrink: 0; width: 1rem; height: 1rem; margin-top: 0.2rem; accent-color: var(--accent); }
+.wealth-return-model .wealth-field-hint { margin-top: 0.45rem; }
 .wealth-field { display: flex; min-width: 0; flex-direction: column; gap: 0.5rem; }
 .wealth-field > label { color: var(--ink-soft); font-size: 0.82rem; font-weight: 600; }
 .wealth-input-unit { display: flex; align-items: center; gap: 0.5rem; min-height: 3rem; padding: 0 0.8rem; border: 1px solid var(--rule-strong); background: var(--paper); }
 .wealth-input-unit > span { color: var(--ink-muted); font-family: var(--rpg-menu-font); font-size: 0.8rem; }
 .wealth-input-unit input { width: 100%; min-width: 0; padding: 0.7rem 0; border: 0; background: transparent; color: var(--ink); font-family: var(--rpg-menu-font); font-size: 1rem; font-variant-numeric: tabular-nums; }
 .wealth-field select { width: 100%; min-height: 3rem; padding: 0.65rem 0.6rem; border: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink); font-size: 0.85rem; }
+.wealth-field select:disabled, .wealth-field input:disabled { opacity: 0.5; cursor: not-allowed; }
 .wealth-field-hint { margin: 0; color: var(--ink-muted); font-size: 0.73rem; line-height: 1.6; }
 .wealth-custom-inflation, .wealth-custom-return { max-width: 10rem; }
 .wealth-presets { display: flex; gap: 0.35rem; }
