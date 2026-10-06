@@ -101,7 +101,11 @@ scripts/
 ## Wealth Lab Notes
 
 Wealth Lab replays the fixed 1996–2025 annual total-return series from NYU Stern,
-including dividends. Longer horizons append its compound annual return. The
+including dividends. Longer horizons append the selected projection return,
+defaulting to its full-precision compound annual return (displayed as 10.26%).
+Users can select 5%, 7%, 10%, or a custom rate from −100% to 100%; this affects
+only years 31 onward. Extreme projections that cannot be solved within a cent
+report a calculation error instead of showing an inaccurate budget. The
 selected inflation rate is constant across history and projection; the default
 uses the Minneapolis Fed's 1995 and 2025 annual-average CPI-U endpoints. Withdrawals
 occur at the start of each year. Budget solving preserves full precision, and

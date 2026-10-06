@@ -62,13 +62,16 @@ function validateInputs({ principal, inflation, path }: WealthInputs) {
   }
 }
 
-export function buildAnnualPath(horizon: number): AnnualReturn[] {
+export function buildAnnualPath(horizon: number, projectionReturn = HISTORICAL_CAGR): AnnualReturn[] {
   if (!Number.isInteger(horizon) || horizon < 30 || horizon > 100) throw new RangeError('Enter a whole number of years from 30 to 100.');
+  if (!Number.isFinite(projectionReturn) || projectionReturn < -1 || projectionReturn > 1) {
+    throw new RangeError('Enter a projection return from −100% to 100%.');
+  }
   return Array.from({ length: horizon }, (_, index) => {
     const historical = HISTORICAL_RETURNS[index];
     return historical
       ? { ...historical, source: 'historical' }
-      : { year: WEALTH_HISTORY.startYear + index, rate: HISTORICAL_CAGR, source: 'projection' };
+      : { year: WEALTH_HISTORY.startYear + index, rate: projectionReturn, source: 'projection' };
   });
 }
 
@@ -123,7 +126,11 @@ export function solveInitialSpending(inputs: WealthInputs, kind: TargetKind): Sp
   }
   const initialSpending = (maxFinalBalance - target) / spendingCoefficient;
   const simulation = simulateWealth(inputs, initialSpending);
-  return { reachable: true, initialSpending, target, simulation, residual: simulation.finalBalance - target };
+  const residual = simulation.finalBalance - target;
+  if (Math.abs(residual) > 0.01) {
+    throw new RangeError('This projection is too large to solve accurately. Try a lower return, fewer years, or a smaller portfolio.');
+  }
+  return { reachable: true, initialSpending, target, simulation, residual };
 }
 
 /** One derivation shared by both UI modes; never round the solved withdrawal. */

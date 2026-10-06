@@ -32,6 +32,18 @@ describe('fixed historical dataset and forecast boundary', () => {
   test.each([29, 101, 30.5, NaN, Infinity])('rejects invalid horizon %s', (horizon) => {
     expect(() => buildAnnualPath(horizon)).toThrow();
   });
+  test('custom projection returns leave the complete historical return sequence unchanged', () => {
+    const historical = buildAnnualPath(30);
+    for (const rate of [-1, -0.05, 0, 0.05, 0.07, 0.1, 1]) {
+      const path = buildAnnualPath(50, rate);
+      expect(path.slice(0, 30)).toEqual(historical);
+      expect(path.slice(30).every((entry) => entry.source === 'projection' && entry.rate === rate)).toBe(true);
+      expect(buildAnnualPath(30, rate)).toEqual(historical);
+    }
+  });
+  test.each([-1.01, 1.01, NaN, Infinity])('rejects invalid projection return %s', (rate) => {
+    expect(() => buildAnnualPath(50, rate)).toThrow('Enter a projection return');
+  });
 });
 
 describe('withdrawal timing and inflation', () => {
@@ -111,6 +123,36 @@ describe('unreachable targets and funded spending', () => {
 });
 
 describe('scenario controls and solver verification', () => {
+  test('custom return changes only the projected rows when manual spending stays fixed', () => {
+    const base = { principal: 1_000_000, inflation: 0.03 };
+    const historical = calculateScenario({ ...base, path: buildAnnualPath(50) }, 'manual', 'nominal', 50_000);
+    const custom = calculateScenario({ ...base, path: buildAnnualPath(50, 0.07) }, 'manual', 'nominal', 50_000);
+    expect(custom.simulation.rows.slice(0, 30)).toEqual(historical.simulation.rows.slice(0, 30));
+    const year31 = custom.simulation.rows[30];
+    expect(year31.rate).toBe(0.07);
+    expect(year31.closingBalance).toBeCloseTo((year31.openingBalance - year31.withdrawn) * 1.07, 8);
+    expect(custom.simulation.finalBalance).toBeLessThan(historical.simulation.finalBalance);
+    expect(custom.solutions.nominal.initialSpending!).toBeLessThan(historical.solutions.nominal.initialSpending!);
+    const noSpending = simulateWealth({ ...base, path: buildAnnualPath(50, 0.07) }, 0);
+    expect(noSpending.finalBalance).toBeCloseTo(1_000_000 * HISTORICAL_GROWTH * 1.07 ** 20, 4);
+  });
+  test('both budget targets solve accurately with positive, zero, and negative forecast returns', () => {
+    for (const horizon of [30, 50, 100]) {
+      for (const rate of [-0.05, 0, 0.05, 0.07, 0.1]) {
+        const scenario = { principal: 1_000_000, inflation: 0.03, path: buildAnnualPath(horizon, rate) };
+        for (const kind of ['nominal', 'real'] as const) {
+          const solution = solveInitialSpending(scenario, kind);
+          if (solution.reachable) {
+            expect(Math.abs(solution.residual)).toBeLessThan(0.01);
+            expect(solution.simulation.totalShortfall).toBe(0);
+          }
+        }
+      }
+    }
+  });
+  test('reports precision limits for extreme projections instead of an inaccurate solved budget', () => {
+    expect(() => solveInitialSpending({ principal: 1_000_000, inflation: 0.03, path: buildAnnualPath(100, 1) }, 'nominal')).toThrow('too large to solve accurately');
+  });
   test('default historical example reproduces reference amounts', () => {
     const scenario = { principal: 1_000_000, inflation: HISTORICAL_INFLATION, path: buildAnnualPath(30) };
     const result = calculateScenario(scenario, 'automatic', 'nominal', NaN);

@@ -3,8 +3,9 @@
 A personal website built with Vite, React, TypeScript, and Tailwind CSS. It shares my background, reading list, blog posts, and Wealth Lab.
 
 Wealth Lab (`/wealth-lab`) explores inflation-adjusted spending with 1996–2025
-S&P 500 total returns. It can extend the historical path using its compound
-annual return, solve a first-year budget for two capital-preservation targets,
+S&P 500 total returns. It can extend the historical path using a selectable
+annual return (default: the historical compound rate, displayed as 10.26%),
+solve a first-year budget for two capital-preservation targets,
 or simulate custom spending. The page includes its offline data sources and
 calculation assumptions.
 
