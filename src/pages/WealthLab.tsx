@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import WealthChart from '../components/WealthChart';
 import { HISTORICAL_CAGR, HISTORICAL_INFLATION, WEALTH_HISTORY } from '../data/wealth-history';
-import { buildAnnualPath, calculateScenario, type SpendingMode, type SpendingSolution, type TargetKind } from '../lib/wealth';
+import { buildAnnualPath, calculateScenario, type Simulation, type SpendingMode, type SpendingSolution, type TargetKind } from '../lib/wealth';
 import { exactMoney, money, percentage } from '../lib/wealth-format';
 
 type InflationPreset = 'history' | '3' | '4' | '5' | 'custom';
@@ -34,6 +34,23 @@ function BudgetCard({ kind, solution, selected, onSelect }: {
       )}
       <span className="wealth-budget-footer">End with <strong title={exactMoney(solution.target)}>{money(solution.target)}</strong><span>{selected ? 'Selected target' : 'Select target →'}</span></span>
     </button>
+  );
+}
+
+function SpendingPlanCard({ simulation, initialSpending, horizon }: {
+  simulation: Simulation; initialSpending: number; horizon: number;
+}) {
+  return (
+    <section className="wealth-budget wealth-spending-plan" aria-labelledby="wealth-plan-title" aria-live="polite" aria-atomic="true">
+      <p className="wealth-eyebrow">Your spending plan</p>
+      <h3 id="wealth-plan-title" className="wealth-budget-title">Ending balance with your budget</h3>
+      <p className="wealth-budget-amount" title={exactMoney(simulation.finalBalance)}>{money(simulation.finalBalance)}<span> after {horizon} years</span></p>
+      <p className="wealth-budget-monthly">{money(initialSpending)} in year one · {money(initialSpending / 12)} per month</p>
+      <dl className="wealth-plan-details">
+        <div><dt>In starting-year dollars</dt><dd title={exactMoney(simulation.finalRealBalance)}>{money(simulation.finalRealBalance)}</dd></div>
+        <div><dt>Total actually spent</dt><dd title={exactMoney(simulation.totalWithdrawn)}>{money(simulation.totalWithdrawn)}</dd></div>
+      </dl>
+    </section>
   );
 }
 
@@ -129,16 +146,17 @@ export default function WealthLab() {
         {mode === 'manual' && <div className="wealth-manual-input wealth-field">
           <label htmlFor="wealth-spending">First-year spending</label>
           <div className="wealth-input-unit"><span aria-hidden="true">$</span><input id="wealth-spending" type="number" inputMode="decimal" min="0" step="any" value={manualSpending} onChange={(event) => setManualSpending(event.target.value)} aria-invalid={invalidSpending} aria-describedby={invalidSpending ? 'wealth-input-error' : 'wealth-spending-help'} /></div>
-          <p id="wealth-spending-help" className="wealth-field-hint">Your spending increases by {Number.isFinite(inflation) ? percentage(inflation) : 'your chosen inflation rate'} each year. Cards below show the budgets for comparison; the chart uses your input.</p>
+          <p id="wealth-spending-help" className="wealth-field-hint">Your spending increases by {Number.isFinite(inflation) ? percentage(inflation) : 'your chosen inflation rate'} each year. The result card, chart, and annual ledger update with your budget.</p>
         </div>}
         {error && <p id="wealth-input-error" className="wealth-notice wealth-notice--warning" role="alert">{error}</p>}
-        {scenario && <>
+        {scenario?.mode === 'automatic' && <>
           <div className="wealth-budget-grid" role="group" aria-label="Capital preservation target">
             <BudgetCard kind="nominal" solution={scenario.solutions.nominal} selected={targetKind === 'nominal'} onSelect={() => setTargetKind('nominal')} />
             <BudgetCard kind="real" solution={scenario.solutions.real} selected={targetKind === 'real'} onSelect={() => setTargetKind('real')} />
           </div>
-          <p className="wealth-budget-caption">First-year budgets, followed by annual increases of {percentage(inflation)}. {mode === 'automatic' ? 'Select a target to apply its budget below.' : 'Select a target to compare with your spending below.'}</p>
+          <p className="wealth-budget-caption">First-year budgets, followed by annual increases of {percentage(inflation)}. Select a target to apply its budget below.</p>
         </>}
+        {scenario?.mode === 'manual' && <SpendingPlanCard simulation={scenario.simulation} initialSpending={scenario.initialSpending} horizon={horizon} />}
       </section>
 
       {scenario && simulation && <>

@@ -110,6 +110,9 @@ selected inflation rate is constant across history and projection; the default
 uses the Minneapolis Fed's 1995 and 2025 annual-average CPI-U endpoints. Withdrawals
 occur at the start of each year. Budget solving preserves full precision, and
 manual spending is capped at available assets with unfunded amounts recorded.
+Automatic mode shows the two preservation target cards. Manual mode simulates
+the entered budget directly, without solving preservation targets, and shows
+one spending-plan result card that shares its simulation with the chart and ledger.
 Data sources, dates, and assumptions are shown on the page. Run `bun run test:wealth`
 when changing the data or calculations. Updating the fixed dataset requires
 updating its metadata and boundary tests together.
