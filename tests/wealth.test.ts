@@ -132,7 +132,6 @@ describe('scenario controls and solver verification', () => {
     expect(year31.rate).toBe(0.07);
     expect(year31.closingBalance).toBeCloseTo((year31.openingBalance - year31.withdrawn) * 1.07, 8);
     expect(custom.simulation.finalBalance).toBeLessThan(historical.simulation.finalBalance);
-    expect(custom.solutions.nominal.initialSpending!).toBeLessThan(historical.solutions.nominal.initialSpending!);
     const noSpending = simulateWealth({ ...base, path: buildAnnualPath(50, 0.07) }, 0);
     expect(noSpending.finalBalance).toBeCloseTo(1_000_000 * HISTORICAL_GROWTH * 1.07 ** 20, 4);
   });
@@ -163,13 +162,50 @@ describe('scenario controls and solver verification', () => {
   test('switching modes and targets applies the correct amount without rounding', () => {
     const scenario = { principal: 1_000_000, inflation: 0.03, path: buildAnnualPath(50) };
     const automatic = calculateScenario(scenario, 'automatic', 'real', 50_000);
-    expect(automatic.initialSpending).toBe(automatic.solutions.real.initialSpending!);
+    expect(automatic.initialSpending).toBe(solveInitialSpending(scenario, 'real').initialSpending!);
     expect(automatic.simulation.finalRealBalance).toBeCloseTo(1_000_000, 2);
     const manualNominal = calculateScenario(scenario, 'manual', 'nominal', 50_000);
     const manualReal = calculateScenario(scenario, 'manual', 'real', 50_000);
     expect(manualNominal.initialSpending).toBe(50_000);
-    expect(manualNominal.simulation).toEqual(manualReal.simulation);
-    expect(manualReal.solutions.real).toEqual(automatic.solutions.real);
+    expect(manualNominal).toEqual(manualReal);
+    expect(manualReal.showingBaseline).toBe(false);
+    expect(calculateScenario(scenario, 'automatic', 'real', 90_000)).toEqual(automatic);
+  });
+  test('changing a manual budget updates withdrawals, gains, real value, and cumulative spending', () => {
+    const scenario = inputs([0.1, 0.1], 0.05);
+    const lower = calculateScenario(scenario, 'manual', 'nominal', 10);
+    const higher = calculateScenario(scenario, 'manual', 'nominal', 15);
+    expect(lower.initialSpending).toBe(10);
+    expect(lower.simulation.finalBalance).toBeCloseTo(97.35, 10);
+    expect(higher.initialSpending).toBe(15);
+    expect(higher.simulation.rows[0].withdrawn).toBe(15);
+    expect(higher.simulation.rows[0].investmentGain).toBeCloseTo(8.5, 10);
+    expect(higher.simulation.rows[1].plannedSpending).toBeCloseTo(15.75, 10);
+    expect(higher.simulation.finalBalance).toBeCloseTo(85.525, 10);
+    expect(higher.simulation.finalRealBalance).toBeCloseTo(85.525 / 1.05 ** 2, 10);
+    expect(higher.simulation.totalWithdrawn).toBeCloseTo(30.75, 10);
+  });
+  test('manual budgets remain usable when preservation solving exceeds its precision limit', () => {
+    const scenario = { principal: 1_000_000, inflation: 0.03, path: buildAnnualPath(100, 1) };
+    expect(() => calculateScenario(scenario, 'automatic', 'nominal', 50_000)).toThrow('too large to solve accurately');
+    const manual = calculateScenario(scenario, 'manual', 'nominal', 50_000);
+    expect(manual.simulation.rows[0].plannedSpending).toBe(50_000);
+    expect(Number.isFinite(manual.simulation.finalBalance)).toBe(true);
+    expect(manual.simulation.finalBalance).toBeGreaterThan(0);
+    expect(manual.showingBaseline).toBe(false);
+    expect(() => calculateScenario(scenario, 'manual', 'nominal', NaN)).toThrow('first-year spending');
+  });
+  test('manual results follow zero and overfunded budgets even with an unreachable target', () => {
+    const scenario = inputs([-0.5, 0], 0.05);
+    const zero = calculateScenario(scenario, 'manual', 'real', 0);
+    expect(zero.simulation.finalBalance).toBe(50);
+    expect(zero.simulation.totalWithdrawn).toBe(0);
+    expect(zero.showingBaseline).toBe(false);
+    const depleted = calculateScenario(scenario, 'manual', 'real', 150);
+    expect(depleted.simulation.finalBalance).toBe(0);
+    expect(depleted.simulation.totalWithdrawn).toBe(100);
+    expect(depleted.simulation.totalShortfall).toBe(207.5);
+    expect(depleted.simulation.depletionYear).toBe(2000);
   });
   test('an unreachable automatic target explicitly shows the zero-spending baseline', () => {
     const result = calculateScenario(inputs([0, 0], 0.05), 'automatic', 'real', 10);

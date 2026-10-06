@@ -48,6 +48,19 @@ export type SpendingSolution = {
   maxFinalBalance: number;
 };
 
+export type WealthScenario = {
+  mode: 'manual';
+  initialSpending: number;
+  simulation: Simulation;
+  showingBaseline: false;
+} | {
+  mode: 'automatic';
+  solutions: Record<TargetKind, SpendingSolution>;
+  initialSpending: number;
+  simulation: Simulation;
+  showingBaseline: boolean;
+};
+
 function finite(value: number): number {
   if (!Number.isFinite(value)) throw new RangeError('Values are too large to calculate. Try a smaller amount.');
   return value;
@@ -133,14 +146,17 @@ export function solveInitialSpending(inputs: WealthInputs, kind: TargetKind): Sp
   return { reachable: true, initialSpending, target, simulation, residual };
 }
 
-/** One derivation shared by both UI modes; never round the solved withdrawal. */
-export function calculateScenario(inputs: WealthInputs, mode: SpendingMode, targetKind: TargetKind, manualSpending: number) {
+/** Manual budgets simulate directly; automatic budgets use the unrounded solution. */
+export function calculateScenario(inputs: WealthInputs, mode: SpendingMode, targetKind: TargetKind, manualSpending: number): WealthScenario {
+  if (mode === 'manual') {
+    return { mode, initialSpending: manualSpending, simulation: simulateWealth(inputs, manualSpending), showingBaseline: false };
+  }
   const solutions = {
     nominal: solveInitialSpending(inputs, 'nominal'),
     real: solveInitialSpending(inputs, 'real'),
   };
   const selected = solutions[targetKind];
-  const initialSpending = mode === 'manual' ? manualSpending : selected.initialSpending ?? 0;
-  const simulation = mode === 'automatic' && selected.reachable ? selected.simulation : simulateWealth(inputs, initialSpending);
-  return { solutions, initialSpending, simulation, showingBaseline: mode === 'automatic' && !selected.reachable };
+  const initialSpending = selected.initialSpending ?? 0;
+  const simulation = selected.reachable ? selected.simulation : simulateWealth(inputs, initialSpending);
+  return { mode, solutions, initialSpending, simulation, showingBaseline: !selected.reachable };
 }
