@@ -1080,10 +1080,12 @@ export default function MarkdownDocument({
   markdown,
   leanSource = '',
   navigation,
+  before,
 }: {
   markdown: string;
   leanSource?: string;
   navigation?: NavigationOptions;
+  before?: ReactNode;
 }) {
   const blocks = useMemo(() => assignHeadingIds(parseMarkdown(markdown)), [markdown]);
   const leanRegions = useMemo(() => extractLeanRegions(leanSource), [leanSource]);
@@ -1095,6 +1097,7 @@ export default function MarkdownDocument({
 
   const article = (
     <article ref={articleRef} className="min-w-0">
+      {before ? <div className="mx-auto mb-10 w-full max-w-3xl">{before}</div> : null}
       {blocks.map((block, index) => (
         <div
           key={index}

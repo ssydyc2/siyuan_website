@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import abelRuffiniImage from '../assets/blog/abel-ruffini-backwards.webp';
-import rlForLlmsImage from '../assets/blog/efficient-rl-for-llms-2d-hd.webp';
+import { QuinticPlate, RolloutTrainPlate } from '../components/BlogFigures';
 import MarkdownDocument from '../components/MarkdownDocument';
 import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
 import abelRuffiniMarkdown from '../content/blog/abel-ruffini-backwards.md?raw';
@@ -460,33 +459,15 @@ const blogPosts: BlogPost[] = [
   },
 ];
 
-const blogPostImages: Record<string, { src: string; alt: string }> = {
-  'abel-ruffini-backwards': {
-    src: abelRuffiniImage,
-    alt: 'Pixel-art scholar studying five glowing roots and permutation paths on a proof board',
-  },
-  'efficient-rl-for-llms': {
-    src: rlForLlmsImage,
-    alt: '2D illustration of an RL pipeline for LLM training systems',
-  },
-};
-
-function BlogPostVisual({ postId, compact = false }: { postId: string; compact?: boolean }) {
-  const image = blogPostImages[postId] ?? blogPostImages['efficient-rl-for-llms'];
-  const className = compact
-    ? 'blog-post-visual aspect-[4/3] w-full'
-    : 'blog-post-visual aspect-[16/9] w-full';
+function BlogPostVisual({ postId, wide = false }: { postId: string; wide?: boolean }) {
+  const plate = postId === 'abel-ruffini-backwards'
+    ? <QuinticPlate />
+    : <RolloutTrainPlate wide={wide} />;
 
   return (
-    <span className={className}>
-      <img
-        src={image.src}
-        alt={image.alt}
-        className="blog-post-visual__image h-full w-full object-cover"
-        loading={compact ? 'lazy' : 'eager'}
-        decoding="async"
-      />
-    </span>
+    <div className="blog-plate">
+      <div className="blog-post-visual">{plate}</div>
+    </div>
   );
 }
 
@@ -716,9 +697,11 @@ function KeyConcepts({ concepts }: { concepts: string }) {
 
 function EfficientRlDetail({ post }: { post: BlogPost }) {
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <BlogPostVisual postId={post.id} />
-      <MarkdownDocument markdown={efficientRlMarkdown} />
+    <div className="mx-auto max-w-4xl">
+      <MarkdownDocument
+        markdown={efficientRlMarkdown}
+        before={<BlogPostVisual postId={post.id} wide />}
+      />
     </div>
   );
 }
@@ -726,7 +709,7 @@ function EfficientRlDetail({ post }: { post: BlogPost }) {
 function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
   return (
     <article className="mx-auto max-w-3xl space-y-12">
-      <BlogPostVisual postId={post.id} />
+      <BlogPostVisual postId={post.id} wide />
       <header className="border-b border-[var(--rule-strong)] pb-8">
         <p className="page-eyebrow">{post.eyebrow}</p>
         <h1 className="mt-3 page-title text-[var(--ink)]">{post.title}</h1>
@@ -778,19 +761,15 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
 
 function AbelRuffiniDetail({ post }: { post: BlogPost }) {
   return (
-    <div className="mx-auto max-w-none space-y-8">
-      <div className="mx-auto max-w-4xl">
-        <BlogPostVisual postId={post.id} />
-      </div>
-      <MarkdownDocument
-        markdown={abelRuffiniMarkdown}
-        leanSource={abelRuffiniLeanSources}
-        navigation={{
-          excludeHeadings: ['contents', 'overview-and-approach'],
-          progressEndHeadingId: '5-appendix-why-radicals-imply-a-solvable-galois-group',
-        }}
-      />
-    </div>
+    <MarkdownDocument
+      markdown={abelRuffiniMarkdown}
+      leanSource={abelRuffiniLeanSources}
+      before={<BlogPostVisual postId={post.id} wide />}
+      navigation={{
+        excludeHeadings: ['contents', 'overview-and-approach'],
+        progressEndHeadingId: '5-appendix-why-radicals-imply-a-solvable-galois-group',
+      }}
+    />
   );
 }
 
@@ -839,7 +818,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
               className="blog-post-list__item group grid gap-6 py-10 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-10"
               data-active={isActive}
             >
-              <BlogPostVisual postId={post.id} compact />
+              <BlogPostVisual postId={post.id} />
               <div className="min-w-0">
                 <p className="page-eyebrow">{post.eyebrow}</p>
                 <button
