@@ -1,93 +1,47 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
-import geekAvatar from '../assets/avatars/geek-avatar.png';
+import { Link, NavLink, Outlet, useMatch } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 
+const navItems = [
+  { to: '/', label: 'About Me', end: true },
+  { to: '/reading-list', label: 'Reading List' },
+  { to: '/wealth-lab', label: 'Wealth Lab' },
+  { to: '/blog', label: 'Blog' },
+];
+
 export default function Layout() {
+  const isLongFormPost = useMatch('/blog/abel-ruffini-backwards') !== null;
+  const containerWidth = isLongFormPost ? 'max-w-7xl' : 'max-w-5xl';
+
   return (
     <div className="min-h-screen text-[var(--ink)]">
-      <header className="site-header border-b border-[var(--rule-strong)] bg-[var(--paper-elevated)]/80">
-        <div className="mx-auto max-w-5xl px-6 py-8">
-          <div className="mb-8 flex items-center gap-4 sm:gap-5">
-            <Link
-              to="/"
-              aria-label="Go to homepage"
-              className="shrink-0 rounded-sm transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
-            >
-              <img
-                src={geekAvatar}
-                alt="Pixel avatar of Siyuan Song"
-                className="h-20 w-20 object-contain [image-rendering:pixelated] sm:h-24 sm:w-24"
-              />
-            </Link>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="font-hand text-4xl font-normal tracking-tight text-[var(--ink)] sm:text-5xl">
-                  Siyuan Song
-                </h1>
-                <ThemeToggle className="mt-1" />
-              </div>
-              <div className="mt-3 flex items-center gap-4">
-                <div className="h-px w-12 bg-[var(--rule-strong)] sm:w-14"></div>
-                <span lang="zh" className="font-hand-zh text-2xl font-normal text-[var(--ink-muted)] sm:text-3xl">
-                  宋思源
-                </span>
-              </div>
-            </div>
-          </div>
-          <nav className="rpg-nav flex flex-wrap gap-x-3 gap-y-3" aria-label="Primary navigation">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) =>
-                `rpg-nav__item font-hand text-base transition-colors ${
-                  isActive
-                    ? 'text-[var(--accent)]'
-                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
-                }`
-              }
-            >
-              🏠 About Me
-            </NavLink>
-            <NavLink
-              to="/reading-list"
-              className={({ isActive }) =>
-                `rpg-nav__item font-hand text-base transition-colors ${
-                  isActive
-                    ? 'text-[var(--accent)]'
-                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
-                }`
-              }
-            >
-              📚 Reading List
-            </NavLink>
-            <NavLink
-              to="/wealth-lab"
-              className={({ isActive }) =>
-                `rpg-nav__item font-hand text-base transition-colors ${
-                  isActive
-                    ? 'text-[var(--accent)]'
-                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
-                }`
-              }
-            >
-              📈 Wealth Lab
-            </NavLink>
-            <NavLink
-              to="/blog"
-              className={({ isActive }) =>
-                `rpg-nav__item font-hand text-base transition-colors ${
-                  isActive
-                    ? 'text-[var(--accent)]'
-                    : 'text-[var(--ink-muted)] hover:text-[var(--ink)]'
-                }`
-              }
-            >
-              Blog <span aria-hidden="true">&rarr;</span>
-            </NavLink>
+      <header className="site-header">
+        <div className={`mx-auto flex ${containerWidth} flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-4`}>
+          <Link
+            to="/"
+            aria-label="Go to homepage"
+            className="group flex items-baseline gap-3"
+          >
+            <span className="font-serif text-xl tracking-tight text-[var(--ink)] transition-colors group-hover:text-[var(--accent)]">
+              Siyuan Song
+            </span>
+            <span lang="zh" className="font-zh text-sm text-[var(--ink-faint)]">
+              宋思源
+            </span>
+          </Link>
+          <ThemeToggle className="sm:order-3" />
+          <nav
+            className="site-nav order-3 -mx-6 flex w-[calc(100%+3rem)] gap-x-6 overflow-x-auto px-6 pb-1 sm:order-2 sm:mx-0 sm:ml-auto sm:w-auto sm:gap-x-7 sm:overflow-visible sm:px-0 sm:pb-0"
+            aria-label="Primary navigation"
+          >
+            {navItems.map((item) => (
+              <NavLink key={item.to} to={item.to} end={item.end} className="site-nav__link shrink-0 whitespace-nowrap">
+                {item.label}
+              </NavLink>
+            ))}
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-12">
+      <main className={`mx-auto px-6 pb-24 pt-14 sm:pt-20 ${containerWidth}`}>
         <Outlet />
       </main>
     </div>

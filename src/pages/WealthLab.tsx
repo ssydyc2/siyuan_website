@@ -89,9 +89,9 @@ export default function WealthLab() {
 
   return (
     <div className="wealth-lab">
-      <header className="wealth-intro">
+      <header className="wealth-intro page-enter">
         <p className="wealth-eyebrow">A small experiment in financial freedom</p>
-        <h1 className="rpg-page-title wealth-title">Wealth Lab</h1>
+        <h1 className="wealth-title">Wealth Lab</h1>
         <p>How much could you spend, and still keep your nest egg?</p>
         <p className="wealth-intro-detail">Choose a steady return or replay 30 years of the S&amp;P 500. See what inflation leaves behind.</p>
       </header>

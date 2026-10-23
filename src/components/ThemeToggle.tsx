@@ -88,7 +88,7 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
     <button
       type="button"
       onClick={toggleTheme}
-      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center border border-[var(--rule)] bg-[var(--paper-elevated)] text-[var(--ink-muted)] shadow-[2px_2px_0_var(--shadow-rule)] transition-colors hover:border-[var(--rule-strong)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${className}`}
+      className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--paper-muted)] hover:text-[var(--ink)] ${className}`}
       aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
       title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
     >

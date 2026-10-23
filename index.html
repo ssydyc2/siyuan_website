@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Siyuan's Homepage</title>
+    <script>
+      // Apply the saved or system theme before first paint to avoid a light flash.
+      try {
+        const savedTheme = localStorage.getItem('siyuan-site-theme');
+        const isDark = savedTheme ? savedTheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', isDark);
+      } catch {
+        // Storage can be unavailable; ThemeProvider still applies the theme after mount.
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
