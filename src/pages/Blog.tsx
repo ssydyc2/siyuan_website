@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
 import abelRuffiniImage from '../assets/blog/abel-ruffini-backwards.webp';
 import rlForLlmsImage from '../assets/blog/efficient-rl-for-llms-2d-hd.webp';
 import MarkdownDocument from '../components/MarkdownDocument';
-import RpgHeroScene from '../components/RpgHeroScene';
-import ThemeToggle from '../components/ThemeToggle';
 import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
 import abelRuffiniMarkdown from '../content/blog/abel-ruffini-backwards.md?raw';
 import abelRuffiniLean from '../../formal/abel-ruffini/AbelRuffini.lean?raw';
@@ -477,8 +474,8 @@ const blogPostImages: Record<string, { src: string; alt: string }> = {
 function BlogPostVisual({ postId, compact = false }: { postId: string; compact?: boolean }) {
   const image = blogPostImages[postId] ?? blogPostImages['efficient-rl-for-llms'];
   const className = compact
-    ? 'blog-post-visual blog-post-visual--compact h-28 w-full rounded-xl bg-[var(--paper-muted)]'
-    : 'blog-post-visual aspect-[16/9] w-full rounded-2xl bg-[var(--paper-muted)]';
+    ? 'blog-post-visual aspect-[4/3] w-full'
+    : 'blog-post-visual aspect-[16/9] w-full';
 
   return (
     <span className={className}>
@@ -537,14 +534,7 @@ function BlogPostPreview({ id, post }: { id: string; post: BlogPost }) {
 
   return (
     <div id={id} className="blog-post-preview" aria-label={`${post.title} preview`}>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--accent-strong)]">
-          {post.eyebrow}
-        </span>
-        <span className="text-xs font-medium text-[var(--ink-faint)]">
-          Reading path
-        </span>
-      </div>
+      <p className="text-xs font-medium text-[var(--ink-faint)]">Reading path</p>
       <ol className="blog-post-preview__list">
         {previewItems.map((item) => (
           <li key={`${item.label}-${item.title}`} className="blog-post-preview__item">
@@ -578,7 +568,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
           {resource.title}
         </a>
         {resource.meta && (
-          <p className="font-mono text-xs text-[var(--ink-faint)]">{resource.meta}</p>
+          <p className="text-xs tabular-nums text-[var(--ink-faint)]">{resource.meta}</p>
         )}
       </div>
       <ul className="mt-4 space-y-2.5">
@@ -599,10 +589,10 @@ function PhaseSection({ phase, index, phases }: { phase: Phase; index: number; p
   return (
     <section id={`phase-${phaseNumber}`} className="scroll-mt-8 space-y-5">
       <div className="border-b border-[var(--rule-strong)] pb-5">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">{phase.period}</p>
+        <p className="page-eyebrow">{phase.period}</p>
         <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 className="font-serif text-2xl font-normal text-[var(--ink)]">{phase.title}</h2>
-          <span className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--ink-faint)]">{getPhaseDisplayLabel(phase, index, phases)}</span>
+          <span className="page-eyebrow">{getPhaseDisplayLabel(phase, index, phases)}</span>
         </div>
         <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--ink-muted)]">{phase.summary}</p>
       </div>
@@ -610,7 +600,7 @@ function PhaseSection({ phase, index, phases }: { phase: Phase; index: number; p
         {phase.groups.map((group) => (
           <div key={group.title ?? phase.title}>
             {group.title && (
-              <h3 className="mb-1 font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+              <h3 className="mb-1 page-eyebrow">
                 {group.title}
               </h3>
             )}
@@ -633,7 +623,7 @@ function NumberedList({ title, items }: { title: string; items: string[] }) {
       <ol className="mt-4 space-y-3">
         {items.map((item, index) => (
           <li key={item} className="flex gap-4 text-base leading-7 text-[var(--ink-muted)]">
-            <span className="w-6 shrink-0 text-right font-mono text-xs text-[var(--ink-faint)]">
+            <span className="w-6 shrink-0 text-right text-xs tabular-nums text-[var(--ink-faint)]">
               {index + 1}.
             </span>
             <span>{item}</span>
@@ -666,7 +656,7 @@ function FrameworkComparison({ rows }: { rows: string[][] }) {
       <h2 className="font-serif text-xl font-normal text-[var(--ink)]">Framework Comparison</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full border-y border-[var(--rule-strong)] bg-[var(--paper-elevated)] text-left text-sm">
-          <thead className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--ink-muted)]">
+          <thead className="text-xs uppercase tracking-[0.08em] text-[var(--ink-muted)]">
             <tr className="border-b border-[var(--rule)]">
               <th className="py-3 pr-5 font-medium">Framework</th>
               <th className="px-5 py-3 font-medium">Canonical Paper</th>
@@ -682,7 +672,7 @@ function FrameworkComparison({ rows }: { rows: string[][] }) {
                   <td
                     key={`${row[0]}-${cell}`}
                     className={`py-3 align-top leading-6 ${
-                      index === 0 ? 'pr-5 font-mono text-[var(--ink)]' : index === row.length - 1 ? 'pl-5' : 'px-5'
+                      index === 0 ? 'pr-5 font-medium text-[var(--ink)]' : index === row.length - 1 ? 'pl-5' : 'px-5'
                     }`}
                   >
                     {cell}
@@ -704,7 +694,7 @@ function TopThree({ items }: { items: string[] }) {
       <div className="mt-4 grid gap-4 sm:grid-cols-3">
         {items.map((item, index) => (
           <p key={item} className="border-l border-[var(--rule)] pl-4 text-base leading-7 text-[var(--ink-muted)]">
-            <span className="block font-mono text-xs text-[var(--ink-faint)]">{index + 1}</span>
+            <span className="block text-xs tabular-nums text-[var(--ink-faint)]">{index + 1}</span>
             {item}
           </p>
         ))}
@@ -738,11 +728,11 @@ function StructuredBlogPostDetail({ post }: { post: BlogPost }) {
     <article className="mx-auto max-w-3xl space-y-12">
       <BlogPostVisual postId={post.id} />
       <header className="border-b border-[var(--rule-strong)] pb-8">
-        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">{post.eyebrow}</p>
-        <h1 className="mt-3 font-hand text-4xl font-normal leading-tight text-[var(--ink)]">{post.title}</h1>
+        <p className="page-eyebrow">{post.eyebrow}</p>
+        <h1 className="mt-3 page-title text-[var(--ink)]">{post.title}</h1>
         <p className="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.summary}</p>
 
-        <nav aria-label="Blog post sections" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-[var(--ink-faint)]">
+        <nav aria-label="Blog post sections" className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs tabular-nums text-[var(--ink-faint)]">
           {post.phases.map((phase, index) => (
             <a key={phase.title} href={`#phase-${getPhaseNumber(post.phases, index)}`} className="transition-colors hover:text-[var(--accent)]">
               {phase.title}
@@ -816,66 +806,45 @@ function BlogPostDetail({ post }: { post: BlogPost }) {
   return <StructuredBlogPostDetail post={post} />;
 }
 
-function BlogHeroScene() {
-  return <RpgHeroScene variant="study" />;
-}
-
 function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
   const [expandedPostId, setExpandedPostId] = useState<string | null>(null);
-  const reduceMotion = useReducedMotion();
-  const prefersReducedMotion = reduceMotion ?? false;
 
   const togglePost = (postId: string) => {
     setExpandedPostId((current) => (current === postId ? null : postId));
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-10">
-      <header>
-        <BlogHeroScene />
-        <div className="flex items-center gap-3">
-          <h1 className="font-hand text-4xl font-normal leading-tight text-[var(--ink)] sm:text-5xl">Blog</h1>
-          <ThemeToggle />
-        </div>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
+    <div className="space-y-14">
+      <header className="page-enter">
+        <h1 className="page-title">Blog</h1>
+        <p className="page-lede mt-6">
           Welcome 👋, this is my Blog 📝, a place to share and learn AI 🤖.
         </p>
-        <p className="mt-2">
-          <Link
-            to="/"
-            className="font-mono text-sm uppercase tracking-[0.16em] text-[var(--accent)] underline decoration-[var(--accent-decoration)] decoration-1 underline-offset-4 transition-colors hover:text-[var(--accent-strong)]"
-          >
+        <p className="mt-4">
+          <Link to="/" className="text-link text-sm">
             More about me
           </Link>
         </p>
       </header>
 
-      <div className="blog-post-list">
+      <div className="page-enter page-enter--delay">
         {posts.map((post) => {
           const isActive = expandedPostId === post.id;
           const previewId = `blog-preview-${post.id}`;
           const titleId = `blog-title-${post.id}`;
 
           return (
-            <motion.article
+            <article
               key={post.id}
-              className="blog-post-list__item group grid gap-5 px-3 py-8 sm:grid-cols-[10rem_minmax(0,1fr)_6rem] sm:items-start sm:px-5"
+              className="blog-post-list__item group grid gap-6 py-10 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-10"
               data-active={isActive}
-              animate={{
-                opacity: 1,
-                y: isActive && !prefersReducedMotion ? -2 : 0,
-              }}
-              transition={
-                prefersReducedMotion
-                  ? { duration: 0 }
-                  : { type: 'spring' as const, stiffness: 260, damping: 30, mass: 0.8 }
-              }
             >
               <BlogPostVisual postId={post.id} compact />
               <div className="min-w-0">
+                <p className="page-eyebrow">{post.eyebrow}</p>
                 <button
                   type="button"
-                  className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+                  className="mt-3 block w-full text-left"
                   aria-expanded={isActive}
                   aria-controls={previewId}
                   onClick={() => togglePost(post.id)}
@@ -884,27 +853,27 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
                     id={titleId}
                     role="heading"
                     aria-level={2}
-                    className="blog-post-title block font-hand text-2xl font-normal leading-snug text-[var(--ink)] transition-colors group-hover:text-[var(--accent)]"
+                    className="blog-post-title block font-serif text-[1.75rem] font-normal leading-tight text-[var(--ink)]"
                   >
                     {post.title}
                   </span>
-                  <span className="mt-4 block max-w-3xl text-base leading-7 text-[var(--ink-muted)]">
+                  <span className="mt-3 block max-w-[62ch] text-[1.02rem] leading-relaxed text-[var(--ink-muted)]">
                     {post.summary}
                   </span>
                 </button>
                 <BlogPostPreview id={previewId} post={post} />
+                <Link
+                  to={`/blog/${post.id}`}
+                  aria-labelledby={titleId}
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-[var(--ink)] transition-colors hover:text-[var(--accent)]"
+                >
+                  <span>Read article</span>
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
+                    &rarr;
+                  </span>
+                </Link>
               </div>
-              <Link
-                to={`/blog/${post.id}`}
-                aria-labelledby={titleId}
-                className="inline-flex w-max items-center gap-2 text-sm font-medium text-[var(--ink-muted)] transition-all hover:translate-x-1 hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] sm:justify-self-end"
-              >
-                <span>Read article</span>
-                <span aria-hidden="true" className="text-lg font-light leading-none">
-                  &rarr;
-                </span>
-              </Link>
-            </motion.article>
+            </article>
           );
         })}
       </div>
@@ -917,49 +886,19 @@ export default function Blog() {
   const activePost = blogPosts.find((post) => post.id === postId);
 
   if (activePost) {
-    const usesLongFormNavigation = activePost.id === 'abel-ruffini-backwards';
-
     return (
-      <div className="min-h-screen text-[var(--ink)]">
-        <main
-          className={`mx-auto px-6 py-12 ${usesLongFormNavigation ? 'max-w-7xl' : 'max-w-5xl'}`}
+      <div className="space-y-10">
+        <Link
+          to="/blog"
+          className="inline-flex items-center gap-2 text-sm text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
         >
-          <div className="space-y-8">
-            <div className="flex items-center gap-3">
-              <Link
-                to="/blog"
-                aria-label="Back to blog"
-                title="Back to blog"
-                className="inline-flex h-8 w-8 shrink-0 items-center justify-center border border-[var(--rule)] bg-[var(--paper-elevated)] text-[var(--ink-muted)] shadow-[2px_2px_0_var(--shadow-rule)] transition-colors hover:border-[var(--rule-strong)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.8"
-                >
-                  <path d="m9 14-5-5 5-5" />
-                  <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
-                </svg>
-              </Link>
-              <ThemeToggle />
-            </div>
-            <BlogPostDetail post={activePost} />
-          </div>
-        </main>
+          <span aria-hidden="true">&larr;</span>
+          <span>Back to blog</span>
+        </Link>
+        <BlogPostDetail post={activePost} />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen text-[var(--ink)]">
-      <main className="mx-auto max-w-5xl px-6 py-12">
-        <BlogPostIndex posts={blogPosts} />
-      </main>
-    </div>
-  );
+  return <BlogPostIndex posts={blogPosts} />;
 }

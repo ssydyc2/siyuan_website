@@ -30,9 +30,9 @@ export default function App() {
             <Route path="books" element={<Books />} />
             <Route path="reading-list" element={<Books />} />
             <Route path="wealth-lab" element={<WealthLab />} />
+            <Route path="blog" element={<Blog />} />
+            <Route path="blog/:postId" element={<Blog />} />
           </Route>
-          <Route path="blog" element={<Blog />} />
-          <Route path="blog/:postId" element={<Blog />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

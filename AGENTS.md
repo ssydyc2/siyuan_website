@@ -6,8 +6,8 @@ This file provides guidance to Codex when working in this repository.
 
 This is Siyuan Song's personal website, built with Vite, React 19, TypeScript,
 Tailwind CSS v4, React Router, Motion, and KaTeX. It contains the home/about
-page, reading notes, blog posts, generated hero artwork, a Lean-backed math
-blog article, and an interactive Wealth Lab.
+page, reading notes, blog posts, a Lean-backed math blog article, and an
+interactive Wealth Lab.
 
 The production site is deployed with GitHub Pages at:
 
@@ -60,9 +60,9 @@ Routes:
 - `/blog/:postId` - Blog post detail page.
 - `/journey` - Legacy redirect to `/blog`.
 
-The home, reading, and wealth routes render inside `src/components/Layout.tsx`, which owns
-the shared header, avatar, navigation, and page outlet. The blog index/detail
-route renders through `src/pages/Blog.tsx` and owns its own blog layout.
+All routes render inside `src/components/Layout.tsx`, which owns the shared
+header (name, navigation, theme toggle) and page outlet. The long-form
+Abel-Ruffini post gets a wider `max-w-7xl` main column there.
 
 ## Important Files
 
@@ -70,15 +70,12 @@ route renders through `src/pages/Blog.tsx` and owns its own blog layout.
 src/
 ├── App.tsx                         # Router, basename, title updates, route map
 ├── main.tsx                        # React entry point
-├── index.css                       # Tailwind import, theme tokens, global styles, hero CSS
+├── index.css                       # Tailwind import, font/color tokens, global and Wealth Lab styles
 ├── assets/
-│   ├── avatars/                    # Header avatar assets
-│   ├── blog/                       # Blog card/detail images
-│   └── hero/                       # RPG-style hero scene assets and responsive variants
+│   └── blog/                       # Blog card/detail images
 ├── components/
-│   ├── Layout.tsx                  # Main site shell for home/reading/wealth pages
+│   ├── Layout.tsx                  # Main site shell: header, navigation, page outlet
 │   ├── MarkdownDocument.tsx        # Markdown renderer with KaTeX and proof/Lean blocks
-│   ├── RpgHeroScene.tsx            # Shared animated hero scene component
 │   ├── ThemeToggle.tsx             # Light/dark theme provider and toggle
 │   └── WealthChart.tsx             # Interactive portfolio balance chart
 ├── data/wealth-history.ts          # Offline 1996–2025 total returns and CPI sources
@@ -148,12 +145,16 @@ This verifies that every markdown `proof-lean` directive has a matching Lean
 ## Styling And UI
 
 Tailwind CSS v4 is configured through PostCSS. Most styling lives in component
-`className` strings, with shared theme tokens, global styles, and the RPG hero
-scene CSS in `src/index.css`.
+`className` strings, with shared theme tokens and global styles in `src/index.css`.
 
-The visual language is pixel/RPG inspired, with responsive hero artwork and
-light/dark theme support. When adding UI, match the existing component patterns,
-theme variables, border treatment, typography, and reduced-motion behavior.
+The visual language is editorial and minimal: Newsreader serif for titles and
+headings (`font-serif`), Inter for body and UI (`font-sans`), JetBrains Mono for
+code and Lean (`font-mono`), and a Song serif stack for Chinese (`font-zh`), all
+loaded from `@fontsource-variable/*` in `src/main.tsx`. Color comes from the
+`--paper`, `--ink`, `--rule`, and single `--accent` tokens, with light/dark values
+on `:root` and `:root.dark`. Use hairline borders and `--radius` instead of heavy
+shadows, and the shared `.page-title`, `.page-lede`, `.page-eyebrow`, `.tag`, and
+`.text-link` classes for page openers and labels. Respect reduced-motion behavior.
 
 ## Pull Request Workflow
 

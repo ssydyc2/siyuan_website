@@ -467,7 +467,7 @@ function renderInline(nodes: InlineNode[]): ReactNode {
 
     if (node.type === 'code') {
       return (
-        <code key={index} className="border border-[var(--rule)] bg-[var(--paper-muted)] px-1.5 py-0.5 text-[0.92em] text-[var(--ink-soft)]">
+        <code key={index} className="rounded bg-[var(--paper-muted)] px-1.5 py-0.5 font-mono text-[0.86em] text-[var(--ink-soft)]">
           {node.value}
         </code>
       );
@@ -507,7 +507,7 @@ function renderInline(nodes: InlineNode[]): ReactNode {
         href={node.href}
         target={isSamePageAnchor ? undefined : '_blank'}
         rel={isSamePageAnchor ? undefined : 'noopener noreferrer'}
-        className="font-medium text-[var(--accent)] underline decoration-[var(--accent-decoration)] underline-offset-2 transition-colors hover:text-[var(--accent-strong)]"
+        className="text-link"
       >
         {renderInline(node.children)}
       </a>
@@ -535,7 +535,7 @@ function MarkdownList({
   return (
     <Tag className={listClass}>
       {block.items.map((item, index) => (
-        <li key={`${item.text}-${index}`} className="leading-7 marker:text-[var(--secondary-accent)]">
+        <li key={`${item.text}-${index}`} className="leading-7 marker:text-[var(--ink-faint)]">
           <span className={item.checked === undefined ? '' : 'flex gap-3'}>
             {item.checked !== undefined && (
               <input
@@ -568,7 +568,7 @@ function MathBlock({ value }: { value: string }) {
     .filter(Boolean);
 
   return (
-    <div className="my-6 overflow-x-auto border-y border-[var(--rule-strong)] bg-[var(--paper-muted)] px-4 py-5">
+    <div className="my-8 overflow-x-auto rounded-[var(--radius)] bg-[var(--paper-muted)] px-5 py-6">
       <div className="min-w-max space-y-5 text-[var(--ink)]">
         {formulas.map((formula, index) => (
           <div
@@ -588,7 +588,7 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
 
     if (block.level === 1) {
       return (
-        <h1 id={headingId} className="mb-5 scroll-mt-8 border-b border-[var(--rule-strong)] pb-5 font-hand text-4xl font-normal leading-tight text-[var(--ink)]">
+        <h1 id={headingId} className="page-title mb-8 scroll-mt-8 border-b border-[var(--rule)] pb-8">
           {content}
         </h1>
       );
@@ -596,25 +596,25 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
 
     if (block.level === 2) {
       return (
-        <h2 id={headingId} className="mt-11 scroll-mt-8 border-b border-[var(--rule-strong)] pb-3 font-serif text-2xl font-normal text-[var(--ink)]">
+        <h2 id={headingId} className="mt-16 mb-2 scroll-mt-8 font-serif text-[2rem] font-normal leading-tight tracking-[-0.015em] text-[var(--ink)]">
           {content}
         </h2>
       );
     }
 
     if (block.level === 3) {
-      return <h3 id={headingId} className="mt-8 scroll-mt-8 text-xl font-medium text-[var(--ink)]">{content}</h3>;
+      return <h3 id={headingId} className="mt-10 scroll-mt-8 font-serif text-[1.45rem] font-normal leading-snug text-[var(--ink)]">{content}</h3>;
     }
 
-    return <h4 id={headingId} className="mt-7 scroll-mt-8 text-lg font-medium text-[var(--ink)]">{content}</h4>;
+    return <h4 id={headingId} className="mt-8 scroll-mt-8 text-base font-semibold text-[var(--ink)]">{content}</h4>;
   }
 
   if (block.type === 'paragraph') {
-    return <p className="my-5 text-base leading-8 text-[var(--ink-muted)]">{renderInline(parseInline(block.text))}</p>;
+    return <p className="my-5 text-[1.0625rem] leading-[1.8] text-[var(--ink-soft)]">{renderInline(parseInline(block.text))}</p>;
   }
 
   if (block.type === 'hr') {
-    return <hr className="my-9 border-[var(--rule-strong)]" />;
+    return <hr className="my-12 border-[var(--rule)]" />;
   }
 
   if (block.type === 'code') {
@@ -623,7 +623,7 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
     }
 
     return (
-      <pre className="my-6 overflow-x-auto border border-[var(--rule-strong)] bg-[var(--paper-muted)] px-4 py-5 text-sm leading-7 text-[var(--ink-soft)]">
+      <pre className="my-8 overflow-x-auto rounded-[var(--radius)] bg-[var(--paper-muted)] px-5 py-5 font-mono text-[0.82rem] leading-7 text-[var(--ink-soft)]">
         <code>{block.value}</code>
       </pre>
     );
@@ -637,10 +637,10 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
     const leanCode = leanRegions.get(block.regionId);
 
     return (
-      <section className="my-9 overflow-hidden border border-[var(--rule-strong)] bg-[var(--paper-elevated)] shadow-[4px_5px_0_var(--rpg-shadow)]">
+      <section className="my-10 overflow-hidden rounded-[var(--radius)] border border-[var(--rule)] bg-[var(--paper-elevated)]">
         <div className="grid lg:grid-cols-2">
-          <div className="min-w-0 border-b border-[var(--rule-strong)] lg:border-b-0 lg:border-r">
-            <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--accent)]">
+          <div className="min-w-0 border-b border-[var(--rule)] lg:border-b-0 lg:border-r">
+            <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-5 py-2.5 text-[0.7rem] font-medium uppercase tracking-[0.12em] text-[var(--accent)]">
               Mathematics
             </div>
             <div className="px-5 py-2 sm:px-6">
@@ -654,17 +654,17 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
             </div>
           </div>
           <div className="min-w-0">
-            <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+            <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-5 py-2.5 text-[0.7rem] font-medium uppercase tracking-[0.12em] text-[var(--ink-faint)]">
               Lean 4 Code · {block.regionId}
             </div>
             {leanCode ? (
               <>
-                <pre className="m-0 max-h-[38rem] overflow-auto bg-[color-mix(in_srgb,var(--paper-muted)_70%,transparent)] px-5 py-5 text-[0.78rem] leading-6 text-[var(--ink-soft)]">
+                <pre className="m-0 max-h-[38rem] overflow-auto bg-[color-mix(in_srgb,var(--paper-muted)_55%,transparent)] px-5 py-5 font-mono text-[0.76rem] leading-6 text-[var(--ink-soft)]">
                   <code>{leanCode}</code>
                 </pre>
                 {block.leanExplanation.length > 0 && (
                   <div className="border-t border-[var(--rule)]">
-                    <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+                    <div className="border-b border-[var(--rule)] bg-[var(--paper-muted)] px-5 py-2.5 text-[0.7rem] font-medium uppercase tracking-[0.12em] text-[var(--ink-faint)]">
                       Lean 4 Explanation
                     </div>
                     <div className="px-5 py-2 sm:px-6">
@@ -680,7 +680,7 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
                 )}
               </>
             ) : (
-              <p className="m-5 border border-[var(--rule)] bg-[var(--paper-muted)] p-4 font-mono text-sm text-[var(--accent-strong)]">
+              <p className="m-5 rounded-lg bg-[var(--paper-muted)] p-4 font-mono text-sm text-[var(--accent-strong)]">
                 Missing Lean region: {block.regionId}
               </p>
             )}
@@ -692,8 +692,8 @@ function MarkdownBlock({ block, leanRegions }: { block: Block; leanRegions: Map<
 
   return (
     <div className="my-6 overflow-x-auto">
-      <table className="min-w-full border-y border-[var(--rule-strong)] bg-[var(--paper-elevated)] text-left text-sm">
-        <thead className="bg-[var(--paper-muted)] font-mono text-xs uppercase tracking-[0.12em] text-[var(--ink-soft)]">
+      <table className="min-w-full border-y border-[var(--rule-strong)] text-left text-sm">
+        <thead className="text-xs uppercase tracking-[0.08em] text-[var(--ink-muted)]">
           <tr>
             {block.headers.map((header) => (
               <th key={header} className="border-b border-[var(--rule)] px-4 py-3 font-medium">
@@ -954,14 +954,14 @@ function ReadingNavigation({
   return (
     <>
       <aside className="hidden self-start xl:sticky xl:top-6 xl:block" aria-label="Article outline">
-        <div className="max-h-[calc(100vh-3rem)] overflow-y-auto border-l border-[var(--rule)] py-1 pl-5 pr-2">
+        <div className="max-h-[calc(100vh-3rem)] overflow-y-auto py-1 pr-2">
           <div className="mb-4">
-            <div className="flex items-center justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+            <div className="page-eyebrow flex items-center justify-between gap-3 tabular-nums">
               <span>Reading</span>
               <span>{progress}%</span>
             </div>
             <div
-              className="mt-2 h-1 overflow-hidden bg-[var(--rule)]"
+              className="mt-2 h-0.5 overflow-hidden rounded-full bg-[var(--rule)]"
               role="progressbar"
               aria-label="Article reading progress"
               aria-valuemin={0}
@@ -984,15 +984,15 @@ function ReadingNavigation({
         </div>
       </aside>
 
-      <div className="sticky top-0 z-30 -mx-6 mb-6 border-y border-[var(--rule)] bg-[var(--paper)]/95 px-6 py-2 shadow-[0_8px_22px_color-mix(in_srgb,var(--paper)_72%,transparent)] backdrop-blur xl:hidden">
+      <div className="sticky top-0 z-30 -mx-6 mb-8 border-b border-[var(--rule)] bg-[var(--paper)]/90 px-6 py-2.5 backdrop-blur-md xl:hidden">
         <button
           type="button"
           aria-expanded={mobileOpen}
           aria-controls="article-mobile-outline"
           onClick={() => setMobileOpen((open) => !open)}
-          className="flex w-full items-center gap-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+          className="flex w-full items-center gap-3 text-left"
         >
-          <span className="font-mono text-xs text-[var(--accent)]">{progress}%</span>
+          <span className="text-xs font-medium tabular-nums text-[var(--accent)]">{progress}%</span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-medium text-[var(--ink)]">
               {activeSection ? renderInline(parseInline(activeSection.title)) : 'Article outline'}
@@ -1008,11 +1008,11 @@ function ReadingNavigation({
               </span>
             )}
           </span>
-          <span aria-hidden="true" className="font-mono text-sm text-[var(--ink-faint)]">
+          <span aria-hidden="true" className="text-sm text-[var(--ink-faint)]">
             {mobileOpen ? '−' : '+'}
           </span>
         </button>
-        <div className="mt-2 h-1 overflow-hidden bg-[var(--rule)]">
+        <div className="mt-2 h-0.5 overflow-hidden rounded-full bg-[var(--rule)]">
           <div
             className="h-full bg-[var(--accent)] transition-[width] duration-150 motion-reduce:transition-none"
             style={{ width: `${progress}%` }}
@@ -1094,7 +1094,7 @@ export default function MarkdownDocument({
   );
 
   const article = (
-    <article ref={articleRef} className="min-w-0 text-[16px]">
+    <article ref={articleRef} className="min-w-0">
       {blocks.map((block, index) => (
         <div
           key={index}

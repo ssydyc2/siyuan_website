@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
-import RpgHeroScene from '../components/RpgHeroScene';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 type ReadingTopic = 'self-improvement' | 'wealth' | 'happiness';
 type ReadingFilter = 'all' | ReadingTopic;
@@ -72,10 +71,6 @@ const books: Book[] = [
   },
 ];
 
-function ReadingHeroScene() {
-  return <RpgHeroScene variant="reading" />;
-}
-
 function TopicButton({
   filter,
   isActive,
@@ -87,33 +82,15 @@ function TopicButton({
   onSelect: (filter: ReadingFilter) => void;
   variant?: 'rail' | 'chip';
 }) {
-  const baseClassName =
-    'font-mono text-xs uppercase tracking-[0.14em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]';
-  const variantClassName =
-    variant === 'chip'
-      ? 'inline-flex h-10 shrink-0 items-center border px-3'
-      : 'block w-full border-0 px-0 py-2 text-left';
-
   return (
-    <motion.button
+    <button
       type="button"
-      className={`${baseClassName} ${variantClassName}`}
+      className={`reading-topic capitalize ${variant === 'chip' ? 'reading-topic--chip' : ''}`}
       onClick={() => onSelect(filter)}
       aria-pressed={isActive}
-      animate={{
-        color: isActive ? 'var(--accent)' : 'var(--ink-faint)',
-        opacity: isActive ? 1 : 0.52,
-        x: variant === 'rail' && isActive ? 2 : 0,
-        borderColor: isActive ? 'var(--accent)' : 'var(--rule)',
-        backgroundColor: isActive ? 'color-mix(in srgb, var(--accent-soft) 42%, transparent)' : 'transparent'
-      }}
-      transition={{ duration: 0.22, ease: 'easeOut' }}
     >
-      <span className="inline-flex min-w-0 items-center gap-2">
-        <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-current" />
-        <span className="truncate">{filter}</span>
-      </span>
-    </motion.button>
+      {filter}
+    </button>
   );
 }
 
@@ -125,25 +102,17 @@ function ReadingTopicsRail({
   onFilterSelect: (filter: ReadingFilter) => void;
 }) {
   return (
-    <aside className="reading-topics hidden min-w-0 lg:sticky lg:top-8 lg:block lg:self-start" aria-label="Reading topics">
-      <div className="max-h-[calc(100vh-5rem)] min-w-0 overflow-y-auto border-l border-[var(--rule)] py-1 pl-5">
-        <p className="mb-3 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
-          Topics
-        </p>
-        <div className="space-y-2">
-          {readingFilters.map((filter) => {
-            const isActive = activeFilter === filter;
-
-            return (
-              <TopicButton
-                key={filter}
-                filter={filter}
-                isActive={isActive}
-                onSelect={onFilterSelect}
-              />
-            );
-          })}
-        </div>
+    <aside className="hidden min-w-0 lg:sticky lg:top-10 lg:block lg:self-start" aria-label="Reading topics">
+      <p className="page-eyebrow mb-3 border-t border-[var(--rule)] pt-4">Topics</p>
+      <div className="space-y-0.5">
+        {readingFilters.map((filter) => (
+          <TopicButton
+            key={filter}
+            filter={filter}
+            isActive={activeFilter === filter}
+            onSelect={onFilterSelect}
+          />
+        ))}
       </div>
     </aside>
   );
@@ -157,11 +126,9 @@ function MobileTopicControls({
   onFilterSelect: (filter: ReadingFilter) => void;
 }) {
   return (
-    <div className="sticky top-0 z-20 -mx-6 border-y border-[var(--rule)] bg-[var(--paper)]/95 px-6 py-3 shadow-[0_8px_22px_color-mix(in_srgb,var(--paper)_72%,transparent)] backdrop-blur lg:hidden">
-      <p className="mb-2 min-w-0 truncate font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-faint)]">
-        Topics
-      </p>
-      <div className="reading-topic-strip flex max-w-full gap-2 overflow-x-auto pb-1">
+    <div className="lg:hidden">
+      <p className="page-eyebrow mb-3">Topics</p>
+      <div className="reading-topic-strip -mx-6 flex max-w-[100vw] gap-2 overflow-x-auto px-6 pb-1">
         {readingFilters.map((filter) => (
           <TopicButton
             key={filter}
@@ -176,6 +143,19 @@ function MobileTopicControls({
   );
 }
 
+function BookTitle({ title, titleZh }: { title: string; titleZh?: string }) {
+  return (
+    <>
+      <span className="block">{title}</span>
+      {titleZh ? (
+        <span lang="zh" className="mt-1.5 block font-zh text-lg text-[var(--ink-muted)]">
+          {titleZh}
+        </span>
+      ) : null}
+    </>
+  );
+}
+
 function BookCard({
   book,
   reduceMotion
@@ -183,68 +163,45 @@ function BookCard({
   book: Book;
   reduceMotion: boolean;
 }) {
-  const cardTransition = reduceMotion
-    ? { duration: 0 }
-    : { type: 'spring' as const, stiffness: 260, damping: 30, mass: 0.75 };
-
   return (
     <motion.article
-      className="rpg-panel reading-book-card block w-full border border-[var(--rule)] bg-[var(--paper-elevated)] p-6 text-left"
-      animate={{
-        opacity: 1,
-        scale: 1
-      }}
-      transition={cardTransition}
-      whileHover={reduceMotion ? undefined : { y: -2 }}
+      layout={!reduceMotion}
+      className="reading-book-card grid gap-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-10"
+      initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={reduceMotion ? undefined : { opacity: 0 }}
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
     >
-      <h2 className="break-words font-hand-zh text-2xl font-normal leading-snug text-[var(--ink)]">
-        {Array.isArray(book.title)
-          ? book.title.map((title, index) => {
-              const titleZh = Array.isArray(book.titleZh) ? book.titleZh[index] : undefined;
-
-              return (
-                <span key={title} className={index > 0 ? 'mt-3 block' : 'block'}>
-                  <span className="block">{title}</span>
-                  {titleZh ? (
-                    <span
-                      lang="zh"
-                      className="mt-1 block text-2xl leading-snug text-[var(--ink-soft)] sm:text-3xl"
-                    >
-                      {titleZh}
-                    </span>
-                  ) : null}
+      <div className="min-w-0">
+        <h2 className="break-words font-serif text-2xl font-normal leading-tight text-[var(--ink)]">
+          {Array.isArray(book.title)
+            ? book.title.map((title, index) => (
+                <span key={title} className={index > 0 ? 'mt-4 block' : 'block'}>
+                  <BookTitle
+                    title={title}
+                    titleZh={Array.isArray(book.titleZh) ? book.titleZh[index] : undefined}
+                  />
                 </span>
-              );
-            })
-          : (
-            <>
-              <span className="block">{book.title}</span>
-              {typeof book.titleZh === 'string' ? (
-                <span lang="zh" className="mt-1 block text-2xl leading-snug text-[var(--ink-soft)] sm:text-3xl">
-                  {book.titleZh}
-                </span>
-              ) : null}
-            </>
-          )}
-      </h2>
-      <p className="mt-2 font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">
-        By {book.author}
-      </p>
-      <div className="mt-4 flex flex-wrap gap-2" aria-label="Book topics">
-        {book.topics.map((topic) => (
-          <span
-            key={topic}
-            className="border border-[var(--rule)] bg-[var(--accent-soft)] px-2.5 py-1 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[var(--accent)]"
-          >
-            {topic}
-          </span>
-        ))}
+              ))
+            : (
+              <BookTitle
+                title={book.title}
+                titleZh={typeof book.titleZh === 'string' ? book.titleZh : undefined}
+              />
+            )}
+        </h2>
+        <p className="mt-3 text-sm text-[var(--ink-muted)]">By {book.author}</p>
+        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Book topics">
+          {book.topics.map((topic) => (
+            <li key={topic} className="tag capitalize">
+              {topic}
+            </li>
+          ))}
+        </ul>
       </div>
-      <div className="mt-4 border-l-2 border-[var(--accent)] pl-4">
-        <p className="mb-1 font-mono text-xs uppercase tracking-[0.16em] text-[var(--ink-faint)]">
-          My Comment
-        </p>
-        <p className="leading-relaxed text-[var(--ink-muted)]">{book.comment}</p>
+      <div className="min-w-0">
+        <p className="page-eyebrow mb-2">My Comment</p>
+        <p className="max-w-[62ch] text-[1.02rem] leading-[1.75] text-[var(--ink-soft)]">{book.comment}</p>
       </div>
     </motion.article>
   );
@@ -259,11 +216,10 @@ export default function Books() {
     : books.filter((book) => book.topics.includes(activeFilter));
 
   return (
-    <div className="space-y-8">
-      <header>
-        <ReadingHeroScene />
-        <h1 className="rpg-page-title font-hand text-3xl font-normal text-[var(--ink)]">Reading List</h1>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--ink-muted)]">
+    <div className="space-y-14">
+      <header className="page-enter">
+        <h1 className="page-title">Reading List</h1>
+        <p className="page-lede mt-6">
           A personal shelf for self-improvement, wealth, and happiness.
         </p>
       </header>
@@ -273,19 +229,21 @@ export default function Books() {
         onFilterSelect={setActiveFilter}
       />
 
-      <div className="grid gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:items-start">
+      <div className="page-enter page-enter--delay grid gap-12 lg:grid-cols-[10rem_minmax(0,1fr)] lg:items-start">
         <ReadingTopicsRail
           activeFilter={activeFilter}
           onFilterSelect={setActiveFilter}
         />
-        <div className="min-w-0 space-y-4">
-          {filteredBooks.map((book) => (
-            <BookCard
-              key={book.id}
-              book={book}
-              reduceMotion={prefersReducedMotion}
-            />
-          ))}
+        <div className="min-w-0">
+          <AnimatePresence mode="popLayout" initial={false}>
+            {filteredBooks.map((book) => (
+              <BookCard
+                key={book.id}
+                book={book}
+                reduceMotion={prefersReducedMotion}
+              />
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>
