@@ -48,7 +48,7 @@ const books: Book[] = [
     titleZh: '高胜算决策',
     author: 'Annie Duke',
     comment:
-      "Changed how I see uncertainty and make decisions. Its best advice: 1. Treat decisions as bets and challenge binary right-or-wrong thinking. 2. Use outcomes as opportunities to learn. 3. Welcome dissent to seek information rather than good results. 4. Focus on what we can control, and don't complain about luck. 5. Use the 10-10-10 principle: ask how a decision will affect you in 10 minutes, 10 months, and 10 years, and weigh the long-term impact most.",
+      "Changed how I see uncertainty and make decisions. Its best advice: 1. Treat decisions as bets and challenge binary right-or-wrong thinking. 2. Use outcomes as opportunities to learn. 3. Welcome dissent to seek information rather than good results. 4. Focus on what we can control, and don't complain about luck. 5. Use the 10-10-10 principle: ask how a decision will affect you in 10 minutes, 10 months, and 10 years, and weigh the long-term impact most. 6. Avoid tilt: don't let a recent bad (or good) outcome hijack your emotions and drive the next decision; step back and reset before deciding.",
     topics: ['self-improvement'],
   },
   {
