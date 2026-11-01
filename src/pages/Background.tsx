@@ -225,10 +225,9 @@ export default function Background() {
           <p className="page-lede">
             I earned my Ph.D. from the University of Southern California, where my research
             focused on theoretical optimization problems and algorithmic methods. I have 8
-            years of industry experience spanning product-facing machine learning models and AI
-            platform infrastructure, including recommendation systems, ads models, notification
-            optimization, and recent work on LLM post-training, serving frameworks, and
-            performance optimization.
+            years of industry experience spanning product-facing machine learning and LLM work,
+            plus infrastructure, including recommendation systems, ads models, notification
+            optimization, and AI safety.
           </p>
           <p className="home-contact">
             <span className="page-eyebrow">Contact</span>
