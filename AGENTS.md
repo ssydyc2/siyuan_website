@@ -53,7 +53,8 @@ and routes.
 
 Routes:
 
-- `/` - About/home page with the professional timeline.
+- `/` - About/home page: Summary and Experience (work + education) chapters
+  that reveal on scroll over a fixed React Three Fiber loss-surface scene.
 - `/reading-list` and `/books` - Reading list page.
 - `/wealth-lab` - Withdrawal calculator with fixed returns or historical replay.
 - `/blog` - Blog index.
@@ -74,6 +75,10 @@ src/
 ├── assets/
 │   └── blog/                       # Blog card/detail images
 ├── components/
+│   ├── about/
+│   │   ├── LossSurfaceScene.tsx    # Lazy-loaded R3F canvas: scroll-driven camera over the loss surface
+│   │   ├── lossSurface.ts          # Surface, contour, and gradient-descent path geometry
+│   │   └── SceneFallback.tsx       # Static 2D figure when WebGL is unavailable
 │   ├── Layout.tsx                  # Main site shell: header, navigation, page outlet
 │   ├── MarkdownDocument.tsx        # Markdown renderer with KaTeX and proof/Lean blocks
 │   ├── ThemeToggle.tsx             # Light/dark theme provider and toggle
@@ -155,6 +160,15 @@ loaded from `@fontsource-variable/*` in `src/main.tsx`. Color comes from the
 on `:root` and `:root.dark`. Use hairline borders and `--radius` instead of heavy
 shadows, and the shared `.page-title`, `.page-lede`, `.page-eyebrow`, `.tag`, and
 `.text-link` classes for page openers and labels. Respect reduced-motion behavior.
+
+The About page 3D scene uses `three` and `@react-three/fiber` (thick lines
+use Three's own `Line2`; drei is not installed).
+It is lazy-loaded so Three.js stays out of the main bundle. Scroll progress
+comes from Motion's `useScroll` on native page scroll, not an
+inner scroll container. Scene colors are read from the CSS tokens and refresh when the
+theme class changes. Reduced motion renders the scene on demand, with no damping
+or idle rotation. The fixed canvas lives inside `<main>`, so `.site-header`
+stays at a higher z-index and the canvas never takes pointer events.
 
 ## Pull Request Workflow
 
