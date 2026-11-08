@@ -41,7 +41,7 @@ export default function Layout() {
           </nav>
         </div>
       </header>
-      <main className={`mx-auto px-6 pb-24 pt-14 sm:pt-20 ${containerWidth}`}>
+      <main className={`site-main mx-auto px-6 pb-24 pt-14 sm:pt-20 ${containerWidth}`}>
         <Outlet />
       </main>
     </div>

@@ -97,8 +97,19 @@ a {
 }
 
 /* Site chrome */
+/* Sticky header; stays above <main> (and the About page's fixed 3D canvas inside it). */
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+html {
+  scroll-padding-top: 6.5rem;
 }
 
 .site-nav {
@@ -309,16 +320,90 @@ a {
   line-height: 1.5;
 }
 
-/* Homepage: the lede beside one plate. */
-.home {
-  display: grid;
-  gap: 4.25rem;
+/* Homepage: three scroll chapters over a fixed 3D loss surface. */
+/* The scene lives inside <main>; .site-header (z-index 20) sits above main's whole layer. */
+.site-main {
+  position: relative;
+  z-index: 1;
 }
 
-.home-spread {
+.about-scene,
+.about-scene * {
+  pointer-events: none;
+}
+
+.about-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  animation: about-scene-in 1.2s var(--ease-out) both;
+}
+
+@keyframes about-scene-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.about-story {
   display: grid;
-  gap: 2.25rem;
-  align-items: end;
+}
+
+.about-chapter {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
+  padding: 4rem 0;
+}
+
+.about-chapter--summary {
+  min-height: calc(100svh - 9rem);
+  align-items: flex-start;
+  padding-top: 0;
+}
+
+.about-chapter__content {
+  width: 100%;
+  max-width: 36rem;
+}
+
+.about-scroll-hint {
+  margin-top: 4.5rem;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.about-fallback {
+  margin: 3rem 0 0;
+  max-width: 24rem;
+}
+
+.about-fallback svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-elevated);
+}
+
+@media (max-width: 799px) {
+  .about-scene {
+    opacity: 0.4;
+  }
+
+  .about-chapter:not(.about-chapter--summary) .about-chapter__content {
+    padding: 0.5rem 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: blur(6px);
+  }
 }
 
 .home-contact {
@@ -329,28 +414,8 @@ a {
   margin-top: 1.75rem;
 }
 
-.home-plate {
-  margin: 0;
-}
-
-.home-plate svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-elevated);
-}
-
 .home-kicker {
   margin-bottom: 0.85rem;
-}
-
-@media (min-width: 800px) {
-  .home-spread {
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 19.5rem);
-    gap: 3.5rem;
-  }
 }
 
 /* Reading list */

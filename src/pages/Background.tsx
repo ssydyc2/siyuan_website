@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { motion, useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
+import SceneFallback from '../components/about/SceneFallback';
+
+const LossSurfaceScene = lazy(() => import('../components/about/LossSurfaceScene'));
 
 interface TimelineItem {
   period: string;
@@ -47,64 +50,17 @@ const timelineData: TimelineItem[] = [
   }
 ];
 
-function ConvexDescentFigure() {
-  return (
-    <svg viewBox="0 0 420 340" role="img" aria-labelledby="home-figure-title">
-      <title id="home-figure-title">Level curves of a convex function, with one descent drawn in</title>
-      <text
-        x="24"
-        y="34"
-        fill="var(--ink-faint)"
-        fontFamily="var(--font-mono)"
-        fontSize="11"
-        letterSpacing="0.14em"
-      >
-        FIG. 1
-      </text>
-      <text
-        x="396"
-        y="34"
-        fill="var(--ink-faint)"
-        fontFamily="var(--font-mono)"
-        fontSize="12"
-        textAnchor="end"
-      >
-        f(x, y)
-      </text>
-      <line x1="24" y1="52" x2="396" y2="52" stroke="var(--rule)" />
-      <g fill="none" transform="rotate(-22 214 178)">
-        <ellipse cx="214" cy="178" rx="136" ry="88" stroke="var(--rule-strong)" strokeWidth="1.25" />
-        <ellipse cx="214" cy="178" rx="90" ry="58" stroke="var(--ink-faint)" strokeWidth="1.25" />
-        <ellipse cx="214" cy="178" rx="46" ry="30" fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth="1.35" />
-      </g>
-      <polyline
-        points="72,96 108,116 140,134 168,150 192,162 214,178"
-        fill="none"
-        stroke="var(--accent)"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <g fill="var(--paper-elevated)" stroke="var(--accent)" strokeWidth="1.5">
-        <circle cx="72" cy="96" r="3.25" />
-        <circle cx="108" cy="116" r="3.25" />
-        <circle cx="140" cy="134" r="3.25" />
-        <circle cx="168" cy="150" r="3.25" />
-        <circle cx="192" cy="162" r="3.25" />
-      </g>
-      <circle cx="214" cy="178" r="4" fill="var(--accent)" />
-      <text
-        x="228"
-        y="168"
-        fill="var(--ink-muted)"
-        fontFamily="var(--font-serif)"
-        fontSize="15"
-        fontStyle="italic"
-      >
-        x*
-      </text>
-    </svg>
-  );
+function supportsWebGL() {
+  if (typeof document === 'undefined') {
+    return false;
+  }
+
+  try {
+    const canvas = document.createElement('canvas');
+    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'));
+  } catch {
+    return false;
+  }
 }
 
 function TimelineEntry({
@@ -153,10 +109,39 @@ function TimelineEntry({
   );
 }
 
+function Chapter({
+  labelledBy,
+  reduceMotion,
+  className = '',
+  children
+}: {
+  labelledBy: string;
+  reduceMotion: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section aria-labelledby={labelledBy} className={`about-chapter ${className}`}>
+      <motion.div
+        className="about-chapter__content"
+        initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {children}
+      </motion.div>
+    </section>
+  );
+}
+
 export default function Background() {
   const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
-  const reduceMotion = useReducedMotion();
+  const [hasWebGL] = useState(supportsWebGL);
+  const reduceMotion = useReducedMotion() ?? false;
+  const storyRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
+  const { scrollYProgress } = useScroll({ target: storyRef, offset: ['start start', 'end end'] });
   const timelineRefs = useRef<Array<HTMLLIElement | null>>([]);
 
   const updateActiveTimelineItem = useCallback(() => {
@@ -215,35 +200,40 @@ export default function Background() {
   }, [reduceMotion]);
 
   return (
-    <div className="home">
-      <header className="page-enter">
-        <h1 className="page-title">About Me</h1>
-      </header>
+    <div ref={storyRef} className="about-story">
+      {hasWebGL && (
+        <Suspense fallback={null}>
+          <LossSurfaceScene progress={scrollYProgress} reduceMotion={reduceMotion} />
+        </Suspense>
+      )}
 
-      <section className="home-spread page-enter page-enter--delay">
-        <div>
-          <p className="page-lede">
-            I earned my Ph.D. from the University of Southern California, where my research
-            focused on theoretical optimization problems and algorithmic methods. I have 8
-            years of industry experience spanning product-facing machine learning and LLM work,
-            plus infrastructure, including recommendation systems, ads models, notification
-            optimization, and AI safety.
+      <Chapter labelledBy="about-heading" reduceMotion={reduceMotion} className="about-chapter--summary">
+        <p className="page-eyebrow">Summary</p>
+        <h1 id="about-heading" className="page-title mt-3">About Me</h1>
+        <p className="page-lede mt-8">
+          I earned my Ph.D. from the University of Southern California, where my research
+          focused on theoretical optimization problems and algorithmic methods. I have 8
+          years of industry experience spanning product-facing machine learning and LLM work,
+          plus infrastructure, including recommendation systems, ads models, notification
+          optimization, and AI safety.
+        </p>
+        <p className="home-contact">
+          <span className="page-eyebrow">Contact</span>
+          <a href="mailto:ssydyc@gmail.com" className="text-link text-[0.95rem]">
+            ssydyc@gmail.com
+          </a>
+        </p>
+        {!hasWebGL && <SceneFallback />}
+        {hasWebGL && (
+          <p className="about-scroll-hint" aria-hidden="true">
+            Scroll to descend
           </p>
-          <p className="home-contact">
-            <span className="page-eyebrow">Contact</span>
-            <a href="mailto:ssydyc@gmail.com" className="text-link text-[0.95rem]">
-              ssydyc@gmail.com
-            </a>
-          </p>
-        </div>
-        <figure className="home-plate">
-          <ConvexDescentFigure />
-        </figure>
-      </section>
+        )}
+      </Chapter>
 
-      <section aria-labelledby="experience-heading">
+      <Chapter labelledBy="experience-heading" reduceMotion={reduceMotion}>
         <h2 id="experience-heading" className="page-eyebrow home-kicker">Experience</h2>
-        <ol className="page-enter page-enter--delay">
+        <ol>
           {timelineData.map((item, index) => (
             <TimelineEntry
               key={index}
@@ -256,7 +246,7 @@ export default function Background() {
             />
           ))}
         </ol>
-      </section>
+      </Chapter>
     </div>
   );
 }
