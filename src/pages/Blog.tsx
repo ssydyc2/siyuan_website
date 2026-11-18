@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { QuinticPlate, RolloutTrainPlate, WealthPlate } from '../components/BlogFigures';
 import WealthLab from './WealthLab';
@@ -520,6 +521,60 @@ function getPhaseDisplayLabel(phase: Phase, index: number, phases: Phase[]) {
   return phase.label ?? `Phase ${getPhaseNumber(phases, index)}`;
 }
 
+function getBlogPreviewItems(post: BlogPost): { label: string; title: string; summary: string }[] {
+  if (post.phases.length > 0) {
+    return post.phases.map((phase, index) => ({
+      label: getPhaseDisplayLabel(phase, index, post.phases),
+      title: phase.title,
+      summary: phase.summary,
+    }));
+  }
+
+  if (post.topThree.length > 0) {
+    return post.topThree.slice(0, 3).map((item, index) => ({
+      label: `Note ${index + 1}`,
+      title: item,
+      summary: '',
+    }));
+  }
+
+  if (post.readingChecklist.length > 0) {
+    return post.readingChecklist.slice(0, 3).map((item, index) => ({
+      label: `Check ${index + 1}`,
+      title: item,
+      summary: '',
+    }));
+  }
+
+  return [{ label: 'Overview', title: post.summary, summary: '' }];
+}
+
+function BlogPostPreview({ id, post }: { id: string; post: BlogPost }) {
+  const previewItems = getBlogPreviewItems(post);
+
+  return (
+    <div id={id} className="blog-post-preview" aria-label={`${post.title} preview`}>
+      <p className="text-xs font-medium text-[var(--ink-faint)]">Reading path</p>
+      <ol className="blog-post-preview__list">
+        {previewItems.map((item) => (
+          <li key={`${item.label}-${item.title}`} className="blog-post-preview__item">
+            <span className="blog-post-preview__marker" aria-hidden="true" />
+            <div className="min-w-0">
+              <span className="text-xs font-medium text-[var(--ink-faint)]">
+                {item.label}
+              </span>
+              <p className="mt-1 text-sm font-medium leading-5 text-[var(--ink)]">{item.title}</p>
+              {item.summary && (
+                <p className="mt-1 text-sm leading-6 text-[var(--ink-muted)]">{item.summary}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 function ResourceCard({ resource }: { resource: Resource }) {
   return (
     <article className="border-b border-[var(--rule)] py-7 last:border-b-0">
@@ -774,6 +829,12 @@ function BlogPostDetail({ post }: { post: BlogPost }) {
 }
 
 function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
+  const [expandedPostId, setExpandedPostId] = useState<string | null>(null);
+
+  const togglePost = (postId: string) => {
+    setExpandedPostId((current) => (current === postId ? null : postId));
+  };
+
   return (
     <div className="space-y-14">
       <header className="page-enter">
@@ -790,27 +851,60 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
 
       <div className="page-enter page-enter--delay">
         {posts.map((post) => {
+          const isExpandable = post.id !== 'wealth-lab';
+          const isActive = isExpandable && expandedPostId === post.id;
+          const previewId = `blog-preview-${post.id}`;
           const titleId = `blog-title-${post.id}`;
 
           return (
             <article
               key={post.id}
               className="blog-post-list__item group grid gap-6 py-10 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-10"
+              data-active={isActive}
             >
               <BlogPostVisual postId={post.id} />
               <div className="min-w-0">
                 <p className="page-eyebrow">{post.eyebrow}</p>
-                <Link to={`/blog/${post.id}`} className="mt-3 block">
-                  <h2
-                    id={titleId}
-                    className="blog-post-title font-serif text-[1.75rem] font-normal leading-tight text-[var(--ink)]"
-                  >
-                    {post.title}
-                  </h2>
-                </Link>
-                <p className="mt-3 max-w-[62ch] text-[1.02rem] leading-relaxed text-[var(--ink-muted)]">
-                  {post.summary}
-                </p>
+                {isExpandable ? (
+                  <>
+                    <button
+                      type="button"
+                      className="mt-3 block w-full text-left"
+                      aria-expanded={isActive}
+                      aria-controls={previewId}
+                      onClick={() => togglePost(post.id)}
+                    >
+                      <span
+                        id={titleId}
+                        role="heading"
+                        aria-level={2}
+                        className="blog-post-title block font-serif text-[1.75rem] font-normal leading-tight text-[var(--ink)]"
+                      >
+                        {post.title}
+                      </span>
+                      <span className="mt-3 block max-w-[62ch] text-[1.02rem] leading-relaxed text-[var(--ink-muted)]">
+                        {post.summary}
+                      </span>
+                    </button>
+                    <BlogPostPreview id={previewId} post={post} />
+                  </>
+                ) : (
+                  <>
+                    <Link to={`/blog/${post.id}`} className="mt-3 block">
+                      <span
+                        id={titleId}
+                        role="heading"
+                        aria-level={2}
+                        className="blog-post-title block font-serif text-[1.75rem] font-normal leading-tight text-[var(--ink)]"
+                      >
+                        {post.title}
+                      </span>
+                    </Link>
+                    <p className="mt-3 max-w-[62ch] text-[1.02rem] leading-relaxed text-[var(--ink-muted)]">
+                      {post.summary}
+                    </p>
+                  </>
+                )}
                 <Link
                   to={`/blog/${post.id}`}
                   aria-labelledby={titleId}
