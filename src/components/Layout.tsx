@@ -4,7 +4,6 @@ import ThemeToggle from './ThemeToggle';
 const navItems = [
   { to: '/', label: 'About Me', end: true },
   { to: '/reading-list', label: 'Reading List' },
-  { to: '/wealth-lab', label: 'Wealth Lab' },
   { to: '/blog', label: 'Blog' },
 ];
 

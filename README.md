@@ -2,7 +2,7 @@
 
 A personal website built with Vite, React, TypeScript, and Tailwind CSS. It shares my background, reading list, blog posts, and Wealth Lab.
 
-Wealth Lab (`/wealth-lab`) explores inflation-adjusted spending. It defaults to
+Wealth Lab, a Blog post at `/blog/wealth-lab`, explores inflation-adjusted spending. It defaults to
 a fixed annual return using the 1996–2025 S&P 500 compound average (10.26%).
 A checkbox enables historical replay of those 30 years, with longer horizons
 using the selected rate for additional years. It can solve a first-year budget

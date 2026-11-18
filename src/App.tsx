@@ -5,14 +5,13 @@ import { ThemeProvider } from './components/ThemeToggle';
 import Background from './pages/Background';
 import Books from './pages/Books';
 import Blog from './pages/Blog';
-import WealthLab from './pages/WealthLab';
 
 function PageTitle() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.title = pathname.startsWith('/blog') ? "Siyuan's blog"
-      : pathname.startsWith('/wealth-lab') ? "Wealth Lab · Siyuan Song" : "Siyuan's Homepage";
+    document.title = pathname.startsWith('/blog/wealth-lab') ? "Wealth Lab · Siyuan Song"
+      : pathname.startsWith('/blog') ? "Siyuan's blog" : "Siyuan's Homepage";
   }, [pathname]);
 
   return null;
@@ -29,7 +28,7 @@ export default function App() {
             <Route path="journey" element={<Navigate to="/blog" replace />} />
             <Route path="books" element={<Books />} />
             <Route path="reading-list" element={<Books />} />
-            <Route path="wealth-lab" element={<WealthLab />} />
+            <Route path="wealth-lab" element={<Navigate to="/blog/wealth-lab" replace />} />
             <Route path="blog" element={<Blog />} />
             <Route path="blog/:postId" element={<Blog />} />
           </Route>
