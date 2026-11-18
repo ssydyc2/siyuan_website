@@ -99,3 +99,45 @@ export function RolloutTrainPlate({ wide = false }: { wide?: boolean }) {
     </svg>
   );
 }
+
+export function WealthPlate() {
+  const label = 'A portfolio balance line rising and dipping over the years while spending is withdrawn';
+
+  return (
+    <svg viewBox="0 0 480 340" role="img" aria-label={label}>
+      <title>{label}</title>
+      <g>
+        <text x="24" y="34" fill="var(--ink-faint)" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="0.04em">
+          balance / spending
+        </text>
+        <line x1="24" y1="52" x2="456" y2="52" stroke="var(--rule)" />
+        <line x1="48" y1="276" x2="440" y2="276" stroke="var(--rule-strong)" />
+        <path
+          d="M48 236 C88 228 104 206 136 214 S184 170 216 182 S262 214 288 160 S344 150 368 120 S412 112 440 90"
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="1.85"
+          strokeLinecap="round"
+        />
+        <path
+          d="M48 256 C140 250 240 242 440 226"
+          fill="none"
+          stroke="var(--secondary-accent)"
+          strokeWidth="1.45"
+          strokeDasharray="4 3.5"
+          strokeLinecap="round"
+        />
+        <g fill="var(--paper-elevated)" stroke="var(--accent)" strokeWidth="1.6">
+          <circle cx="48" cy="236" r="4" />
+          <circle cx="440" cy="90" r="4" />
+        </g>
+        <text x="440" y="304" fill="var(--ink-muted)" fontFamily="var(--font-serif)" fontSize="15" textAnchor="end">
+          30 years
+        </text>
+        <text x="48" y="304" fill="var(--ink-muted)" fontFamily="var(--font-serif)" fontSize="15">
+          today
+        </text>
+      </g>
+    </svg>
+  );
+}

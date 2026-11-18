@@ -56,9 +56,10 @@ Routes:
 - `/` - About/home page: Summary and Experience (work + education) chapters
   that reveal on scroll over a fixed React Three Fiber loss-surface scene.
 - `/reading-list` and `/books` - Reading list page.
-- `/wealth-lab` - Withdrawal calculator with fixed returns or historical replay.
 - `/blog` - Blog index.
-- `/blog/:postId` - Blog post detail page.
+- `/blog/:postId` - Blog post detail page. `/blog/wealth-lab` renders the
+  Wealth Lab withdrawal calculator (fixed returns or historical replay).
+- `/wealth-lab` - Legacy redirect to `/blog/wealth-lab`.
 - `/journey` - Legacy redirect to `/blog`.
 
 All routes render inside `src/components/Layout.tsx`, which owns the shared
@@ -90,7 +91,7 @@ src/
 └── pages/
     ├── Background.tsx              # About/home page
     ├── Books.tsx                   # Reading list page
-    ├── WealthLab.tsx               # Portfolio inputs, targets, chart, and annual ledger
+    ├── WealthLab.tsx               # Wealth Lab blog post: inputs, targets, chart, ledger
     └── Blog.tsx                    # Blog index and detail pages
 
 formal/

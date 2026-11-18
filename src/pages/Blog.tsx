@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { QuinticPlate, RolloutTrainPlate } from '../components/BlogFigures';
+import { QuinticPlate, RolloutTrainPlate, WealthPlate } from '../components/BlogFigures';
+import WealthLab from './WealthLab';
 import MarkdownDocument from '../components/MarkdownDocument';
 import efficientRlMarkdown from '../content/blog/efficient-rl-for-llms.md?raw';
 import abelRuffiniMarkdown from '../content/blog/abel-ruffini-backwards.md?raw';
@@ -457,12 +458,50 @@ const blogPosts: BlogPost[] = [
     topThree,
     keyConcepts,
   },
+  {
+    id: 'wealth-lab',
+    title: 'Wealth Lab: How Much Could You Spend and Still Keep Your Nest Egg?',
+    eyebrow: 'Interactive · Personal finance',
+    summary:
+      'A small withdrawal calculator: choose a steady return or replay 30 years of the S&P 500, and see what inflation leaves behind.',
+    readingChecklist: [],
+    phases: [
+      {
+        title: 'Set the scene',
+        period: 'Inputs',
+        label: 'Inputs',
+        summary: 'Enter a starting portfolio, horizon, and inflation, with a fixed return or historical replay.',
+        groups: [],
+      },
+      {
+        title: 'What can your portfolio support?',
+        period: 'Targets',
+        label: 'Targets',
+        summary: 'Solve a first-year budget that preserves the principal or its real value, or test your own spending.',
+        groups: [],
+      },
+      {
+        title: 'The annual ledger',
+        period: 'Ledger',
+        label: 'Ledger',
+        summary: 'Follow returns, spending, and the closing balance year by year.',
+        groups: [],
+      },
+    ],
+    frameworkRows: [],
+    practicePath: [],
+    minimalPath: [],
+    topThree: [],
+    keyConcepts: '',
+  },
 ];
 
 function BlogPostVisual({ postId, wide = false }: { postId: string; wide?: boolean }) {
   const plate = postId === 'abel-ruffini-backwards'
     ? <QuinticPlate />
-    : <RolloutTrainPlate wide={wide} />;
+    : postId === 'wealth-lab'
+      ? <WealthPlate />
+      : <RolloutTrainPlate wide={wide} />;
 
   return (
     <div className="blog-plate">
@@ -782,6 +821,10 @@ function BlogPostDetail({ post }: { post: BlogPost }) {
     return <EfficientRlDetail post={post} />;
   }
 
+  if (post.id === 'wealth-lab') {
+    return <WealthLab />;
+  }
+
   return <StructuredBlogPostDetail post={post} />;
 }
 
@@ -846,7 +889,7 @@ function BlogPostIndex({ posts }: { posts: BlogPost[] }) {
                   aria-labelledby={titleId}
                   className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-[var(--ink)] transition-colors hover:text-[var(--accent)]"
                 >
-                  <span>Read article</span>
+                  <span>{post.id === 'wealth-lab' ? 'Open the lab' : 'Read article'}</span>
                   <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
                     &rarr;
                   </span>
